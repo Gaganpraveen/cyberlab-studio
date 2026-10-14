@@ -17,8 +17,13 @@ export const ddosLab: LabDefinition = {
   engine: 'Seeded discrete-time queue model',
   topicIds: ['MAL-05', 'MAL-06', 'APP-08'],
   icon: Network,
-  objectives: [],
-  status: 'in-development',
+  objectives: [
+    'Explain how a denial-of-service attack exhausts a finite resource to deny availability',
+    'Observe legitimate users get crowded out when a botnet floods a shared service',
+    'Apply per-source rate limiting and measure the recovery in availability',
+    'Contrast rate limiting with simply scaling up capacity against a large flood',
+    'Describe why a distributed (DDoS) flood needs layered, upstream defenses',
+  ],
   component: lazy(() => import('./DdosLab')),
   challenges,
 };
