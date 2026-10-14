@@ -15,7 +15,7 @@ objectives:
   - Identify lifecycle gaps, such as sessions or tokens that survive a reset or an account closure.
 prerequisites: [IAM-01, CRY-01]
 concepts: [password-manager, credential-stuffing, password-spraying, brute-force-attack, account-recovery]
-labs: [password-cracking]
+labs: [password-cracking, login-security]
 keywords:
   - password policy
   - password storage
@@ -260,6 +260,12 @@ Step 5 is the most dangerous: it lets anyone take over any account without guess
 ## Try it in the lab
 
 In [the lab](lab:password-cracking) you play a defender who receives a leaked table of fast, unsalted SHA-256 password hashes from a fictional site. You will see how quickly common passwords fall to a short wordlist while one long passphrase that is not on the list survives, then compare how the attacker's cost changes when the same passwords are stored with unique salts and with PBKDF2.
+
+[The login lab](lab:login-security) moves the attack online, to the sign-in form of a fictional account, `avery`.
+
+1. On the **Attack** tab, click **Launch dictionary attack** with no defenses. The attacker's wordlist of 12 common passwords gets in on the 10th guess: the lab reports the account compromised and shows a flag. By the table in Four ways to guess, this dictionary attack is password guessing: one account facing common passwords, not leaked pairs.
+2. Turn on one defense at a time and launch again. Each defense button is a toggle, so click it again to turn that defense off before the next run. Rate limiting stops the run after 5 guesses. Account lockout stops it after 3, and the lab notes that the real `avery` is now locked out too. With MFA the password is guessed, but the second factor refuses the session. Which of the three would still work against spraying or stuffing?
+3. On the **Enumeration** tab, click **Probe** for `avery`, then **Probe a fake name**. Turn on **generic errors**, probe both again, and compare the messages with step 3 of the worked example.
 
 **Without the lab.** First, a paper calculation. Assume, for this exercise only, a rig that tests 10 billion unsalted SHA-256 guesses per second. How long does it take to try every 8-letter lowercase password (26^8 of them)? Every 15-letter one? Now assume each guess must run 600,000 PBKDF2 iterations, making it about 600,000 times as expensive, and recompute the 8-letter case. Finally, explain why none of this helps a user whose password is `password123`. Second, review the recovery settings of one of your own accounts: confirm the recovery email and phone are current, store a set of recovery codes offline if the service offers them, and check where sign-in alerts are sent.
 

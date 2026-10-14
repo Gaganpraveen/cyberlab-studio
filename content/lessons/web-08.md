@@ -24,7 +24,7 @@ concepts:
   - tabnabbing
   - noopener
   - cross-origin-opener-policy
-labs: []
+labs: [csrf-clickjacking]
 keywords:
   - clickjacking
   - UI redressing
@@ -202,7 +202,7 @@ Content-Security-Policy: frame-ancestors 'self' https://portal.partner.example
 
 ### The older header: X-Frame-Options
 
-Browsers adopted [[x-frame-options]] first. RFC 7034 (2013) describes three values: `DENY`, `SAMEORIGIN`, and `ALLOW-FROM` with one origin ([RFC 7034](https://www.rfc-editor.org/rfc/rfc7034)). The HTML Standard now defines how browsers process the header, superseding the RFC ([HTML Standard, Section 7.7](https://html.spec.whatwg.org/multipage/speculative-loading.html)).
+Browsers adopted [[x-frame-options]] first. RFC 7034 (2013) describes three values: `DENY`, `SAMEORIGIN`, and `ALLOW-FROM` with one origin ([RFC 7034](https://www.rfc-editor.org/rfc/rfc7034)). The HTML Standard now defines how browsers process the header, superseding the RFC ([HTML Standard, Section 7.7](https://html.spec.whatwg.org/multipage/speculative-loading.html#the-x-frame-options-header)).
 
 | Header received                                     | What a current browser does                                         |
 | --------------------------------------------------- | ------------------------------------------------------------------- |
@@ -302,8 +302,6 @@ Bob picks the second and third designs. The session cookie stays `SameSite=Lax`,
 
 **Step 6: Record the residual risk.** No header stops a partner page from drawing a fake sign-in window, so sign-in offers passkeys.
 
-> [!ETHICS] Only test systems you own or have written permission to test.
-
 ## Defenses
 
 OWASP recommends combining mechanisms as [[defense-in-depth]].
@@ -325,12 +323,19 @@ OWASP recommends combining mechanisms as [[defense-in-depth]].
 - **"Links with `target="_blank"` are dangerous," or "always safe."** They get noopener by default, but `rel="opener"`, named targets and `window.open()` still create an opener.
 - **"The padlock in that window proves the site."** Inside the content area, a padlock is just pixels.
 
-## Try it yourself
+## Try it in the lab
 
-Watch your browser enforce framing rules on pages you control, with two local servers that listen only on 127.0.0.1, as in [WEB-04](lesson:WEB-04).
+> [!ETHICS] Only test systems you own or have written permission to test.
+
+On the **Clickjacking** tab of [the lab](lab:csrf-clickjacking), a prize page frames the bank's real Transfer button, invisible, over a decoy.
+
+1. Click **Reveal overlay** to see both layers, then **Load attacker page and click**. The result reads "click hijacked"; submit its flag for "Steal a click."
+2. Click **Enable frame protection** and load the page again. The browser refuses the frame, which solves "Refuse to be framed." Which of Bob's pages could not refuse every frame?
+
+**Without the lab.** Test framing rules with two servers that listen only on 127.0.0.1, as in [WEB-04](lesson:WEB-04).
 
 1. Create folders `a` and `b`. In `b`, save `account.html` containing `<h1>My account</h1><button>Delete my account</button>`, and `opened.html` containing `<h1>Opened page</h1>`. In `a`, save `index.html` containing `<iframe src="http://127.0.0.1:8001/account.html" width="400" height="200"></iframe>`.
-2. Python's built-in server cannot add headers, so save this script in `b` as `headers_server.py`:
+2. Save this header-adding server in `b` as `headers_server.py`:
 
    ```python
    # Serve this folder on 127.0.0.1:8001, adding the response headers given on the
@@ -353,14 +358,11 @@ Watch your browser enforce framing rules on pages you control, with two local se
    ThreadingHTTPServer(('127.0.0.1', 8001), Handler).serve_forever()
    ```
 
-3. Run `python3 -m http.server 8000 --bind 127.0.0.1` in `a` and `python3 headers_server.py` in `b`, then open `http://127.0.0.1:8000/` with the developer tools open. The account page appears in the frame.
-4. Restart the `b` server (Ctrl+C) as `python3 headers_server.py "Content-Security-Policy: frame-ancestors 'none'"` and reload. The frame shows an error page; read the Console message, and find the header in the Network panel.
-5. Repeat with `frame-ancestors 'self'`, then `frame-ancestors http://127.0.0.1:8000`, and explain both results using the difference between an [[origin]] and a [[site]].
-6. Try `X-Frame-Options: DENY`, then `X-Frame-Options: ALLOW-FROM http://127.0.0.1:8000`. Does the console message say the second protects the page?
-7. Pass both `"Content-Security-Policy: frame-ancestors http://127.0.0.1:8000"` and `"X-Frame-Options: DENY"`. Predict the result before reloading, then explain it.
-8. Try `"Content-Security-Policy: default-src 'none'"` alone. Then restart with no arguments, add `<meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none'">` to `account.html`, and reload.
-9. In `a`, save `links.html` with two links to `http://127.0.0.1:8001/opened.html`, one with `target="_blank"` and one adding `rel="opener"`. Click each from `http://127.0.0.1:8000/links.html`, and run `window.opener` in the new tab's console. Where it is not `null`, try `window.opener.document`, then `window.opener.location.href = 'http://127.0.0.1:8001/opened.html'`, and watch the first tab.
-10. Record each case: headers sent, whether the frame rendered, and the console message. Stop both servers with Ctrl+C.
+3. Run `python3 -m http.server 8000 --bind 127.0.0.1` in `a` and `python3 headers_server.py` in `b`, and open `http://127.0.0.1:8000/` with DevTools open.
+4. Restart `b` with one header at a time: `"Content-Security-Policy: frame-ancestors 'none'"`, then `frame-ancestors 'self'` and `frame-ancestors http://127.0.0.1:8000` in that header, then `"X-Frame-Options: DENY"`, `"X-Frame-Options: ALLOW-FROM http://127.0.0.1:8000"` and `"Content-Security-Policy: default-src 'none'"`. Note whether the frame renders and the Console message, and explain `'self'` using [[origin]] and [[site]].
+5. Pass `"Content-Security-Policy: frame-ancestors http://127.0.0.1:8000"` and `"X-Frame-Options: DENY"` together. Predict the result first.
+6. Restart with no arguments, add `<meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none'">` to `account.html`, and reload.
+7. In `a`, save `links.html` with two links to `http://127.0.0.1:8001/opened.html`, one with `target="_blank"` and one adding `rel="opener"`. Open each from `http://127.0.0.1:8000/links.html` and run `window.opener` in the new tab's console. Where it is not `null`, try `window.opener.document`, then `window.opener.location.href = 'http://127.0.0.1:8001/opened.html'`, and watch the first tab. Stop both servers.
 
 ## Key takeaways
 

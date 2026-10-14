@@ -16,6 +16,7 @@ prerequisites: [FND-02, FND-03]
 concepts:
   - attack-surface
   - exposure
+labs: [recon-and-attack-surface]
 keywords:
   - attack surface
   - attack surface analysis
@@ -185,8 +186,6 @@ The fictional retailer shop.example is choosing between two designs for its orde
 
 **Step 4: harden what must stay.** The storefront, login API, and photo upload remain exposed in both designs, so they get the most scrutiny: input validation, rate limiting on login, size and type limits on uploads, a sandboxed image parser, and monitoring. Design B also puts the upload parser, a complex piece of code that handles files from outside, in a separate low-privilege worker, so a parser flaw does not hand over the database.
 
-> [!ETHICS] Only test systems you own or have written permission to test.
-
 ## Defenses
 
 **Remove what nobody needs.** Delete unused features, endpoints, sample apps, accounts, open ports, and stored data. OWASP lists removing unused features, limiting user levels, and not storing unneeded confidential data among the ways to shrink the surface. Limit: you can only remove what you know exists, so this depends on an accurate inventory.
@@ -209,16 +208,26 @@ The fictional retailer shop.example is choosing between two designs for its orde
 - **"A smaller surface means the system is secure."** One reachable flaw is enough. Surface reduction complements fixing flaws; it does not replace it.
 - **"Adding a security product always shrinks the surface."** Security tools run code too, often with high privileges, and OWASP counts security code among the high-risk areas.
 
-## Try it yourself
+## Try it in the lab
 
-**Part 1, on paper.** A college library offers course readings at reserves.college.example. Design A runs the website, the database, a scanner upload folder for staff, and a remote desktop service for the librarian on one internet-facing server. Design B keeps only the website public, moves staff uploads behind the campus SSO, and allows remote access only through the campus VPN.
+> [!ETHICS] Only test systems you own or have written permission to test.
+
+[The lab](lab:recon-and-attack-surface) maps Northwind College, a fictional organization at `northwind.example.test`, from static fixtures; nothing is scanned or resolved. It has two tabs, **OSINT** and **Surface**.
+
+1. **Find every door.** On the **OSINT** tab, click **Investigate** on all five sources. Public DNS shows a website, a mail gateway, and a VPN gateway. A certificate-transparency log, a job posting, and a public code repository add an admin panel, a staging server, and a database; six of six hosts solves "Build the footprint". The fifth source, cached document metadata, names no host but leaks an author, an internal path, and a software version. The admin host was never in public DNS, yet the public log of its certificate gives it away, as the first assumption in The core idea predicts; the log's card shows the flag for "Find the leaked subdomain". Then answer "First phase".
+2. **Rate the exposure.** On the **Surface** tab, each host shows its address, whether it is meant to be public or internal, whether it is internet-exposed, and its open ports, each labeled low, medium, or high risk. Note which hosts are meant to be internal yet reachable from the internet; the lab blames a misconfigured firewall rule for each. Then answer the "Public or internal?" challenge. The attack-surface score starts at 76 (lower is better), and the evidence log reports it after every change.
+3. **Remove before you harden.** On `dev-admin.northwind.example.test`, click the SSH and RDP port badges to close them: the score falls by 12. Then click **Make internal**: it falls by 13 more, because a host the internet cannot reach adds nothing. An admin panel and a database on the internet are exactly Design A's avoidable exposure in the worked example. Make the other two internal; at 17 the score is below 25, which solves "Reduce the attack surface".
+4. **Keep what is necessary.** Click **Strip metadata**. At 13 the **Minimal exposure** badge appears and "Minimal-exposure design" is solved, yet the website, mail, and VPN ports stay open. The lab would let you close SMTP on the mail gateway and score 10. Would you? Sort the remaining ports into necessary and avoidable exposure.
+5. **Question the number.** The score adds points for each exposed host, a large penalty for each exposed internal host, points for each open port by risk, and points for the metadata leak. Which dimensions in the exposure table does it ignore? State the change from 76 to 13 as a relative claim, as in Step 2 of the worked example.
+
+**Without the lab.** Start on paper. A college library offers course readings at reserves.college.example. Design A runs the website, the database, a scanner upload folder for staff, and a remote desktop service for the librarian on one internet-facing server. Design B keeps only the website public, moves staff uploads behind the campus SSO, and allows remote access only through the campus VPN.
 
 1. List every entry point and exit point in each design.
 2. Rate each one by reach, prerequisites, privilege, and data behind it.
 3. Mark each entry point in Design A as necessary or avoidable exposure.
 4. Write one sentence comparing the two designs, as a relative claim.
 
-**Part 2, on your own computer.** List the network services listening on your own machine, and note which accept connections only from the machine itself (`127.0.0.1` or `::1`) and which listen on every interface (`0.0.0.0` or `::`).
+Then, on your own computer, list the network services listening on your machine, and note which accept connections only from the machine itself (`127.0.0.1` or `::1`) and which listen on every interface (`0.0.0.0` or `::`).
 
 ```bash
 # Linux: listening TCP sockets and the programs that own them

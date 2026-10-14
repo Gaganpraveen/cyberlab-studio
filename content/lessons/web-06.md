@@ -22,7 +22,7 @@ concepts:
   - fetch-metadata
   - samesite-cookie
   - confused-deputy
-labs: []
+labs: [csrf-clickjacking]
 keywords:
   - CSRF
   - XSRF
@@ -309,15 +309,17 @@ The framework's synchronizer tokens protect most forms, and the marketing team r
 - **"A secret in a cookie proves the request is genuine."** The browser attaches cookies automatically, which is the whole problem. The proof must travel in a field or header that the attacker's page cannot fill in.
 - **"HTTPS prevents CSRF."** The forged request travels over HTTPS too.
 
-## Try it yourself
+## Try it in the lab
 
-Watch your own browser send a cross-origin write, using two local servers that listen only on 127.0.0.1, as in [WEB-04](lesson:WEB-04).
+On the **CSRF** tab of [the lab](lab:csrf-clickjacking), `free-prizes.example` auto-submits a hidden transfer form to `bank.example.test`, where the victim is signed in. Click **Fire the hidden form** with no defenses: the browser attaches the session cookie and the transfer executes, giving the flag for "Forge a transfer." Click **Enable SameSite cookies** and fire again: the cookie is withheld. After **Reset lab**, click **Require anti-CSRF token** and fire: the cookie rides along, but the request lacks the token the attacker's page cannot read. On paper, move the attacker to a compromised subdomain, as in the worked example: which defense still holds, and what does `rejectCrossSite` see?
+
+**Without the lab.** Watch your browser send a cross-origin write between two local servers bound to 127.0.0.1, as in [WEB-04](lesson:WEB-04).
 
 1. In a folder `a`, create `form.html` containing `<form action="http://127.0.0.1:8001/save" method="POST"><input name="note" value="hello"><button>Send</button></form>`. Start `python3 -m http.server 8000 --bind 127.0.0.1` in `a`, and the same command with port `8001` in an empty folder `b`.
-2. Open `http://127.0.0.1:8000/form.html` and the developer tools' Network panel, then click Send. Python's simple server does not accept POST and answers with an error, but its terminal log shows that the request arrived.
-3. Select the request and record its Origin header and any `Sec-Fetch-Site` and `Sec-Fetch-Mode` headers. The pages differ only by port, so they are cross-origin but same-site; check whether the headers agree. Then type `http://127.0.0.1:8001/` into the address bar and record that request's headers.
-4. On paper, apply the `rejectCrossSite` decision to each request you recorded, and explain why the form's POST reached the server even though the page on port 8000 could never read the reply.
-5. On a site where you have your own account, change a harmless setting with the Network panel open, and note whether the request carries a token field or header and which `SameSite` value the cookies use. Only observe: do not resend or alter requests. Stop both servers with Ctrl+C.
+2. Open `http://127.0.0.1:8000/form.html` and the developer tools' Network panel, then click Send. Python's server rejects the POST but logs its arrival.
+3. Record the request's Origin, `Sec-Fetch-Site` and `Sec-Fetch-Mode` headers. The pages differ only by port: cross-origin but same-site. Do the headers agree?
+4. On paper, apply `rejectCrossSite` to it, and explain why the POST arrived though the sending page could never read the reply. Stop both servers with Ctrl+C.
+5. With your own account on a site, change a harmless setting with the Network panel open, and note any token field or header and the cookies' `SameSite` values. Only observe; do not resend or alter requests.
 
 ## Key takeaways
 

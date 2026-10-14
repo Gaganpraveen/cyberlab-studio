@@ -14,7 +14,7 @@ objectives:
   - Identify which validation step stops a given forgery, such as a copied certificate or a certificate signed by a non-CA.
 prerequisites: [CRY-01, CRY-03]
 concepts: [digital-signature, certificate, certificate-authority, public-key-infrastructure]
-labs: [jwt]
+labs: [jwt, tls-handshake-inspector]
 keywords:
   - digital signature
   - X.509
@@ -294,9 +294,18 @@ Limits remain. A trusted CA that misissues a certificate passes every check, and
 
 ## Try it in the lab
 
+> [!ETHICS] Only test systems you own or have written permission to test.
+
 In [the lab](lab:jwt), you work with the session token of a fictional application. You decode it and confirm that its claims are only base64url-encoded. Then you forge an admin token whose header claims `alg: none` and watch a weak verifier accept it, and you recover the service's guessable HMAC secret from a short wordlist and sign a token that even a strict verifier trusts. Finally, you switch to a verifier that pins the algorithm and requires a signature, and run a battery of forged and tampered tokens against it. Throughout, connect each step to the RFC 8725 practice it illustrates, and note the one problem the strict verifier cannot fix: a key weak enough to guess has to be replaced.
 
-> [!ETHICS] Only test systems you own or have written permission to test.
+[The TLS certificate lab](lab:tls-handshake-inspector) creates a fictional CA and its certificates in your browser, with real ECDSA P-256 signatures from the Web Crypto API. You play the client reaching `shop.example.test`.
+
+1. **Accept everything.** On the **Handshake** tab, with verification off, click **Validate all**. All four certificates come back "accepted (unverified)": the disabled-check bug from Defenses.
+2. **Validate.** Click **Enable verification** and validate again. Each report shows three checks: a signature from a trusted CA, the validity period, and a subject that matches the host. Only the valid certificate passes; the expired, hostname-mismatched, and self-signed certificates each fail one check. Match each failure to its step in the worked example, and answer "Trace the handshake," "Catch the expired certificate," and "Hostname mismatch."
+3. **Beat a misissued certificate.** On the **Pinning** tab, click **Present rogue certificate**. The evidence log shows it accepted: a different key, also signed by the trusted CA for the right host, which is the limit noted under Defenses. Click **Pin the certificate** and present it again: its key fingerprint no longer matches the pinned one, and a flag appears.
+4. **Finish on paper.** The lab's CA signs leaf certificates directly, and nothing checks CA constraints, key usage, revocation, or a handshake signature. For each, describe a forgery the lab cannot show and the worked-example step that would catch it.
+
+The **HSTS** tab belongs with [TLS and certificate validation](lesson:NET-05).
 
 **Without the lab.** Use Python on your own machine. This sample token was signed with HS256 using the 32-byte key `6f1c2b8e9d0a4f3b7c5e1a2d8f9b0c3e4a6d7f8e9c0b1a2d3e4f5a6b7c8d9e0f` (hex), which is published here for practice and protects nothing:
 

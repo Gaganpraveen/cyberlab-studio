@@ -14,7 +14,7 @@ objectives:
   - Test a draft policy against a reviewed decision matrix and diagnose each mismatch.
 prerequisites: [IAM-01, FND-05]
 concepts: [rbac, abac, rebac]
-labs: []
+labs: [access-control-matrix]
 keywords:
   - RBAC
   - ABAC
@@ -290,12 +290,13 @@ def test_policy_matches_reviewed_matrix(user, action, obj, expected):
 - **"Unguessable IDs are a form of access control."** OWASP warns that hiding or randomizing identifiers is not enough; check access to the specific object on every request.
 - **"A passing test suite proves the policy correct."** It proves agreement with the rows you wrote. Requests nobody tested are unknown, not safe.
 
-## Try it yourself
+## Try it in the lab
 
-1. **On paper: build a matrix.** Imagine a shared-notes app at `notes.example` where users own notes, share them with named people as editors or viewers, and file them in shared folders. Write at least eight rows of subject, action, object, and expected decision, including three or more denials and a person removed from a folder.
-2. **Express it three ways.** Write the policy as RBAC roles (count how many you need), as one or two ABAC rules, and as ReBAC tuples with a short schema. For each model, mark the rows it handles awkwardly or cannot express.
-3. **Find the hidden rule.** Write an RBAC policy that passes every row, then add a new row it fails. Explain which relationship or attribute the role names were hiding.
-4. **With your own account.** In a cloud storage service you use, open the sharing settings of a folder you own. For one file inside, list everyone who can open it and whether that access was granted on the file or inherited from the folder. Observe only.
+> [!ETHICS] Only test systems you own or have written permission to test.
+
+[The lab](lab:access-control-matrix) shows an [[access-control-matrix|access control matrix]] of read decisions: four fictional users against three owned documents and an admin-only user directory. First write the expected decision for all 16 cells, as in the worked example. The starting policy permits any signed-in caller: acting as Mallory, read Alice's private review and the admin user directory. Then click **Enable ownership check** and **Enable role check**, and compare with yours. Which check is RBAC, and how would ABAC or ReBAC express the other? Root still reads every document through a built-in admin override: is that role too broad?
+
+**Without the lab.** For a shared-notes app at `notes.example`, where users own notes, share them as editors or viewers, and file them in shared folders, write eight rows of subject, action, object, and expected decision, including three denials and a person removed from a folder. Express the policy as RBAC roles, ABAC rules, and ReBAC tuples; mark what each handles awkwardly. Then write an RBAC policy that passes every row, add one it fails, and name the relationship its role names hid.
 
 ## Key takeaways
 

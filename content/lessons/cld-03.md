@@ -14,6 +14,7 @@ objectives:
   - Plan the containment, investigation, and prevention steps after a storage exposure is reported.
 prerequisites: [CLD-01, CLD-02]
 concepts: [object-storage, bucket-policy, access-control-list, block-public-access, presigned-url]
+labs: [cloud-iam-policy]
 keywords:
   - S3
   - Amazon S3
@@ -258,12 +259,19 @@ The `Bool` condition on `aws:SecureTransport` matches requests that did not arri
 - **"If no one complained, nothing was taken."** Without object-level logs, you cannot know. Exposure alone may also trigger legal obligations.
 - **"Private once means private forever."** Settings drift as people make changes. Toyota's exposure lasted for years.
 
-## Try it yourself
+## Try it in the lab
 
 > [!ETHICS] Only test systems you own or have written permission to test.
 > Do not probe other people's buckets, even ones you suspect are public; reading them can be unauthorized access under laws such as the [[cfaa|CFAA]].
 
-This is a paper exercise about four fictional buckets. ACLs are enabled on all of them, and the account-level block is off.
+In [the lab](lab:cloud-iam-policy), a fictional AWS-style account has a bucket statement, `ReportsBucket`, that allows `s3:GetObject` on `arn:aws:s3:::acme-reports/*` to the principal `*`: the same pattern as `WebsiteAssets` in the worked example.
+
+1. **Read it anonymously.** Click **Read secret object (anonymous)**. The request is allowed, the lab lists `secret-salaries.csv` as stolen, and it reveals the flag for the "Read the public bucket" challenge.
+2. **See whom `*` covers.** In **Test any request**, choose `s3:GetObject` on the salaries object for the principal `*`, then for `role/auditor`, which no statement names. `ReportsBucket` allows both: `*` matches every caller, not only anonymous ones.
+3. **Fix the grant.** Check **Remove the public principal from the bucket**. It replaces `*` with the named role `role/developers`, as Alice's rewrite in Step 4 does, and solves "Make the bucket private." Run the read again: it now meets an implicit deny. Then answer "Name the principle."
+4. **Finish on paper.** The lab fixes the policy itself; it has no ACLs, signed URLs or public-access blocks. Which block setting would have contained this exposure without editing the policy, as in Step 3, and why must the policy still be fixed?
+
+**Without the lab.** This paper exercise covers four fictional buckets. ACLs are enabled on all of them, and the account-level block is off.
 
 ```text
 Bucket A  club-photos-111122223333

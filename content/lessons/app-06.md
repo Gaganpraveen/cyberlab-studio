@@ -15,6 +15,7 @@ objectives:
   - Explain why hidden interfaces, unguessable identifiers, and authentication alone do not provide authorization.
 prerequisites: [IAM-01, IAM-04, FND-05]
 concepts: [authorization, bola, bfla, mass-assignment, access-control-matrix, privilege-escalation, complete-mediation]
+labs: [access-control-matrix]
 keywords:
   - BOLA
   - IDOR
@@ -110,8 +111,6 @@ Most APIs name the things they act on: `GET /api/orders/1043`, `POST /api/orders
 When the answer is skipped or wrong, the result is broken access control, the first category of the OWASP Top 10:2025 (A01:2025). The OWASP API Security Top 10 2023 lists three API variants: broken object level authorization first (API1), broken object property level authorization third (API3), and broken function level authorization fifth (API5). MITRE's weakness catalog shows the same pattern; on the [2025 CWE Top 25](https://cwe.mitre.org/top25/archive/2025/2025_cwe_top25.html), Missing Authorization ([[cwe|CWE]]-862) ranks 4th, Incorrect Authorization (CWE-863) 17th, and Authorization Bypass Through User-Controlled Key (CWE-639) 24th.
 
 These flaws are easy to create and hard to see. The application works perfectly for honest users, who only ever ask for their own orders. Nothing breaks until someone changes a number in a request, and normal testing, which signs in as the right user, never tries.
-
-> [!ETHICS] Only test systems you own or have written permission to test.
 
 ## The core idea
 
@@ -337,9 +336,18 @@ OWASP's API5 guidance says enforcement "should deny all access by default, requi
 - **"We compare the id in the URL with the user id in the token."** That covers only objects named by the user's id. OWASP says this approach "could address only a small subset of cases."
 - **"The API gateway handles authorization."** A gateway can enforce coarse rules, such as which roles may call a route. It usually cannot know who owns order 1043; that check needs the data.
 
-## Try it yourself
+## Try it in the lab
 
-Everything here runs locally in Python, with in-memory dictionaries for `ORDERS` and `USERS`.
+> [!ETHICS] Only test systems you own or have written permission to test.
+
+In [the lab](lab:access-control-matrix), every read request passes through one authorization function, `authorize()`, and its starting policy asks only whether the caller is signed in: authentication without authorization.
+
+1. **Object level.** Acting as Mallory, request **Alice's private review** with **Send read request**. The answer is 200 OK with Alice's review and a flag, and the stated reason is only that Mallory is authenticated. Nothing asked how Mallory relates to the object: that is [[bola|BOLA]], or IDOR. Submit the flag for "Read a document that is not yours."
+2. **Function level.** Still as Mallory, request **Admin · user directory**. The matrix marks it admin-only, yet it also returns 200 OK, because no check looks at her role: that is [[bfla|BFLA]]. Submit the flag for "Reach the admin endpoint."
+3. **Close both.** Click **Enable ownership check** and **Enable role check**, then send both requests again. Alice's review now returns 404 Not Found and the directory 403 Forbidden, each with a reason naming the failed check, and the policy badge reads "access control enforced." Mallory's matrix row keeps only her own notes, while Root still reads every document through an explicit admin override, like the admin's "Any order" cell in the worked example.
+4. **Compare with the worked example.** The repaired `get_order` also answers 404 for someone else's order. What would a 403 for Alice's review have told Mallory? The lab also models only reads: which row of the worked example's results needs a third, property-level check?
+
+**Without the lab.** Everything here runs locally in Python, with in-memory dictionaries for `ORDERS` and `USERS`.
 
 1. Copy the test data, the current handlers, and `CASES` from the worked example, and write a loop that resets the data before each case and prints expected and actual statuses. Mark every mismatch in your own copy of the matrix before reading the repaired code.
 2. Apply the repair one check at a time and rerun the cases after each change. Which single change fixes the most cells?

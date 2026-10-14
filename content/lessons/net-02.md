@@ -14,6 +14,7 @@ objectives:
   - Evaluate source-port randomization, bailiwick checks, DNSSEC validation, and encrypted resolver connections, including what each one does not protect.
 prerequisites: [NET-01]
 concepts: [dns, recursive-resolver, authoritative-name-server, dns-cache-poisoning, dnssec]
+labs: [recon-and-attack-surface, spoofing-and-mitm]
 keywords:
   - Domain Name System
   - DNS resolution
@@ -255,8 +256,6 @@ With DNSSEC, steps 2 to 5 change from "it matched" to "the signatures chain up t
 
 ## Defenses
 
-> [!ETHICS] Only test systems you own or have written permission to test.
-
 - **Randomize IDs and source ports.** This forces an off-path attacker to guess about 32 bits per attempt. Limits: an on-path attacker sees both values, and CERT notes that address-translating devices that rewrite ports can reduce the benefit.
 - **Enforce bailiwick.** Resolvers should discard records outside the responding server's zone. Limit: Kaminsky-style forgeries stay within bailiwick.
 - **Do not run open resolvers.** CERT also recommends restricting recursion to your own clients and filtering spoofed addresses at the network edge. Limit: an attacker on your network, or a web page in your users' browsers, can still trigger lookups.
@@ -272,9 +271,18 @@ With DNSSEC, steps 2 to 5 change from "it matched" to "the signatures chain up t
 - **"HTTPS makes DNS attacks irrelevant."** TLS catches a wrong server for HTTPS connections, but email routing, plain HTTP, and many internal tools act on DNS answers without such checks.
 - **"A short TTL is a security control."** TTL controls caching. A short TTL limits how long a poisoned answer lives, but it also gives attackers more chances to race.
 
-## Try it yourself
+## Try it in the lab
 
-Use your own computer and the resolver your own network gives you. These are ordinary lookups that any device makes.
+> [!ETHICS] Only test systems you own or have written permission to test.
+
+Both labs are fictional and send no queries.
+
+1. **Map the names.** On the **OSINT** tab of [the Recon and Attack Surface lab](lab:recon-and-attack-surface), investigate **DNS enumeration**: public records reveal a website, a mail gateway, and a VPN gateway. Which record type from How it works points to each? Then investigate the **Certificate transparency log**. It names an admin host that public DNS never listed and shows the flag for "Find the leaked subdomain": leaving a name out of DNS does not hide it.
+2. **Poison the cache.** On the **DNS** tab of [the Spoofing and On-Path Attacks lab](lab:spoofing-and-mitm), the resolver's cache maps `bank.example.test` to 192.0.2.200. Click **Poison cache**: the entry now points to the attacker's 192.0.2.66, and the flag for "Poison the resolver" appears.
+3. **Validate.** Click **Enable DNSSEC**, then **Poison cache** again: the forgery fails validation and the honest answer stands, which solves "Validate with DNSSEC".
+4. **Fill the gaps.** In the lab, the forgery never loses a race, and the DNSSEC switch assumes the zone is signed. What must an off-path forgery match after 2008, and what would the switch do for an unsigned zone?
+
+**Without the lab.** Run these ordinary lookups on your own computer, through your own network's resolver.
 
 ```bash
 # Linux and macOS (dig is in the bind-utils or dnsutils package)
@@ -288,11 +296,11 @@ Resolve-DnsName example.com
 Resolve-DnsName example.com -DnssecOk
 ```
 
-1. In the first answer, find the `SERVER` line. Which resolver does your computer trust? Who runs it?
-2. Compare the TTL in the first and second answers. The drop shows the resolver answering from its cache.
-3. In the `+trace` output, label each group of lines as root, TLD, or authoritative, and point to the NS records that act as referrals. (Some networks block direct queries to outside servers; if the trace fails, that is itself a security control worth noticing.)
-4. In the `+dnssec` output, look for RRSIG records and the `ad` flag. What does it mean if RRSIG records appear but `ad` does not? (Your resolver may not validate.)
-5. On paper, redraw the trust table from the worked example for your own lookup, and mark the one step that DNSSEC alone cannot protect.
+1. Find the `SERVER` line: which resolver does your computer trust, and who runs it?
+2. Compare the first two TTLs; the drop shows the resolver answering from its cache.
+3. In the `+trace` output, label the root, TLD, and authoritative steps, and find the NS records that act as referrals. If the trace fails, your network may block outside queries, itself a control worth noticing.
+4. In the `+dnssec` output, find RRSIG records and the `ad` flag. RRSIG without `ad` suggests your resolver does not validate.
+5. On paper, redraw the worked example's trust table for your lookup, marking the one step DNSSEC alone cannot protect.
 
 ## Key takeaways
 

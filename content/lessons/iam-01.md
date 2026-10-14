@@ -15,7 +15,7 @@ objectives:
   - Build an access matrix and use it to test a set of access decisions.
 prerequisites: [FND-01, FND-05]
 concepts: [authentication, authorization, authenticator]
-labs: []
+labs: [access-control-matrix]
 keywords:
   - authn
   - authz
@@ -291,24 +291,25 @@ Checking the function-level rule before loading the order also stops a customer 
 - **"Authentication proves who someone is in real life."** It proves control of an authenticator bound to an account. Identity proofing is a separate process.
 - **"OAuth is a login protocol."** [[oauth]] delegates permission to call an API; sign-in is layered on top by [[openid-connect]] (see [OAuth and OpenID Connect concepts](lesson:IAM-05)).
 
-## Try it yourself
+## Try it in the lab
 
-Work on paper. The fictional `library.example` app has three roles: patron, librarian, and administrator.
+[The lab](lab:access-control-matrix) starts from the worked example's mistake: any signed-in caller may read anything. Acting as Mallory, send read requests for Alice's private review and the admin user directory. Both return 200 OK and a flag; name the missing check and the type of escalation in each. Then click **Enable ownership check** and **Enable role check**, and watch Mallory's matrix row shrink to her own notes. Resend both: which now returns 404 Not Found, as in the worked example, and why?
 
-1. Label each requirement as identification, authentication, authorization, or accountability, and rewrite any vague one as a testable rule:
-   - "Patrons sign in with their library card number and a PIN."
+**Without the lab.** The fictional `library.example` has three roles: patron, librarian, and administrator.
+
+1. Label each requirement as identification, authentication, authorization, or accountability, and rewrite vague ones as testable rules:
+   - "Patrons sign in with a card number and PIN."
    - "Only staff can waive fines."
    - "Patrons can see loans."
    - "All fine waivers are recorded."
    - "Librarians are authorized with a security key."
-2. Build an access matrix with the roles as rows and these actions as columns: view own loans, view another patron's loans, waive a fine, edit the catalog, change a user's role. Fill each cell with allow, deny, or a condition.
-3. For each logged request, give the status code you would return (200, 401, 403, or 404) and, if the app was wrong, the weakness:
-   - A patron requests `/patrons/5512/loans`, another patron's loans, and gets 200.
+2. Build an access matrix of roles against these actions: view own loans, view another patron's loans, waive a fine, change a user's role. Fill each cell with allow, deny, or a condition.
+3. Give the status code each request deserved, and any weakness:
+   - A patron opens `/patrons/5512/loans`, another patron's loans, and gets 200.
    - An anonymous request to `/fines/88/waive` gets 403.
-   - A librarian changes her own role to administrator through `/users/me/role` and gets 200.
-4. Optional, with your own accounts only: sign out of a site you use, open the Network tab of your browser's developer tools, and load a bookmarked account page. Does the site redirect to its sign-in page, or answer 401 or 403?
+   - A librarian makes herself administrator through `/users/me/role` and gets 200.
 
-To check yourself: "Patrons can see loans" has the same gap as R1, the anonymous request deserved a 401 or a redirect, and the role change is a vertical privilege escalation.
+Check: "Patrons can see loans" has R1's gap; the anonymous request deserved 401 or a redirect; the role change is vertical privilege escalation.
 
 ## Key takeaways
 

@@ -15,7 +15,7 @@ objectives:
   - Explain how forwarding, integrity protection, and retention decide what defenders can prove later.
 prerequisites: [FND-01, FND-02]
 concepts: [security-log, telemetry, log-retention, log-injection]
-labs: []
+labs: [detection-rule-builder]
 keywords:
   - logging
   - log management
@@ -261,23 +261,25 @@ The local 09:12:03 was US Eastern daylight time, so it becomes 13:12:03 UTC. Whe
 - **"Hashing personal data makes the logs anonymous."** Unkeyed hashes of guessable values can be reversed by trying candidates, and even keyed hashes are pseudonyms, not anonymity.
 - **"Logs are an objective record."** Whoever controls a host can alter its local logs, and applications can be tricked into writing forged lines. Forward early, protect integrity, and neutralize input.
 
-## Try it yourself
+## Try it in the lab
 
-**On paper.** The fictional course registration portal at `registrar.example` lets students add and drop classes and lets staff override enrollment caps. Student records there are protected under [[ferpa]], so minimization matters.
+In [the lab](lab:detection-rule-builder) you tick clauses to build a detection rule that flags exactly the three of nine labeled events in which a compromised service account downloads data at night from abroad. Every rule that does so must test the hour, yet the Hour column has no date or time zone. Which other fields from Designing the record do the events lack?
 
-1. For each candidate event, decide keep, drop, or summarize, and name the question it answers: student sign-in success; student sign-in failure; course search; add or drop of a course; staff cap override; staff grade change; bulk export of a class roster; page views of the course catalog; password reset request; change of a student's mailing address.
-2. Rewrite this line as a structured record. Remove or transform every sensitive field, convert the time to UTC (the portal runs on US Central daylight time), and explain each change:
+> [!ETHICS] Only test systems you own or have written permission to test.
+
+**Without the lab.** At the fictional `registrar.example` portal, students add and drop classes and staff override enrollment caps. Its student records fall under [[ferpa]], so minimization matters.
+
+1. Decide keep, drop, or summarize for each event, naming the question it answers: sign-in success; sign-in failure; course search; add or drop; staff cap override; grade change; roster export; catalog page views; password reset request; mailing-address change.
+2. Rewrite this line as a structured record in UTC (the portal runs on US Central daylight time), removing or transforming every sensitive field, and explain each change:
 
    ```text
    10/14/2026 08:41:17 override by staff bob ssn=000-00-0000 student=Alice Smith course=CS-101 cap 40->45 token=eyJhbGciOi from 198.51.100.23
    ```
 
-3. Choose retention periods for sign-in events and for grade changes, and justify the difference.
-4. Write one health check that would reveal that the portal stopped sending logs.
+3. Justify different retention periods for sign-in events and grade changes.
+4. Write a health check that reveals when the portal stops sending logs.
 
-**On your own machine.** Open the logs on a computer you own (the Security log in Event Viewer on Windows, or the `last` command and `journalctl` on Linux; `last` also works on macOS) and find the record of your most recent sign-in. Which of the when, where, who, and what fields does it contain? Is the time in UTC or local time? What would you add?
-
-> [!ETHICS] Only test systems you own or have written permission to test.
+On a computer you own, check whether your latest sign-in record (Windows Event Viewer's Security log, or `last` on Linux and macOS) uses UTC or local time, and which when, where, who, and what fields it has.
 
 ## Key takeaways
 

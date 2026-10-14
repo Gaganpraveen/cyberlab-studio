@@ -15,6 +15,7 @@ objectives:
   - Describe how least privilege, timeouts, and sandboxing limit the damage of a command that misbehaves.
 prerequisites: [APP-01, APP-02, SYS-04]
 concepts: [command-injection, metacharacter, argument-vector, argument-injection, injection]
+labs: [command-path-injection]
 keywords:
   - OS command injection
   - shell injection
@@ -101,8 +102,6 @@ Many applications call other programs to do part of their work: resize an image,
 The stakes are higher than for most injection flaws. Injected SQL is bounded by what the database account can reach. An injected shell command runs arbitrary programs with the operating-system privileges of the application. PortSwigger's Web Security Academy notes that this can let an attacker fully compromise the application and all its data, and can give a foothold for attacking other systems in the organization.
 
 The good news mirrors SQL injection: the fix is structural. Programs can be started without a shell, with every argument passed separately, and often no external program is needed at all.
-
-> [!ETHICS] Only test systems you own or have written permission to test.
 
 ## The core idea
 
@@ -267,9 +266,18 @@ PortSwigger's guidance ranks these the same way: never call out to operating-sys
 - **"No output means no risk."** Blind command injection is confirmed through side effects such as delays or network lookups.
 - **"A non-root account makes it harmless."** It limits damage, but the attacker still acts with every right that account has, including reading the application's data.
 
-## Try it yourself
+## Try it in the lab
 
-Work in a new, empty folder on your own machine, and run only `echo` and `ls`.
+> [!ETHICS] Only test systems you own or have written permission to test.
+
+On the **Command** tab of [the lab](lab:command-path-injection), a ping tool runs `ping` with the host you type, through a fake shell that understands four harmless commands. Each defense button toggles: click it again to turn that defense off.
+
+1. **Inject.** Click **Run ping** on the starting input, `localhost; cat /flag`. The result shows the string the shell parsed, `sh -c "ping localhost; cat /flag"`, and the output of both commands: the `;` ended `ping` and started `cat`, just as in the `nslookup` wrapper from How it works. Submit the flag for "Escape the ping command."
+2. **Drop the shell.** With the allowlist off (it would reject the input first), click **Run without a shell** and run the same input. The lab now shows `execFile("ping", ["--", "localhost; cat /flag"])`: the whole value is one argument after the end-of-options marker `--`, and ping reports a name it cannot resolve. That solves "Drop the shell."
+3. **Add the allowlist.** Click **Add input allowlist** and run the input again: it is rejected, and the evidence log says that only letters, digits, dots, and hyphens are allowed.
+4. **Try option injection.** Now run the host `-v` with both defenses on. The allowlist rejects it: like the worked example's hostname pattern, it refuses a value that starts with a hyphen. Turn the allowlist off and run `-v` again. The lab shows `execFile("ping", ["--", "-v"])`, and ping reports `-v` as a name it cannot resolve. The fake ping never reads options, but a real ping would read a bare `-v` as one. Which of the two layers would still protect a program that does not support `--`?
+
+**Without the lab.** Work in a new, empty folder on your own machine, and run only `echo` and `ls`.
 
 1. **Classify on paper.** For each call, decide whether user input `v` can add a command, become an option, or neither: `os.system("echo " + v)`; `subprocess.run(["echo", v])`; `subprocess.run(["ls", v])`; `subprocess.run(["ls", "--", v])`; `subprocess.run(["sh", "-c", "echo " + v])`; Node's `execFile('echo', [v])`.
 2. **Check your answers.** Write the vulnerable `lookup` with `echo` in place of `nslookup`, then the argument-list version. Call both with `shop.example`, then with `shop.example; echo INJECTED`, and compare the output.

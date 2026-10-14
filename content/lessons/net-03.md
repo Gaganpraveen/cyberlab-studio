@@ -14,6 +14,7 @@ objectives:
   - Evaluate defenses such as DHCP snooping with dynamic ARP inspection, static entries, client isolation, monitoring, and end-to-end encryption, including the limits of each.
 prerequisites: [NET-01]
 concepts: [arp, mac-address, arp-spoofing, adversary-in-the-middle]
+labs: [spoofing-and-mitm]
 keywords:
   - Address Resolution Protocol
   - ARP cache
@@ -230,8 +231,6 @@ No.  Time    Source              Destination         Info
 
 ## Defenses
 
-> [!ETHICS] Only test systems you own or have written permission to test.
-
 - **DHCP snooping and dynamic ARP inspection.** A managed switch can record which address the DHCP server gave to which device (DHCP snooping), block DHCP offers from unexpected servers, and drop ARP messages that contradict its records (dynamic ARP inspection). Limits: devices with manually set addresses need manual entries, a misconfiguration can cut off legitimate hosts, and only links through such switches are checked.
 - **Control who joins the link.** Network access control, such as 802.1X on wired ports and per-user credentials on Wi-Fi, keeps strangers off the network. Limit: a legitimate member or a compromised machine is still inside.
 - **Shrink and isolate the link.** VLANs split one physical network into smaller virtual ones, and many Wi-Fi systems can stop clients from sending frames to each other at all. Fewer neighbors means fewer devices that can lie to you (see [network segmentation](lesson:NET-07)). Limit: devices that legitimately need to talk directly lose that ability.
@@ -247,9 +246,18 @@ No.  Time    Source              Destination         Info
 - **"HTTPS makes ARP spoofing harmless."** HTTPS limits the damage to metadata and blocking, and only when certificates are validated; plaintext protocols on the same network are fully exposed.
 - **"An ARP change always means an attack."** Hardware swaps and address reassignments change mappings too. Look for the pattern: unsolicited, repeated claims to an important address by a device that also holds another one.
 
-## Try it yourself
+## Try it in the lab
 
-Do these on your own computer only. Viewing your own tables is harmless. Do not send ARP messages, run spoofing tools, or capture traffic on networks you do not own or administer.
+> [!ETHICS] Only test systems you own or have written permission to test.
+
+[The lab](lab:spoofing-and-mitm) models a small network on 192.0.2.0/24 with four devices: Alice's laptop, the router that serves as gateway, a file server, and Eve, the attacker, who plays mallory's part. No frames are sent; the buttons change the model. Its **DNS** tab goes with [DNS resolution and trust](lesson:NET-02).
+
+1. **Read the table.** On the **ARP** tab, the table is Alice's ARP cache, so it lists the other three devices, not her own laptop: each IP address maps to a MAC address and a device. A badge reads "path is clean". Find the gateway's IP address for "Read the ARP table".
+2. **Spoof.** Click **Run ARP spoof**. The gateway's row now maps to Eve's MAC address and is marked spoofed, the badge reads "attacker on-path", and the flag for "Become the man in the middle" appears. As in Step 2 of the worked example, one MAC address now claims two IP addresses, the gateway's and Eve's own. On a real network, which benign explanation from Step 4 would you rule out first? Then answer "Spot the spoof", which asks for the name of an ARP reply nobody requested.
+3. **Defend.** Click **Enable inspection**. The forged entry stays, because inspection checks new replies, not what Alice has already cached. Click **Run ARP spoof** again: the evidence log reports that dynamic ARP inspection rejected the reply, the gateway's row maps to the router again, and "Harden the LAN" is solved.
+4. **Test the model.** The lab changes only the victim's entry for the gateway. Using the spoofing diagram in How it works, which half of the conversation reaches Eve, and what else would she have to forge to see the replies? Also, the lab restores the honest entry as soon as inspection rejects the next forgery. A real switch only drops forgeries and never edits Alice's cache, so what repairs it, according to How a cache is updated?
+
+**Without the lab.** Do these on your own computer only. Viewing your own tables is harmless. Do not send ARP messages, run spoofing tools, or capture traffic on networks you do not own or administer.
 
 ```bash
 # Linux
@@ -267,7 +275,7 @@ Get-NetNeighbor -AddressFamily IPv4
 
 1. Find your default gateway's IP address, then find its MAC address in your ARP table. On a network you own, compare it with the MAC address your router's admin page shows for its local interface.
 2. Note which other devices appear in the table and in which state. Why do only devices on your own link appear, never websites you visited?
-3. Optional, on your own machine: capture in Wireshark, apply the display filter `arp`, then open a page. If no ARP appears, your cache already held the gateway's entry; wait a few minutes and try again. Identify the request, the reply, and the sender and target fields from the table above.
+3. Optional, on your own machine: capture in Wireshark, apply the display filter `arp`, then open a page. If no ARP appears, your cache already held the gateway's entry; wait a few minutes and try again. Identify the request, the reply, and the sender and target fields from the message table in How it works.
 4. Paper exercise: in the worked example, suppose frame 13 had never appeared and the 10:00 snapshot already showed ...:66 for the gateway. What extra evidence would you want before concluding that the gateway itself had not simply been replaced?
 
 ## Key takeaways

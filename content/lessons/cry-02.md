@@ -14,6 +14,7 @@ objectives:
   - Verify a MAC with a constant-time comparison and justify encrypt-then-MAC with separate keys when no AEAD is available.
 prerequisites: [CRY-01]
 concepts: [symmetric-encryption, block-cipher, aes, aead, mac, hmac]
+labs: [classical-cipher-breaker]
 keywords:
   - AES
   - AES-GCM
@@ -263,9 +264,16 @@ Limits remain. AEAD does not hide message length or timing, does not stop replay
 - **"Associated data is encrypted."** It is authenticated but stays readable.
 - **"Random nonces are always safe."** With random 96-bit nonces, the chance of a repeat grows with every message, so SP 800-38D caps a key at 2^32 encryptions when IVs are random.
 
-## Try it yourself
+## Try it in the lab
 
-Run these toy experiments in Python on your own machine (`pip install cryptography`), or use the Web Crypto API in your browser's developer console on any HTTPS page.
+[The lab](lab:classical-cipher-breaker) breaks two classical ciphers by counting letters. Neither is used today, but they fail in the two ways this lesson warns about: a fixed mapping that lets patterns through, and key material that repeats.
+
+1. **Same letter in, same letter out.** On the **Caesar** tab, leave the decryption shift at 0. The chart shows the ciphertext's letter frequencies as bars and English as dashes. Each plaintext letter always becomes the same ciphertext letter, so the English profile survives, only shifted: ECB's leak at the scale of one letter. Drag the slider until the bars best match the dashes, or click **Break automatically** to score all 26 shifts.
+2. **Find the repeat.** On the **Vigenere** tab, click **Analyze key length**. For each candidate length from 1 to 12, the lab splits the letters into that many columns and plots their average index of coincidence, the chance that two letters from one column match. Columns that mix several shifts stay below the English value of 0.067; at the true length, each column has a single shift and the average climbs to about that value. Predict which other lengths should climb too, then check.
+3. **Solve each column.** Click **Recover key & decrypt**. The lab solves each column as a Caesar shift, reads the keyword from the shifts, and decrypts the message. Answer the "Find the key length" and "Recover the keyword" challenges.
+4. **Connect it to modern modes.** A Vigenère key is a keystream that repeats every few letters, the flaw that experiment 4 below shows for AES-CTR under a reused nonce. Explain why counting letters finds nothing in AES-CTR with unique nonces, and which Caesar weakness ECB shares.
+
+**Without the lab.** Run these toy experiments in Python on your own machine (`pip install cryptography`), or use the Web Crypto API in your browser's developer console on any HTTPS page.
 
 1. Run the ECB example with two different 16-byte blocks, then with two equal ones. What changes in the ciphertext?
 2. Run the CTR bit-flip example. Then change the edit so the recipient becomes `rob` instead of `bob`. Which byte and which XOR value do you need?

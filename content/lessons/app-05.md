@@ -15,6 +15,7 @@ objectives:
   - Combine application checks with network egress controls and least-privilege credentials.
 prerequisites: [APP-02, NET-02, CLD-02]
 concepts: [ssrf, confused-deputy, dns-rebinding, open-redirect, egress-filtering, instance-metadata-service]
+labs: [ssrf-url-filter]
 keywords:
   - SSRF
   - CWE-918
@@ -100,8 +101,6 @@ Many features fetch a URL on a user's behalf: link previews, "import an image fr
 That matters because servers can reach places the internet cannot: administrative interfaces bound to the local machine, internal APIs behind the firewall, databases with web interfaces, and cloud [[instance-metadata-service|instance metadata services]] that hand out credentials. MITRE catalogs the weakness as [[cwe|CWE]]-918; it ranked 22nd on the 2025 CWE Top 25. The OWASP Top 10:2025 lists CWE-918 among the notable weaknesses of A01:2025, Broken Access Control, which fits: SSRF lets a user act with access that belongs to the server.
 
 The defenses are well understood, but no single check is enough. URLs are hard to validate as strings, names can resolve to new addresses, and redirects can move a request after it was approved. This lesson builds a destination policy you can test without contacting anything, then enforces it where the connection actually happens.
-
-> [!ETHICS] Only test systems you own or have written permission to test.
 
 ## The core idea
 
@@ -270,9 +269,19 @@ For destinations that cannot be listed in advance, such as customer webhooks, OW
 - **"No response shown means no risk."** Blind SSRF still reaches internal services, triggers actions, and reveals which addresses answer.
 - **"IMDSv2 fixes SSRF."** It protects one high-value destination against many simple flaws. Everything else on the internal network still needs a destination policy.
 
-## Try it yourself
+## Try it in the lab
 
-Everything here runs offline on your own machine.
+> [!ETHICS] Only test systems you own or have written permission to test.
+
+In [the lab](lab:ssrf-url-filter), a server fetches any URL you type and shows what came back, including the address each host resolved to. No request leaves your browser: a fixed DNS map and fake services stand in for the network. Each defense button toggles: click it again to turn that defense off.
+
+1. **Use the deputy.** With no defenses, pick **Cloud metadata** and click **Fetch URL**: the server returns role credentials from 169.254.169.254, the link-local metadata address in the destination table. Submit the flag for "Steal cloud credentials," then do the same with **Loopback admin** for "Reach the loopback admin." You never reach those services yourself; the server, a [[confused-deputy|confused deputy]], does it for you, as in the link-preview diagram.
+2. **See why names are not enough.** Fetch **metadata.evil.example**. The name looks external, but the result shows it resolving to the same metadata address, so a check on the host name text would have let it through. Answer "Why the string is not enough."
+3. **Block internal IPs.** Click **Block internal IPs** and repeat all three fetches. The lab resolves each host and refuses loopback, link-local, and private addresses, which solves "Block the internal ranges." Leave the allowlist off for now: it refuses requests before the address check runs.
+4. **Allowlist.** Click **Destination allowlist**, which allows only two named hosts. Fetch an internal URL to solve "Allowlist destinations," then fetch **Public image**, which still succeeds.
+5. **Finish on paper.** The lab's allowlist checks only the host name, and its fake DNS never changes. Which row of the worked example's table would that allowlist alone let through, and which lab defense would still refuse it? What do the address ranges in `check_destination` and the Go `Control` function add?
+
+**Without the lab.** Everything here runs offline on your own machine.
 
 1. Copy `check_destination` and `FAKE_DNS` into a Python file. Before running, predict the decision for each test URL in the table, then run them and compare.
 2. Add three test URLs of your own: one that should be allowed, one that should be denied for its port, and one that is denied only because of its resolved address. Change `FAKE_DNS` to simulate a record that moves.

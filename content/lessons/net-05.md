@@ -14,6 +14,7 @@ objectives:
   - Explain why disabling certificate validation hands control to an adversary-in-the-middle, and rewrite code that does it.
 prerequisites: [NET-04, CRY-03, CRY-04]
 concepts: [tls, adversary-in-the-middle]
+labs: [tls-handshake-inspector]
 keywords:
   - TLS 1.3
   - SSL
@@ -305,11 +306,19 @@ Only one certificate arrived, and the client had no way to link it to the root. 
 - **"TLS hides which sites I visit."** The server's IP address, and normally the SNI field, are visible to the network.
 - **"An expired certificate only means weaker encryption."** The cryptography is unchanged; what has lapsed is the issuer's vouching, which only ever covered the validity period.
 
-## Try it yourself
+## Try it in the lab
 
 > [!ETHICS] Only test systems you own or have written permission to test.
 
-These commands only read the public certificate that any browser receives. Run them from your own computer. (On Windows, OpenSSL is available in Git Bash or WSL; your browser's certificate viewer works everywhere.)
+[The lab](lab:tls-handshake-inspector) creates a fictional certificate authority, Example Trust Root CA, and its certificates in your browser, with real ECDSA P-256 signatures. Unlike the OpenSSL lab in the worked example, it never opens a TLS connection. You play the client reaching `shop.example.test`.
+
+1. **Turn validation on.** On the **Handshake** tab, click **Validate all**. With verification off, every certificate is "accepted (unverified)": the `verify=False` bug from How it works. Click **Enable verification** and validate again.
+2. **Read the rejections.** Each card now shows three checks: **Signature from a trusted CA**, **Within its validity period**, and **Subject matches the host**. Only the valid certificate passes all three, which solves "Build the trust policy"; the expired, mismatched, and self-signed certificates each fail one. Match each failure to a row of the chain-validation table; for the validity row, compare the dates on each card with the client clock, 2026-06-01, at the top of the tab. Then answer "Trace the handshake", "Catch the expired certificate", and "Hostname mismatch".
+3. **Stop SSL stripping.** On the **HSTS** tab, click **Attempt SSL strip**: the first request goes out over plain http, and an on-path attacker reads it. Click **Enable HSTS** and try again; the browser refuses http, which solves "Defeat SSL stripping with HSTS".
+4. **Pin the key.** On the **Pinning** tab, click **Present rogue certificate**: signed by the trusted CA for the right host but with a different key, it is accepted. Click **Pin the certificate** and present it again; the pin mismatch rejects it and shows the flag for "Pin the certificate".
+5. **Mind the gaps.** The lab's CA signs each leaf directly, so no intermediate can go missing, and each certificate's single subject name stands in for its SAN list. The **TLS 1.3 handshake** panel above the cards highlights Certificate, the only message the lab checks. Which listed message could a server that merely copied the valid certificate not produce, and why? Which visit does the lab's HSTS switch assume has already happened? Which defense in Defenses would reveal the rogue certificate, and when?
+
+**Without the lab.** These commands only read the public certificate that any browser receives. Run them from your own computer. (On Windows, OpenSSL is available in Git Bash or WSL; your browser's certificate viewer works everywhere.)
 
 ```bash
 # Show the negotiated protocol, the chain, and the verification result

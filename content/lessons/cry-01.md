@@ -14,7 +14,7 @@ objectives:
   - Identify misuses such as Base64 "encryption" or fast unsalted password hashes and propose a fix.
 prerequisites: [FND-01]
 concepts: [encoding, hash-function, encryption, plaintext, ciphertext, mac]
-labs: [password-cracking]
+labs: [password-cracking, classical-cipher-breaker, steganography-studio]
 keywords:
   - Base64
   - base64url
@@ -262,11 +262,15 @@ Each defense has limits. Choosing the right primitive does not fix stolen keys, 
 
 ## Try it in the lab
 
-In [the lab](lab:password-cracking), you see the difference between the strength of a hash function and the strength of the secret it protects. You start with a leaked table of password hashes from a fictional site, produced with fast, unsalted SHA-256, and check candidate passwords from a short list against it. Watch what happens when two users share a password. The lab then adds per-user salts and slow key derivation (PBKDF2, run in your browser through the Web Crypto API), so you can compare how much work each guess costs. As you go, write down which change raised the attacker's cost and why none of the steps is "decryption."
-
 > [!ETHICS] Only test systems you own or have written permission to test.
 
-**Without the lab.** Open the developer console on any HTTPS page (the Web Crypto API requires a secure context), or use Python on your own machine. Hash `hunter2` twice and confirm the digests match, then change one character and compare. Base64-encode a string and decode it again.
+In [the lab](lab:password-cracking), you separate the strength of a hash function from the strength of the secret it protects. You check a short wordlist against a fictional site's leaked table of fast, unsalted SHA-256 hashes and spot two users who share a password. The lab then adds per-user salts and slow PBKDF2, run in your browser through the Web Crypto API, so you can compare the work per guess. Note which change raised the attacker's cost, and why no step is "decryption."
+
+In [the cipher lab](lab:classical-cipher-breaker), click **Break automatically** on the **Caesar** tab. Scoring all 26 shifts against English letter frequencies finds the key at once: with the algorithm public, 26 keys are too few, and the ciphertext keeps the plaintext's letter frequencies.
+
+In [the steganography lab](lab:steganography-studio), click **Load suspicious image**, then **Extract**: a flag hidden in the pixels' least significant bits comes out without any key. Like encoding, hiding protects nothing from someone who knows where to look.
+
+**Without the lab.** In the developer console of any HTTPS page (Web Crypto needs a secure context), or in Python, hash `hunter2` twice and confirm the digests match, then change one character and compare. Base64-encode a string and decode it again.
 
 ```javascript
 const bytes = new TextEncoder().encode("hunter2");
@@ -276,7 +280,7 @@ console.log([...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0
 console.log(btoa("hunter2"), atob("aHVudGVyMg=="));
 ```
 
-Then, on paper, choose a primitive for each requirement and write one sentence on who holds which key: (a) embed a logo image in a JSON response; (b) detect whether a configuration file a colleague sent you was altered, when you already share a key; (c) store users' recovery email addresses so the support team can read them; (d) let anyone confirm that a published security advisory came from your team.
+Then, on paper, choose a primitive for each requirement and say who holds which key: (a) embed a logo in a JSON response; (b) detect whether a colleague's configuration file was altered, when you share a key; (c) store recovery email addresses that support staff can read; (d) let anyone confirm that a security advisory came from your team.
 
 ## Key takeaways
 

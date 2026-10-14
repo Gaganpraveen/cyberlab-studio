@@ -27,7 +27,7 @@ concepts:
   - file-carving
   - file-signature
   - known-file-filtering
-labs: []
+labs: [steganography-studio]
 keywords:
   - MAC times
   - MACB
@@ -255,11 +255,13 @@ What Bob cannot say matters as much. The timestamps come from the clock of the c
 - **"The extension tells you what a file is."** The extension is part of the name and anyone can change it. The signature in the content is far more reliable.
 - **"Timestamps are facts."** They are values written by a clock that may be wrong, through rules that vary, and they can be edited. Treat them as evidence to corroborate.
 
-## Try it yourself
+## Try it in the lab
 
 > [!ETHICS] Only examine devices, accounts, and files you own or have written permission to examine.
 
-Work in a new, empty folder on your own computer. Predict each result before you run the command, then compare.
+[The lab](lab:steganography-studio) shows metadata of another kind: [[document-metadata|EXIF-style fields]] that an image carries inside its own content, not in the file system's records. On the **Metadata** tab, read the eight fields, then click **Inspect image metadata** to mark the four that leak: a GPS latitude and longitude that pin the capture location, an Artist field with an author name and an internal badge number, and a UserComment holding a staging backup key. Answer "Name the location leak" and submit the flag from "Read the leaked metadata." Then apply this lesson. If the image were copied to another drive, which of these values would travel with it, and which file-system times would change? Like a FAT32 time, the DateTimeOriginal value carries no time zone; what would you need before putting it on a timeline? (The lab's other tab, LSB steganography, goes with [Encoding, hashing, and encryption](lesson:CRY-01).)
+
+**Without the lab.** Work in a new, empty folder on your own computer. Predict each result before you run the command, then compare.
 
 ```bash
 mkdir meta-lab && cd meta-lab

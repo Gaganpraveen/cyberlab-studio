@@ -15,6 +15,7 @@ objectives:
   - Describe the write-side risks of uploads and archive extraction and the controls that limit them.
 prerequisites: [APP-02, SYS-04]
 concepts: [path-traversal, symbolic-link, indirect-reference-map, canonicalization, allowlist]
+labs: [command-path-injection]
 keywords:
   - directory traversal
   - dot-dot-slash
@@ -101,8 +102,6 @@ Applications constantly turn requests into file names: download a monthly report
 PortSwigger's Web Security Academy lists what a successful read can expose: application source code and data, credentials for back-end systems, and sensitive operating-system files. When the vulnerable code writes files instead of reading them, an attacker may be able to change the application's data or behavior and ultimately take full control of the server.
 
 The bug is easy to write because file paths look like plain strings. They are not. A path is a small instruction that the operating system interprets when the file is opened, and some of its instructions say "go up a level," "start from the root," or "continue somewhere else."
-
-> [!ETHICS] Only test systems you own or have written permission to test.
 
 ## The core idea
 
@@ -248,9 +247,18 @@ CWE-22 lists the same core mitigations: accept only file names that match a stri
 - **"Requiring a `.csv` extension makes the name safe."** The extension says nothing about where the path leads or what the file contains.
 - **"Only reads are dangerous."** Writes from uploads, archive extraction, and export features can overwrite code and configuration.
 
-## Try it yourself
+## Try it in the lab
 
-Use Python 3.9 or later on your own machine; everything runs inside a temporary directory that is deleted afterward.
+> [!ETHICS] Only test systems you own or have written permission to test.
+
+On the **Path** tab of [the lab](lab:command-path-injection), a file viewer serves names from `/var/www/files/`. It joins your input to that base folder, resolves `.` and `..`, and shows the resolved path on the result card. Click **Read file** on the starting name, `welcome.txt`, to see a normal read "inside the folder."
+
+1. **Escape.** With no defense on, follow the "Read a file outside the folder" challenge and climb out of the base folder with `..` segments. The badge reads "escaped the folder," and the resolved path sits outside `/var/www/files/`.
+2. **Confine.** Click **Canonicalize & confine to base** and read the same name again. The lab compares the resolved path, not the text you typed, with the base folder and refuses the request, which solves "Confine the path." This is the order from How it works: canonicalize first, then check.
+3. **Test the prefix trap.** With the defense still on, read `../files_old/x.txt`. The check compares whole path components, so a sibling folder whose name shares the prefix is refused too.
+4. **Finish on paper.** The lab resolves only `.` and `..`; it has no symbolic links and no name allowlist. Which rows of the worked example's table would its check alone miss, and which layer of `read_report` catches each one?
+
+**Without the lab.** Use Python 3.9 or later on your own machine; everything runs inside a temporary directory that is deleted afterward.
 
 1. Copy `make_dataset`, `read_report_vulnerable`, and `read_report` into one file. Before running, predict each row of the results table, then check your predictions.
 2. Write a third reader that keeps only the containment check, without the allowlist. Which rows still pass, and which new name inside the folder would it serve that the full version refuses?

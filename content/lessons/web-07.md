@@ -22,7 +22,7 @@ concepts:
   - hsts
   - mime-sniffing
   - subresource-integrity
-labs: [xss]
+labs: [xss, csrf-clickjacking]
 keywords:
   - CSP
   - Content-Security-Policy
@@ -329,15 +329,17 @@ The team enforces P2 at once, since it breaks nothing and stops F2, F3, F4 and F
 
 ## Try it in the lab
 
-The last objective of [the lab](lab:xss) is to describe how a Content Security Policy adds a second layer of defense, and the lab's preview carries a real policy to study. Do the WEB-05 lab steps first.
+The last objective of [the lab](lab:xss) is to describe how a Content Security Policy adds a second layer of defense, and its preview carries a real policy. Do the WEB-05 lab steps first.
 
-1. **Find the policy.** On the Comment tab, set rendering to Vulnerable (raw HTML) and post the Image onerror preset. In your browser's developer tools, inspect the sandboxed preview frame and find the `<meta http-equiv="Content-Security-Policy">` element in its head. Its value is `default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'`.
-2. **Explain each directive.** Write what each of the four allows and blocks here, why the image fails to load, and why its error handler still runs.
-3. **Explain the result.** The policy allows no external scripts, no connections and no images except `data:` URLs, yet the payload ran. Name the source expression responsible.
+1. **Find the policy.** On the Comment tab, set rendering to Vulnerable (raw HTML) and post the Image onerror preset. In the developer tools, find the `<meta http-equiv="Content-Security-Policy">` element in the sandboxed preview frame's head: `default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'`.
+2. **Explain each directive.** Say what each of the four allows and blocks, why the image fails to load, and why its error handler still runs.
+3. **Explain the result.** The policy blocks external scripts and connections, yet the payload ran. Name the source expression responsible.
 4. **Write the strict version.** Replace the `script-src` value with a nonce and predict whether each preset would run. Name two things this policy could not do from a `<meta>` element.
-5. **Name the second layer.** Answer the Defense in depth challenge, which asks for the header that restricts which scripts may run. Then, on the Defend tab, click Check the safe renderer and explain in one sentence why the preview's `'unsafe-inline'` does no harm under Safe (escaped) rendering, and what that says about which defense comes first.
+5. **Name the second layer.** Answer the Defense in depth challenge. Then, on the Defend tab, click Check the safe renderer and explain why the preview's `'unsafe-inline'` does no harm under Safe (escaped) rendering, and which defense comes first.
 
-**Without the lab.** In your browser's developer tools, read the `Content-Security-Policy` response header of a site you use, if it has one, and classify it as nonce-based, hash-based, allowlist or absent.
+On the Clickjacking tab of [the lab](lab:csrf-clickjacking), click **Load attacker page and click**: the invisibly framed bank takes the click. Click **Enable frame protection** and load again: the browser refuses the frame under `frame-ancestors 'none'`. A `<meta>` policy like the preview's cannot carry that directive.
+
+**Without the lab.** In the developer tools, read the `Content-Security-Policy` response header of a site you use, if any, and classify it as nonce-based, hash-based, allowlist or absent.
 
 ## Key takeaways
 

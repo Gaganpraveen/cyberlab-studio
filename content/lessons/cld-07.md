@@ -15,6 +15,7 @@ objectives:
   - Design a toy release pipeline and the deploy-time checks that verify its artifacts.
 prerequisites: [CLD-06, CRY-04, IAM-05]
 concepts: [ci-cd-pipeline, build-provenance, slsa, artifact-signing]
+labs: [supply-chain-provenance]
 keywords:
   - CI/CD
   - continuous integration
@@ -337,14 +338,21 @@ gh attestation verify oci://registry.example/quiz/quiz-engine:v1.4.0 -R OWNER/qu
 - **"Private repositories don't need pipeline hardening."** PPE needs only access to source control, which insiders and stolen developer accounts have.
 - **"Provenance proves the code is good."** It proves where and how an artifact was built. Code review and dependency checks still decide whether the code deserves to be built.
 
-## Try it yourself
+## Try it in the lab
 
 > [!ETHICS] Only test systems you own or have written permission to test.
 
-Design a verifiable toy release pipeline on paper, for a project you own or for the fictional `quiz-engine`:
+On the **Provenance** tab of [the lab](lab:supply-chain-provenance), pick one of three fictional releases, all named `acme-app-2.4.0.tar.gz`, under **Release to deploy** and click **Verify provenance**. The verifier runs four checks: the artifact hash matches the attested hash, the attestation signature is valid, the builder is on the trusted allowlist, and the source repository is `acme/app`.
+
+1. **Swapped bytes.** "Same name, bytes swapped on the mirror" passes the other three checks, but its hash, `sha256:deadbe`, does not match the attested `sha256:9f9f9f`: the publish-stage swap from the table above. The lab refuses to deploy it and reveals the flag for the "Reject the tampered build" challenge.
+2. **Forged build.** "Self-built, self-signed by an untrusted builder" matches its own attestation but fails the other three checks; its source is `evil/fork`. Without a trusted signer, provenance is trivial to forge, so Build L2 needs a hosted platform to sign it.
+3. **Compare** with the official release, which passes all four checks, and answer "Name the signed record."
+4. **Finish on paper.** The source check compares the repository, not the commit or ref. Which ref would you also require, and which risk from Step 5 of the worked example would still pass every check?
+
+**Without the lab.** Design a verifiable toy release pipeline on paper, for a project you own or for the fictional `quiz-engine`:
 
 1. Draw the stages from commit to deployment. Mark each trust boundary and list the credentials available at each stage.
-2. If you have CI workflows in a repository you own, list each workflow's triggers, token permissions, secrets, and third-party actions, and note how each action is referenced: tag, branch, or commit SHA.
+2. For CI workflows in a repository you own, list each workflow's triggers, token permissions, secrets, and third-party actions, and how each action is referenced: tag, branch, or commit SHA.
 3. Write your deploy-time policy in one sentence: which signer identity, repository, and ref you accept, and what happens when the check fails.
 4. Which SLSA Build level does your design reach, and what single change would raise it?
 

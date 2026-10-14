@@ -14,7 +14,7 @@ objectives:
   - Design a least-privilege permission model for a fictional service and test it against required and forbidden actions.
 prerequisites: [FND-05, IAM-01]
 concepts: [setuid, privilege-escalation]
-labs: []
+labs: [os-permissions]
 keywords:
   - file permissions
   - permission bits
@@ -221,8 +221,6 @@ Most operating-system privilege escalations fall into a few categories, which al
 - **Grants are broader than needed**, such as services running as root, unnecessary capabilities, or secrets readable by everyone.
 - **The kernel itself has a flaw**, which no file permission can stop.
 
-> [!ETHICS] Only test systems you own or have written permission to test.
-
 ## Worked example
 
 The `shop.example` store runs a nightly export. The **orders** [[service-account|service account]] runs the web application and, through the scheduler, the script `export.sh`, which writes order reports for the support team. Developer **alice** (group `dev`) maintains the script, and support agent **bob** (group `support`) reads the reports.
@@ -293,16 +291,24 @@ Every required action is allowed and every forbidden one is denied. Root still b
 - **"`chmod 777` is a harmless way to fix a permission error."** It lets every account, and every compromised process, change or replace the file. Find the one class that needs access and grant only that.
 - **"Permissions protect files from root."** Root bypasses ordinary permission checks. Protecting data from administrators takes other controls, such as encryption with keys they do not hold.
 
-## Try it yourself
+## Try it in the lab
 
-Do these steps as your normal user, not as root, because root bypasses the checks you are trying to observe.
+> [!ETHICS] Only test systems you own or have written permission to test.
 
-1. Run `id` and note your UID, primary group and supplementary groups.
-2. Run `ls -l /etc/passwd /etc/shadow /usr/bin/passwd`. Explain each mode: the account list that everyone may read, the password hashes that only root (and on some distributions a `shadow` group) may read, and the `s` that marks `passwd` as set-user-ID root.
-3. Make a scratch directory in your home folder, create a file with `echo hello > notes.txt`, and try `cat notes.txt` after each of `chmod 640 notes.txt`, `chmod 044 notes.txt` and `chmod 404 notes.txt`. Use the decision rule to explain why `044` locks you, the owner, out.
-4. Make a directory `box` containing a file `inside.txt`, then run `chmod 600 box`. `ls box` still lists the file's name, but `cat box/inside.txt` is denied, because the directory lacks search (`x`) permission. Run `chmod 700 box` to restore it.
-5. Run `grep Cap /proc/self/status`. As a normal user, the effective set (`CapEff`) is all zeros: your shell holds no capabilities. Optionally run `getcap` on a few programs in `/usr/bin`; some distributions give `ping` a single capability instead of set-user-ID root.
-6. On paper, add a requirement to the worked example: a `backup` account must read the reports but never `db.conf`. Propose the smallest change to the model, then retest R1 to R6 and the new requirement with the decision rule.
+In [the lab](lab:os-permissions), you are `lowpriv`, an ordinary user outside the owner and group of each fictional system file, so the other bits decide.
+
+1. **Spot the risky modes.** `/opt/backup/run.sh` is `777` and runs nightly as root; `/etc/shadow` is `644`. Answer "Read the octal."
+2. **Escalate.** Click **Overwrite & trigger root cron**, the worked example's R5 failure with root in place of orders, and **cat /etc/shadow**, the R2 failure. Each reveals a flag.
+3. **Repair.** Predict whether `604` would protect the hashes. In the **chmod** column, set `755` on the script and `640` on `/etc/shadow`. Both attacks now fail.
+4. **Name the special bit** in `/usr/bin/checkpw` (`-rwsr-xr-x`, `4755`).
+
+**Without the lab.** Work as your normal user; root bypasses the checks.
+
+1. Run `id` and `ls -l /etc/passwd /etc/shadow /usr/bin/passwd`, and explain each mode, including the `s` on `passwd`.
+2. In a scratch directory, create `notes.txt` and try `cat notes.txt` after `chmod 640`, `044` and `404` on it. Why does `044` lock you, the owner, out?
+3. Make a directory `box` holding `inside.txt` and run `chmod 600 box`. `ls box` lists the name, but `cat box/inside.txt` fails without search (`x`) permission. Restore it with `chmod 700 box`.
+4. Run `grep Cap /proc/self/status`: a normal user's `CapEff` is all zeros.
+5. On paper, add a `backup` account to the worked example that must read the reports but never `db.conf`. Propose the smallest change, then retest every requirement.
 
 ## Key takeaways
 

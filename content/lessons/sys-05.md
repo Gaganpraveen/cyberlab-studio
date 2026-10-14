@@ -15,7 +15,7 @@ objectives:
   - Observe sandboxing on your own machine by reading a process's seccomp status and running a program in seccomp strict mode.
 prerequisites: [SYS-01, SYS-04, FND-03]
 concepts: [process-isolation, sandbox, kernel, system-call]
-labs: []
+labs: [os-permissions]
 keywords:
   - isolation
   - sandboxing
@@ -179,8 +179,6 @@ Read the table as trade-offs, not a ranking to maximize: each step down shares l
 - **Abuse of what is allowed.** A sandboxed process can still misuse the resources it was given, consume CPU and memory, and send malicious data back to its broker.
 - **Shared hardware.** Side channels can leak information across process boundaries, and in some cases across virtual machines ([SYS-08](lesson:SYS-08)).
 
-> [!ETHICS] Only test systems you own or have written permission to test.
-
 ## Worked example
 
 The `shop.example` back office lets staff upload supplier invoices as PDF files and shows a thumbnail of each one. The thumbnail is drawn by a fast but memory-unsafe C library. Assume that a malicious PDF can eventually exploit it. The question is where to run the library, and what an attacker gains in each design.
@@ -217,14 +215,18 @@ The `shop.example` back office lets staff upload supplier invoices as PDF files 
 - **"The broker is trustworthy, so it is safe."** The broker is the most critical code precisely because sandboxed code can send it anything. It must check every request.
 - **"A process that cannot open files can do no harm."** It can still misuse the descriptors it was given, exhaust resources, attack the kernel through its allowed calls, and send malicious data back.
 
-## Try it yourself
+## Try it in the lab
 
-Use a Linux machine, Windows Subsystem for Linux, or a virtual machine you control.
+> [!ETHICS] Only test systems you own or have written permission to test.
 
-1. Run `grep -E 'NoNewPrivs|Seccomp' /proc/self/status`. A `Seccomp` value of `0` means no seccomp sandbox, `1` means strict mode and `2` means filter mode. Your shell most likely shows `0`.
-2. If a Chromium-based browser is running, list a few of its processes with `pgrep -a chrome` (or `pgrep -a chromium`) and read the same line for some of them, for example `grep Seccomp /proc/<pid>/status` with a process ID from the list. Renderer processes typically report filter mode. Which processes are not sandboxed, and why might that be?
-3. Run `ls -l /proc/self/ns`. Each entry names a namespace and an identifier. Processes in the same namespace show the same identifier; a process inside a container shows different ones.
-4. Build and run this small program, which sandboxes itself in seccomp strict mode and then tries to open a file:
+[The lab](lab:os-permissions) makes you `lowpriv`, a separate account like design B's `preview` worker. Run its **Overwrite & trigger root cron** and **cat /etc/shadow** attacks: both succeed because a separate account still shares every file "other" may write or read; least privilege with **chmod** closes them. Then answer "Name the special bit" for `/usr/bin/checkpw`, a set-user-ID root helper that `no_new_privs` neutralizes in sandboxes.
+
+**Without the lab.** Use Linux, Windows Subsystem for Linux, or a virtual machine you control.
+
+1. Run `grep -E 'NoNewPrivs|Seccomp' /proc/self/status`. `Seccomp` is `0` without a sandbox, `1` in strict mode and `2` in filter mode; your shell likely shows `0`.
+2. With a Chromium-based browser running, run `grep Seccomp /proc/<pid>/status` for a few process IDs from `pgrep -a chrome` (or `chromium`). Renderers typically report filter mode. Which are not sandboxed, and why?
+3. Run `ls -l /proc/self/ns`: processes sharing a namespace show the same identifier; a process in a container shows different ones.
+4. Build and run this program, which enters seccomp strict mode, then tries to open a file:
 
 ```c
 /* strict.c: put this process in seccomp strict mode, then try to open a file. */
@@ -254,9 +256,9 @@ int main(void) {
 }
 ```
 
-   Compile it with `gcc -Wall -Wextra strict.c -o strict` and run `./strict; echo "exit status: $?"`. The shell reports `Killed` and exit status 137 (128 plus signal 9, SIGKILL), and the third message never appears. Notice why the program prints through `write` and ends with a raw `exit` call: ordinary `printf` and `return` would need system calls that strict mode forbids.
+   Compile it with `gcc -Wall -Wextra strict.c -o strict` and run `./strict; echo "exit status: $?"`. The shell reports `Killed` and status 137 (128 plus signal 9, SIGKILL); the third message never appears. It uses `write` and a raw `exit` because `printf` and `return` would need forbidden system calls.
 
-5. On paper, draw the trust boundaries for one feature you use, such as a document previewer in your email client. For each boundary, name the mediator, what is still shared, and what an attacker would need to cross it.
+5. On paper, draw the trust boundaries of one feature you use, such as an email attachment previewer, naming each mediator, what is still shared, and what an attacker needs to cross it.
 
 ## Key takeaways
 

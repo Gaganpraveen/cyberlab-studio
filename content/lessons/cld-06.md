@@ -15,6 +15,7 @@ objectives:
   - Explain how dependency confusion and malicious releases differ from ordinary vulnerabilities, and choose defenses for each.
 prerequisites: [CLD-04, FND-04]
 concepts: [software-supply-chain, sbom, transitive-dependency, lockfile, vex, software-composition-analysis, dependency-confusion]
+labs: [supply-chain-provenance]
 keywords:
   - SBOM
   - software bill of materials
@@ -254,11 +255,18 @@ The tests pass, the pipeline regenerates the SBOM, and Bob confirms that the new
 - **"Our source-code SBOM covers the container."** Operating-system packages in the base image, such as liblzma, are not in the application's manifest, so an SBOM built only from that manifest misses them. Generate one from the image as well.
 - **"Pinning stops supply-chain attacks."** Pinning stops silent changes. It does not judge whether the version you pinned is trustworthy.
 
-## Try it yourself
+## Try it in the lab
 
 > [!ETHICS] Only test systems you own or have written permission to test.
 
-Generate an SBOM for a small project that you wrote yourself, using an open-source tool whose documentation you have read. For a Node.js project, the npm documentation describes an `npm sbom` command that "generates a Software Bill of Materials (SBOM) listing the dependencies for the current project" in SPDX or CycloneDX format. Run `npm help sbom` to see the options your installed version supports. Then answer:
+On the **Dependencies** tab of [the lab](lab:supply-chain-provenance), a fixed install of four packages is checked against a lockfile; nothing is downloaded or run. For each package, the table shows the registry it came from and its lockfile hash next to the hash of the tarball actually resolved.
+
+1. **Read the install.** With both **Install controls** unchecked, the summary reads "2 of 2 malicious installed." `@acme/auth@9.9.9` is an internal name resolved from the public registry at an impossibly high version, the dependency-confusion pattern from the diagram, and the lockfile never pinned it. `color-utils@2.1.0` resolved to `sha256:ff0000` instead of the pinned `sha256:c3c3c3`: its tarball was swapped.
+2. **One control at a time.** Checked alone, **Verify resolved hashes against the lockfile** blocks only `color-utils`, because `@acme/auth` has no pinned hash to compare, and **Scope internal names to the private registry** blocks only `@acme/auth`. Either way, one malicious package still installs.
+3. **Both together.** With both checked, the summary reads "0 of 2 malicious installed," which solves "Clean install" and shows the flag for the "Catch the swapped package" challenge. Then answer "Name the confusion attack" and "Name the inventory."
+4. **Find the gap.** `react` and `lodash` pass because their hashes match the lockfile. Which defenses from this lesson could catch a version that was already malicious when you pinned it, as with the backdoored xz releases?
+
+**Without the lab.** Generate an SBOM for a small project that you wrote yourself, using an open-source tool whose documentation you have read. For a Node.js project, the npm documentation describes an `npm sbom` command that "generates a Software Bill of Materials (SBOM) listing the dependencies for the current project" in SPDX or CycloneDX format. Run `npm help sbom` to see the options your installed version supports. Then answer:
 
 1. How many components are direct dependencies, and how many are transitive?
 2. Pick one transitive component. Trace its path back to the direct dependency that brings it in.

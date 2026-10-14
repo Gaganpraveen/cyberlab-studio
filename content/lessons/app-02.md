@@ -15,7 +15,7 @@ objectives:
   - Explain why validation complements, but cannot replace, parameterized queries and output encoding.
 prerequisites: [APP-01, FND-03, WEB-01]
 concepts: [input-validation, canonicalization, allowlist, denylist, unicode-normalization, percent-encoding, redos]
-labs: [sql-injection]
+labs: [sql-injection, prompt-injection, ssrf-url-filter]
 keywords:
   - CWE-20
   - CWE-180
@@ -104,8 +104,6 @@ Every program makes assumptions about its input: a quantity is a small positive 
 Validation has a quieter partner, [[canonicalization]]: reducing the many ways of writing a value to one standard form. The same name can be typed in capitals, in full-width letters, or with characters that differ only in their [[unicode|Unicode]] encoding. The same path can be written with `..` segments or with percent-escapes. If a validator checks one spelling and a later component acts on another, the check protects nothing. MITRE gives this ordering mistake its own entry, CWE-180, "Validate Before Canonicalize."
 
 This lesson treats validation as engineering: write down the expected shape and meaning of each input, reduce the input to one form, check that form, and pass only the checked form onward. It also marks the limits. Validation narrows what reaches the rest of the program, but it is not how you stop SQL injection or cross-site scripting.
-
-> [!ETHICS] Only test systems you own or have written permission to test.
 
 ## The core idea
 
@@ -264,7 +262,13 @@ OWASP ASVS 5.0.0 states the core requirements in chapter V2: requirement 2.2.1 a
 
 ## Try it in the lab
 
+> [!ETHICS] Only test systems you own or have written permission to test.
+
 In [the lab](lab:sql-injection), the same fictional campus store from [SQL injection](lesson:APP-01) lets you test where validation ends and parameterization begins. On the Harden tab, run the automated battery of login inputs in Parameterized mode. It accepts the one legitimate login and defeats every injection attempt without filtering a single character, which shows that the protection comes from keeping data out of the SQL structure, not from the shape of the input. Then go through the results table on paper: which of those inputs would a sensible username rule have rejected, and which would it have let through?
+
+In [the prompt-injection lab](lab:prompt-injection), a fictional support assistant, AcmeBot, keeps an admin password in its hidden instructions. With every defense off, send the **Direct override** message: the password leaks. Check only **Keyword blocklist**, and the direct override is rejected, but the **Obfuscated override**, a similar request whose banned words are disguised with a homoglyph and zero-width spaces, still leaks, because the blocklist reads the raw text. That is how a [[denylist]] fails open: any spelling it did not foresee gets through. Now check **Input validation + canonicalization** and send the obfuscated message again. The evidence log shows its canonical form, the plain sentence in lowercase, and the check rejects it: Pipeline B's order, canonicalize and then validate. That check still matches override wording, though, so canonicalization fixed the spelling problem, not the denylist problem. Why do **Instruction / data separation** and **Least privilege** not need to recognize the attack at all?
+
+In [the SSRF lab](lab:ssrf-url-filter), a server fetches any URL you give it. Pick **metadata.evil.example** and click **Fetch URL**: the name looks external, but the result shows it resolving to an internal address, and the server returns cloud credentials. Click **Block internal IPs** and fetch again. The lab now validates the resolved address, not the name, and refuses the request. As with CWE-180, the check examines the value the program will actually use. Answer "Why the string is not enough," then click **Destination allowlist** and fetch again: only two named hosts pass, an [[allowlist]] in place of a list of bad addresses.
 
 **Without the lab.** Copy `canonical`, both pipelines, and the approved edge cases into a Python file on your own machine. Before running anything, predict each result in a blank copy of the table above. Then run both pipelines and compare. Finally, extend the list with `"ADMİN"` (capital I with a dot above) and `"straße"` (with `ß`), predict again, and use `unicodedata.normalize` from the [Python documentation](https://docs.python.org/3/library/unicodedata.html) to explain any surprise.
 

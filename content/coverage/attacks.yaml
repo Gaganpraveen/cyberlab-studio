@@ -63,7 +63,7 @@
     - Origin and Fetch Metadata checks
     - Reauthentication for sensitive actions
   topics: [WEB-06, WEB-04, IAM-04, IAM-05]
-  labs: []
+  labs: [csrf-clickjacking]
   attack: []
   cwe: [CWE-352, CWE-1275]
   capec: [CAPEC-62]
@@ -84,7 +84,7 @@
     - Hardened metadata services such as IMDSv2
     - No redirects or rebinding to internal addresses
   topics: [APP-05, CLD-02]
-  labs: []
+  labs: [ssrf-url-filter]
   attack: [T1190, T1552.005]
   cwe: [CWE-918]
   capec: [CAPEC-664]
@@ -105,7 +105,7 @@
     - Least-privilege file permissions
     - Checked archive extraction
   topics: [APP-04, APP-02]
-  labs: []
+  labs: [command-path-injection]
   attack: [T1190]
   cwe: [CWE-22, CWE-23, CWE-36]
   capec: [CAPEC-126]
@@ -126,7 +126,7 @@
     - Link and attachment filtering
     - Easy reporting of suspicious messages
   topics: [WEB-03, HUM-01, HUM-02, FOR-06]
-  labs: [homograph]
+  labs: [homograph, email-phishing-investigator]
   attack: [T1566, T1598]
   cwe: [CWE-451]
   capec: [CAPEC-98]
@@ -296,7 +296,7 @@
     - External-sender warnings
     - Checking Authentication-Results during investigations
   topics: [WEB-03, FOR-06, HUM-01]
-  labs: []
+  labs: [email-phishing-investigator]
   attack: [T1684.002]
   cwe: []
   capec: []
@@ -402,7 +402,7 @@
     - A second factor
     - Alerting on repeated failures
   topics: [IAM-02, HUM-04]
-  labs: []
+  labs: [login-security]
   attack: [T1110.001]
   cwe: [CWE-307, CWE-521]
   capec: [CAPEC-49, CAPEC-16]
@@ -602,7 +602,7 @@
     - Allowlist validation of values
     - Least-privilege service accounts
   topics: [APP-03]
-  labs: []
+  labs: [command-path-injection]
   attack: [T1190]
   cwe: [CWE-78, CWE-77]
   capec: [CAPEC-88]
@@ -750,7 +750,7 @@
     - Queries scoped to the caller
     - Tests derived from an access-control matrix
   topics: [APP-06, IAM-01, IAM-06]
-  labs: []
+  labs: [access-control-matrix]
   attack: []
   cwe: [CWE-639]
   capec: []
@@ -771,7 +771,7 @@
     - Separate administrative interfaces
     - Tests derived from a role and function matrix
   topics: [APP-06, IAM-01, IAM-06]
-  labs: []
+  labs: [access-control-matrix]
   attack: []
   cwe: [CWE-285, CWE-862, CWE-425]
   capec: [CAPEC-1, CAPEC-87]
@@ -876,7 +876,7 @@
     - SameSite cookies
     - Confirmation steps for sensitive actions
   topics: [WEB-08, WEB-04, IOT-03]
-  labs: []
+  labs: [csrf-clickjacking]
   attack: []
   cwe: [CWE-1021]
   capec: [CAPEC-103, CAPEC-222, CAPEC-506]
@@ -1108,7 +1108,7 @@
       Mutual authentication for key exchanges,
     ]
   topics: [NET-05, NET-03, CRY-03]
-  labs: []
+  labs: [spoofing-and-mitm, tls-handshake-inspector]
   attack: [T1557, T1638, T0830]
   cwe: [CWE-300, CWE-295]
   capec: [CAPEC-94]
@@ -1127,7 +1127,7 @@
       End-to-end encryption,
     ]
   topics: [NET-03]
-  labs: []
+  labs: [spoofing-and-mitm]
   attack: [T1557.002]
   cwe: [CWE-923]
   capec: [CAPEC-94]
@@ -1165,7 +1165,7 @@
       Closed resolvers that serve only their own clients,
     ]
   topics: [NET-02]
-  labs: []
+  labs: [spoofing-and-mitm]
   attack: []
   cwe: [CWE-345, CWE-349]
   capec: [CAPEC-142]
@@ -1297,7 +1297,7 @@
       Secure cookie attributes,
     ]
   topics: [NET-05]
-  labs: []
+  labs: [tls-handshake-inspector]
   attack: [T1689, T1557]
   cwe: [CWE-319]
   capec: []
@@ -1449,7 +1449,7 @@
       Self-service unlock with a second factor,
     ]
   topics: [IAM-02, HUM-04]
-  labs: []
+  labs: [login-security]
   attack: [T1531]
   cwe: [CWE-645]
   capec: [CAPEC-2]
@@ -1792,7 +1792,7 @@
       Protect files that privileged code reads or runs,
     ]
   topics: [SYS-04, SYS-05]
-  labs: []
+  labs: [os-permissions]
   attack: [T1068, T1548, T1548.001, T1404, T0890]
   cwe: [CWE-269, CWE-250, CWE-732]
   capec: [CAPEC-233, CAPEC-69]
@@ -1909,7 +1909,7 @@
       Claim internal names on public registries,
     ]
   topics: [CLD-06, CLD-07]
-  labs: []
+  labs: [supply-chain-provenance]
   attack: [T1195.001]
   cwe: []
   capec: []
@@ -1947,7 +1947,7 @@
       An SBOM to find affected systems quickly,
     ]
   topics: [CLD-06, CLD-07]
-  labs: []
+  labs: [supply-chain-provenance]
   attack: [T1195.001]
   cwe: [CWE-506, CWE-829]
   capec: [CAPEC-538]
@@ -2104,7 +2104,7 @@
     - Continuous configuration monitoring
     - Object-level access logging
   topics: [CLD-03, CLD-01, CLD-02, CLD-08]
-  labs: []
+  labs: [cloud-iam-policy]
   attack: [T1530, T1619]
   cwe: [CWE-552, CWE-732]
   capec: [CAPEC-180]
@@ -2173,7 +2173,7 @@
     - Alerts on policy, role and credential changes
     - Regular access reviews
   topics: [CLD-02, IAM-06]
-  labs: []
+  labs: [cloud-iam-policy]
   attack: [T1098.003, T1098.001, T1548.005]
   cwe: [CWE-269, CWE-266]
   capec: [CAPEC-233, CAPEC-122]
@@ -2197,7 +2197,7 @@
     - Destination allowlists for URL fetching
     - Alerts on role credentials used off the instance
   topics: [CLD-02, APP-05, IAM-07]
-  labs: []
+  labs: [ssrf-url-filter]
   attack: [T1552.005, T1078.004]
   cwe: [CWE-918, CWE-522]
   capec: [CAPEC-664]
@@ -2713,7 +2713,7 @@
     - Guardrail classifiers as one layer, not a boundary
     - Adversarial testing after every model or prompt change
   topics: [AI-01, AI-04]
-  labs: []
+  labs: [prompt-injection]
   attack: [T1699]
   cwe: [CWE-1427]
   capec: []
@@ -2759,7 +2759,7 @@
     - Minimized indexes, caches and logs
     - Access tests with synthetic identities
   topics: [AI-02, AI-01, AI-07]
-  labs: []
+  labs: [prompt-injection]
   attack: []
   cwe: [CWE-200, CWE-862, CWE-441]
   capec: []

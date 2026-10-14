@@ -15,6 +15,7 @@ objectives:
   - Evaluate a simulation program against ethical requirements for notice, non-punitive treatment, and data handling.
 prerequisites: [HUM-01, FND-08]
 concepts: [security-awareness, phishing-simulation, embedded-training, phish-scale]
+labs: [email-phishing-investigator]
 keywords:
   - phishing simulation
   - phishing test
@@ -223,16 +224,22 @@ The limit of every simulation program is that it measures responses to the email
 - **"Simulations must be secret to be valid."** The program can be announced while individual emails stay unannounced, as NIST recommends.
 - **"Someone who clicked has failed."** A person who clicks and then reports at once has given the security team exactly what it needs. Celebrate the report.
 
-## Try it yourself
+## Try it in the lab
 
-> [!ETHICS] Only test systems you own or have written permission to test.
+> [!ETHICS] Only test systems you own or have written permission to test. Never send simulated phishing to classmates, friends, or coworkers: real programs need organizational authorization, legal review, and announced policies.
 
-This is a paper exercise. Never send simulated phishing to classmates, friends, or coworkers: real programs need organizational authorization, legal review, and announced policies.
+[The lab](lab:email-phishing-investigator) is practice in judging messages on evidence, not a phishing simulation: nothing is sent to anyone. You triage three fictional messages in an abuse mailbox, reading each one's SPF, DKIM, and DMARC results, sender headers, and links, then press **Report as phishing** or **Mark as safe**. The scoreboard counts correct verdicts, false positives, and missed phish.
 
-1. **Rate two emails.** Take the fictional payment-change email and the fictional mailbox-deactivation email from the lesson on [social-engineering mechanisms](lesson:HUM-01). For each, count the cues you can see, using the cue list in NIST TN 2276, and place the total in Few, Some, or Many. Then judge premise alignment as Weak, Medium, or Strong for two audiences: an accounts-payable clerk and a first-year student. Look up the difficulty in the table above.
-2. **Read the numbers fairly.** Using the shop.example results above, compute what the overall click rate would be if the warehouse group had been excluded. Explain in two sentences why the overall rate is a poor headline number for this campaign.
-3. **Design a dashboard.** Choose four metrics for a quarterly report to leadership. For each, write one sentence on what it shows and one on how it could mislead.
-4. **Write an ethics checklist.** List at least six requirements a simulation program must meet before launch, covering notice, legal review, lure choice, data access, support for people who click, and how reports are acknowledged.
+1. **Count cues first.** Before pressing **Reveal red flags**, count each message's cues, as the worked example does. Which could a recipient see without reading headers?
+2. **Judge evidence, not tone.** Two messages pass all three checks; only one is safe. What gives the [[display-name-spoofing|display-name spoof]] away, and why is the overdue invoice's urgency no proof of phishing?
+3. **Read it as a measurement.** If an employee reported the invoice, which metric in the metrics table falls, and how should the security team respond?
+
+**Without the lab.** On paper:
+
+1. **Rate two emails.** For the fictional payment-change and mailbox-deactivation emails in [social-engineering mechanisms](lesson:HUM-01), count the visible cues using the cue list in NIST TN 2276 and place each total in Few, Some, or Many. Judge premise alignment (Weak, Medium, or Strong) for an accounts-payable clerk and a first-year student, then look up each difficulty.
+2. **Read the numbers fairly.** Compute the worked example's click rate without the warehouse group, and explain why the overall rate is a poor headline number here.
+3. **Design a dashboard.** Choose four metrics for a quarterly report to leadership, with one sentence on what each shows and one on how it could mislead.
+4. **Write an ethics checklist.** List at least six requirements a simulation program must meet before launch, covering notice, legal review, lure choice, data access, support for people who click, and acknowledging reports.
 
 ## Key takeaways
 

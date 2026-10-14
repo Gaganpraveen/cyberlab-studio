@@ -14,6 +14,7 @@ objectives:
   - Explain how cloud credentials are stolen or abused, and choose controls that limit the damage.
 prerequisites: [IAM-01, IAM-06, CLD-01]
 concepts: [iam-policy, principal, implicit-deny, explicit-deny, temporary-credentials, instance-metadata-service]
+labs: [cloud-iam-policy]
 keywords:
   - IAM
   - identity and access management
@@ -288,11 +289,18 @@ Request 3 shows that least privilege protects integrity as well as confidentiali
 - **"Read-only access is harmless."** Read access to every bucket is a data breach waiting to happen, and read access to secrets often leads to write access elsewhere.
 - **"MFA on the console protects our access keys."** Interactive MFA does not stop a long-lived key from being used. ATT&CK notes that adding long-lived credentials can let an attacker bypass MFA.
 
-## Try it yourself
+## Try it in the lab
 
 > [!ETHICS] Only test systems you own or have written permission to test.
 
-This is a paper exercise. A fictional job, `photo-resizer`, runs as a role in account `111122223333`. It reads originals from `photos-111122223333/originals/` and writes resized images to `photos-111122223333/thumbnails/`. Its current policy is:
+[The lab](lab:cloud-iam-policy) evaluates requests against a fictional AWS-style account policy with this lesson's three rules. Its **Effective policy** panel shows `DeveloperAccess`, a statement that grants `role/developers` the actions `iam:*` and `s3:*` on `*`.
+
+1. **Escalate.** With every **Policy hardening** box unchecked, click **Escalate to admin (iam:AttachRolePolicy)**. `DeveloperAccess` allows it on the role's own ARN, so the lab reports that you are now admin and reveals the flag for the "Become admin through a wildcard" challenge.
+2. **Compare two denials.** Check only **Add an explicit Deny on IAM self-escalation** and run the attack again: the evidence log reports an explicit deny by `DenySelfEscalation`, although `iam:*` is still allowed. Check only **Scope the developer role to only the actions it needs** instead and run it again: now the log reports an implicit deny. Either solves "Close the escalation path"; like Bob, keep both.
+3. **Predict, then test.** Before choosing a principal, action and resource in **Test any request**, write down the decision you expect, as Bob does in Step 5. Then answer "Allow vs. Deny" and "Name the principle."
+4. **Finish on paper.** On its own, the Deny covers only five IAM calls, so `iam:*` still allows other ways to gain access, such as creating access keys for an admin user. The scoped statement also keeps `Resource: *`. Rewrite it with ARNs, as Bob does in Step 3.
+
+**Without the lab.** This is a paper exercise. A fictional job, `photo-resizer`, runs as a role in account `111122223333`. It reads originals from `photos-111122223333/originals/` and writes resized images to `photos-111122223333/thumbnails/`. Its current policy is:
 
 ```json
 {
@@ -312,7 +320,7 @@ This is a paper exercise. A fictional job, `photo-resizer`, runs as a role in ac
 3. Predict the decision (allow, implicit deny, or explicit deny) for each request under your new policy: `GetObject` on `originals/cat.jpg`; `PutObject` on `thumbnails/cat.jpg`; `PutObject` on `originals/cat.jpg`; `DeleteObject` on `thumbnails/cat.jpg`; `ListAllMyBuckets`; and `AttachRolePolicy` on the job's own role.
 4. Write one guardrail statement with `"Effect": "Deny"` that would still protect the bucket's access settings if someone restored the old policy.
 
-If you have your own sandbox account, you can check your predictions with the provider's policy-testing tools. Never test against an account that is not yours.
+If you have your own sandbox account, check your predictions with the provider's policy-testing tools.
 
 ## Key takeaways
 

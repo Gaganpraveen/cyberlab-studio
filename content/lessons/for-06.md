@@ -17,7 +17,7 @@ objectives:
   - Extract a document's internal metadata safely and explain how it differs from file-system timestamps.
 prerequisites: [WEB-03, FOR-05]
 concepts: [email-header, authentication-results, document-metadata]
-labs: []
+labs: [email-phishing-investigator]
 keywords:
   - email headers
   - full headers
@@ -259,18 +259,26 @@ The generic author name and the creation date days before the "overdue invoice" 
 - **"A DKIM pass proves who wrote the message."** It proves a domain signed it, which says nothing about the person at the keyboard.
 - **"Document metadata is reliable because users never see it."** Anyone can view and edit it with common tools.
 
-## Try it yourself
+## Try it in the lab
 
 > [!ETHICS] Only examine devices, accounts, and files you own or have written permission to examine.
 
-**Part 1: your own email.** Open a message in your own mailbox, ideally a newsletter or automated notice rather than personal correspondence, and use your mail client's option to show the original message or its full headers.
+In [the lab](lab:email-phishing-investigator), three fictional messages wait in an abuse mailbox. Select each one and read its SPF, DKIM, and DMARC results, From name and address, Return-Path, Reply-To, Received line, and links. Then click **Report as phishing** or **Mark as safe**.
+
+1. **A look-alike domain.** The payroll notice comes from a [[lookalike-domain|look-alike]] of the company's domain. SPF and DMARC fail, DKIM shows none, the Return-Path names an unrelated host, and the link's visible text shows the real domain while its target is the look-alike, which the lab marks as a mismatch.
+2. **A display name.** The help-desk notice about a full mailbox puts the company's IT address only in its [[display-name-spoofing|display name]]; the real address is a free webmail account. All three checks pass for the webmail domain: DMARC compares the From address's domain, not the display name, with the authenticated domains. Contrast step 3 of the worked example, where DMARC failed. The link text, "Verify account," is not an address, so nothing is marked as a mismatch: read where it points yourself.
+3. **Urgent but genuine.** The overdue-invoice notice has nearly the same subject as the worked example's lure, yet its domain, authentication, and link all check out. Reporting it is a [[false-positive|false positive]], which the scoreboard counts.
+
+Classify all three correctly to get the flag for "Triage the inbox," and save **Reveal red flags** for checking your reasoning. Then note what the lab leaves out: each message has one Received line and no Authentication-Results field, so you cannot check who recorded the results or trace the full path. Name the fields from the worked example you would want before trusting each verdict.
+
+**Without the lab.** Open a message in your own mailbox, ideally a newsletter or automated notice rather than personal correspondence, and use your mail client's option to show the original message or its full headers.
 
 1. Find every Received field. Which ones were written by your provider, and where do the trusted fields end?
 2. Find your provider's Authentication-Results field. What are its authserv-id and the SPF, DKIM, and DMARC results?
 3. Compare the domain in From with the DKIM `header.d` domain and the SPF domain. Are they aligned?
 4. Convert the Date field and the top Received time to UTC. How far apart are they?
 
-**Part 2: your own document.** In Word or LibreOffice Writer, create a new document, type a sentence, and save it as `test.docx`. Then run:
+Next, in Word or LibreOffice Writer, create a new document, type a sentence, and save it as `test.docx`. Then run:
 
 ```bash
 unzip -p test.docx docProps/core.xml

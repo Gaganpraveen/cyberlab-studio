@@ -15,7 +15,7 @@ objectives:
   - Describe the trade-offs between synced and device-bound passkeys, including account recovery.
 prerequisites: [IAM-02, CRY-04, WEB-04]
 concepts: [mfa, authenticator, passkey, webauthn]
-labs: []
+labs: [login-security]
 keywords:
   - multi-factor authentication
   - two-factor authentication
@@ -261,10 +261,17 @@ The fictional `bank.example` must choose MFA for two groups: customers and its o
 - **"Number matching makes push phishing-proof."** It stops blind approvals, not relays.
 - **"MFA protects the whole session."** It protects sign-in. A stolen session cookie bypasses it.
 
-## Try it yourself
+## Try it in the lab
 
-1. **On paper.** Choose a fictional student portal at `portal.campus.test`. Write three threats and two usability constraints for its users, fill in a method-by-threat table like the one in the worked example, and recommend a primary and a fallback method. State one residual risk your choice does not address.
-2. **With your own accounts only.** Open the security settings of one of your own accounts, starting with your email. List the MFA methods offered and the ones you use. Confirm you have at least two working authenticators and current recovery codes, and remove phone numbers or devices you no longer control. If the service offers passkeys, create one and note which domain the browser says it is for and how you unlock it.
+In [the lab](lab:login-security), an attacker runs a wordlist of 12 common passwords against the sign-in form of a fictional account, `avery`.
+
+1. On the **Attack** tab, click **Launch dictionary attack** with no defenses. The 10th guess is right, and the lab reports the account compromised.
+2. Turn on **MFA** and launch again, with rate limiting and account lockout left off: either one stops the run before the password is reached, so if you turned one on, click it again to turn it off. This time the password is guessed, but the second factor refuses the session, which solves the Add a second factor challenge. The lab's run is password guessing rather than credential stuffing, but the result matches column T1 of the worked example's table: a correct password is no longer enough.
+3. The lab never says which kind of second factor it models, so it can show only that column. Suppose it were an SMS code: which threats from the worked example would still get in, and which method would stop them?
+
+**Without the lab.** On paper, choose a fictional student portal at `portal.campus.test`. Write three threats and two usability constraints for its users, fill in a method-by-threat table like the one in the worked example, and recommend a primary and a fallback method. State one residual risk your choice does not address.
+
+Then, with your own accounts only, open the security settings of one of them, starting with your email. List the MFA methods offered and the ones you use. Confirm you have at least two working authenticators and current recovery codes, and remove phone numbers or devices you no longer control. If the service offers passkeys, create one and note which domain the browser says it is for and how you unlock it.
 
 ## Key takeaways
 

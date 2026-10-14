@@ -15,7 +15,7 @@ objectives:
   - Propose a tuning change and judge its effect on both precision and recall.
 prerequisites: [OPS-01, FND-08]
 concepts: [detection-rule, sigma-rule, false-positive, false-negative, alert-fatigue, precision, recall]
-labs: []
+labs: [detection-rule-builder]
 keywords:
   - detection engineering
   - detection as code
@@ -270,9 +270,19 @@ The `LOWER` calls matter: Sigma matches case-insensitively, but equality in many
 - **"Passing its tests means the rule works."** Tests cover only the cases someone thought of. Keep adding positives from incidents and exercises, and keep measuring in production.
 - **"Precision and recall can both be maximized by tuning."** Most tuning trades one for the other. Narrowing a rule raises precision and risks recall; broadening it does the reverse.
 
-## Try it yourself
+## Try it in the lab
 
-The fictional admin console at `admin.shop.example` writes JSON audit events like this one:
+[The lab](lab:detection-rule-builder) holds nine labeled events: three large night-time downloads from abroad by a compromised service account, and six benign events. Your rule is the AND of the clauses you tick from a list of five, like keys in one Sigma selection. As you change it, the lab updates precision, recall, the F1 score (their harmonic mean), the alert count, the four cells of the confusion matrix, and each event's verdict.
+
+1. **Predict, then check.** Using the event table, predict the confusion matrix, precision, and recall for a rule of only **action is download**. Then tick it: the lab shows 3 true positives, 4 false positives, 43 percent precision, and 100 percent recall, which solves the "Catch the exfiltration" challenge.
+2. **Narrow what the rule sees.** Add **bytes transferred > 500 MB** (precision 60 percent), then **outside business hours (before 6am or after 8pm)**. The daytime backup and the daytime download from abroad stop alerting and all three scores reach 100 percent, which solves "Cut the false positives" and reveals a flag to submit for "Ship the detection."
+3. **Watch the trade-off.** Add **failed logins ≥ 5**. Precision stays at 100 percent, but recall falls to 33 percent, because only one attack event had five or more failed logins. Which misconception above does this show?
+4. **Distrust the perfect score.** Find a second clause set that also scores 100 percent. Then apply Step 4 of the worked example: one author wrote the clauses and all nine events, and a third of the events are attacks, far above any real base rate. Which rule would you trust on new data, and what would you test before it pages anyone?
+5. **Name the terms.** Answer the "Name the noise," "Define precision," and "Define recall" challenges.
+
+> [!ETHICS] Only test systems you own or have written permission to test.
+
+**Without the lab.** The fictional admin console at `admin.shop.example` writes JSON audit events like this one:
 
 ```json
 { "ts": "2026-10-14T15:02:11.204Z", "event": "admin.role.change", "actor": "mallory", "target_user": "mallory", "target_role": "admin", "src_ip": "203.0.113.50" }
@@ -297,8 +307,6 @@ The staff network is `198.51.100.0/24`. Here are eight labeled events (L = shoul
 4. Event 7 comes from the staff network. Which other telemetry from the lesson on logging design ([OPS-01](lesson:OPS-01)) could help catch it?
 
 Check yourself: the straightforward rule should give precision 0.50 and recall about 0.67.
-
-> [!ETHICS] Only test systems you own or have written permission to test.
 
 ## Key takeaways
 
