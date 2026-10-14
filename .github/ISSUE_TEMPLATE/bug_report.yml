@@ -1,0 +1,54 @@
+name: Bug report
+description: Something in the app or a lab doesn't work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please do not use this form for security issues —
+        see [SECURITY.md](../blob/main/SECURITY.md) instead.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you see, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to ...
+        2. Open the ... lab
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      description: Which page or lab? Paste the URL hash (e.g. #/labs/sql-injection).
+  - type: dropdown
+    id: environment
+    attributes:
+      label: How are you running it?
+      options:
+        - Website (browser)
+        - Desktop app (Windows)
+        - Desktop app (macOS)
+        - Desktop app (Linux)
+        - Local dev server
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS
+      placeholder: e.g. Chrome 141 on Windows 11
+  - type: textarea
+    id: console
+    attributes:
+      label: Console errors
+      description: If you can, open the browser console and paste any errors.
+      render: text

@@ -1,0 +1,32 @@
+name: Feature or content request
+description: Suggest a lab, a lesson, or an improvement
+labels: [enhancement]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of request is this?
+      options:
+        - New lab
+        - New or improved lesson
+        - App feature or UX
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: What would you like, and who does it help (student, instructor)?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it matters
+      description: What problem does it solve or what does it make possible?
+  - type: input
+    id: topics
+    attributes:
+      label: Related topics
+      description: Any catalog topic IDs this touches (e.g. APP-01, WEB-05).

@@ -1,0 +1,459 @@
+# Glossary: security foundations, web deception, and application security.
+# Ids are canonical and must stay stable; another file may define a few of the
+# same concepts, and the lead de-duplicates overlaps.
+
+- id: cia-triad
+  term: CIA triad
+  aliases: [CIA, security triad]
+  short: "The three classic security goals: confidentiality, integrity, and availability."
+  long: >
+    A compact model for stating what a system must protect. Many real
+    requirements also need [[authenticity]], [[non-repudiation]], and
+    [[accountability]], so treat the triad as a starting point rather than a
+    complete list.
+  related: [confidentiality, integrity, availability, authenticity]
+  topicId: FND-01
+
+- id: confidentiality
+  term: Confidentiality
+  aliases: [secrecy]
+  short: "Keeping information from being read or disclosed to anyone not authorized to see it."
+  related: [cia-triad, encryption, authorization]
+  topicId: FND-01
+
+- id: integrity
+  term: Integrity
+  aliases: [data integrity]
+  short: "Guarding information and systems against improper or undetected modification or destruction."
+  related: [cia-triad, hash-function, authenticity]
+  topicId: FND-01
+
+- id: availability
+  term: Availability
+  short: "Ensuring timely and reliable access to information and systems when they are needed."
+  related: [cia-triad]
+  topicId: FND-01
+
+- id: authenticity
+  term: Authenticity
+  short: "The property of being genuine and verifiable, so a claimed origin of data or a message can be trusted."
+  related: [authentication, integrity, non-repudiation]
+  topicId: FND-01
+
+- id: non-repudiation
+  term: Non-repudiation
+  short: "Assurance that an actor cannot credibly deny a genuine action they took, such as sending a message."
+  related: [authenticity, accountability]
+  topicId: FND-01
+
+- id: authentication
+  term: Authentication
+  aliases: [authn]
+  short: "Verifying that an entity really is who or what it claims to be."
+  related: [authorization, authenticity]
+  topicId: IAM-01
+
+- id: authorization
+  term: Authorization
+  aliases: [authz, access control]
+  short: "Deciding what an already-identified entity is allowed to do."
+  related: [authentication, least-privilege]
+  topicId: IAM-01
+
+- id: threat-model
+  term: Threat model
+  aliases: [threat modeling]
+  short: "A structured description of who might attack a system, what they want, and what capabilities they have."
+  related: [threat-actor, attack-surface, risk]
+  topicId: FND-03
+
+- id: attack-surface
+  term: Attack surface
+  short: "The sum of all points where an attacker can try to enter, affect, or extract data from a system."
+  related: [threat-model, vulnerability]
+  topicId: FND-04
+
+- id: vulnerability
+  term: Vulnerability
+  aliases: [weakness, flaw]
+  short: "A weakness in a system that a threat could use to cause harm."
+  related: [exploit, risk, attack-surface]
+  topicId: FND-02
+
+- id: exploit
+  term: Exploit
+  short: "A technique or piece of code that takes advantage of a specific vulnerability to produce an effect."
+  related: [vulnerability, threat-actor]
+  topicId: FND-02
+
+- id: threat-actor
+  term: Threat actor
+  aliases: [adversary, attacker]
+  short: "A person or group that may act against a system, ranging from a curious insider to an organized crew."
+  related: [threat-model, exploit]
+  topicId: FND-02
+
+- id: risk
+  term: Risk
+  short: "The combination of how likely a harmful event is and how bad its impact would be, under uncertainty."
+  related: [vulnerability, threat-model]
+  topicId: FND-02
+
+- id: least-privilege
+  term: Least privilege
+  aliases: [principle of least privilege]
+  short: "Giving each user, process, or account only the access it needs, so a failure does limited damage."
+  related: [authorization, defense-in-depth]
+  topicId: FND-05
+
+- id: defense-in-depth
+  term: Defense in depth
+  aliases: [layered defense]
+  short: "Using several independent controls so that one failure does not defeat the whole system."
+  related: [least-privilege, content-security-policy]
+  topicId: FND-06
+
+- id: input-validation
+  term: Input validation
+  short: "Checking that incoming data matches an expected shape, usually by allowing known-good values rather than blocking bad ones."
+  related: [allowlist, output-encoding, sanitization]
+  topicId: APP-02
+
+- id: output-encoding
+  term: Output encoding
+  aliases: [output escaping, contextual encoding]
+  short: "Transforming data as it is written into a specific context so the receiver treats it as data, not as code."
+  long: >
+    The correct transform depends on the destination context: HTML element
+    text, an HTML attribute, JavaScript, CSS, and URLs each need a different
+    encoding. Encoding for the wrong context can still be unsafe.
+  related: [xss, encoding, sanitization]
+  topicId: WEB-05
+
+- id: hash-function
+  term: Cryptographic hash function
+  aliases: [hash, digest]
+  short: "A function that maps any input to a fixed-size value such that finding two inputs with the same output is infeasible."
+  related: [integrity, encoding, encryption]
+  topicId: CRY-01
+
+- id: encryption
+  term: Encryption
+  short: "Reversibly transforming data with a key so that only holders of the right key can recover the original."
+  related: [confidentiality, encoding, hash-function]
+  topicId: CRY-01
+
+- id: encoding
+  term: Encoding
+  short: "A reversible, keyless mapping of data into another representation for transport or display, such as Base64 or percent-encoding."
+  long: >
+    Encoding is not a security control by itself because anyone can reverse it.
+    It is distinct from [[encryption]] (which needs a key) and from hashing.
+  related: [encryption, output-encoding, punycode]
+  topicId: CRY-01
+
+- id: phishing
+  term: Phishing
+  short: "A social-engineering attack that uses a fake message or site to trick someone into revealing data or running an action."
+  related: [social-engineering, spoofing, homograph-attack]
+  topicId: WEB-03
+
+- id: domain-name
+  term: Domain name
+  short: "A human-readable name in the Domain Name System, such as campus.test, made of labels separated by dots."
+  related: [dns, url, registrable-domain]
+  topicId: WEB-02
+
+- id: dns
+  term: Domain Name System (DNS)
+  aliases: [DNS]
+  short: "The distributed system that translates domain names into the network addresses and records clients use."
+  related: [domain-name, url]
+  topicId: NET-02
+
+- id: url
+  term: URL
+  aliases: [uniform resource locator, web address]
+  short: "A string that locates a resource, built from a scheme, authority (host and optional userinfo and port), path, query, and fragment."
+  related: [domain-name, userinfo, registrable-domain]
+  topicId: WEB-02
+
+- id: unicode
+  term: Unicode
+  short: "The standard that assigns a number to nearly every character in the world's writing systems, enabling multilingual text."
+  related: [code-point, glyph, unicode-script]
+  topicId: WEB-01
+
+- id: code-point
+  term: Code point
+  short: "An integer that Unicode assigns to an abstract character, written like U+0430, independent of how it is drawn."
+  related: [unicode, glyph]
+  topicId: WEB-01
+
+- id: glyph
+  term: Glyph
+  short: "The visible shape used to draw a character; different code points can share a nearly identical glyph."
+  related: [code-point, confusable]
+  topicId: WEB-01
+
+- id: punycode
+  term: Punycode
+  short: "An encoding that represents a Unicode domain label using only letters, digits, and hyphens, carried in an xn-- label."
+  long: >
+    Defined in RFC 3492. Clients convert an internationalized label to its
+    ASCII-compatible form (an A-label) that always begins with the prefix
+    xn--. For example, the label bücher becomes xn--bcher-kva.
+  related: [idn, idna, encoding]
+  topicId: WEB-01
+
+- id: idn
+  term: Internationalized domain name (IDN)
+  aliases: [internationalized domain name]
+  short: "A domain name that can contain non-ASCII characters, allowing names in scripts beyond basic Latin."
+  related: [punycode, idna, domain-name]
+  topicId: WEB-01
+
+- id: idna
+  term: IDNA
+  aliases: [internationalizing domain names in applications]
+  short: "The application-layer process that converts internationalized domain labels to and from their ASCII (xn--) form."
+  related: [idn, punycode, unicode]
+  topicId: WEB-01
+
+- id: homograph-attack
+  term: Homograph attack
+  aliases: [homoglyph attack, IDN homograph attack]
+  short: "Registering a name that looks like a trusted one by using characters whose glyphs are confusable with the real ones."
+  long: >
+    For example, a name spelled with a Cyrillic small letter a (U+0430) in
+    place of the Latin a can be visually indistinguishable from the original
+    while resolving to a completely different site.
+  related: [confusable, mixed-script, typosquatting, phishing]
+  topicId: WEB-01
+
+- id: confusable
+  term: Confusable
+  aliases: [confusable character]
+  short: "A character (or string) whose shape can be mistaken for another, as defined by Unicode security data (UTS #39)."
+  related: [glyph, homograph-attack, mixed-script]
+  topicId: WEB-01
+
+- id: mixed-script
+  term: Mixed-script string
+  short: "A string whose characters come from more than one writing system, which can be a signal of a spoofing attempt."
+  related: [unicode-script, confusable, homograph-attack]
+  topicId: WEB-01
+
+- id: typosquatting
+  term: Typosquatting
+  aliases: [URL hijacking]
+  short: "Registering misspellings or near-variants of a popular domain to catch mistyped traffic or impersonate a brand."
+  related: [homograph-attack, domain-name, phishing]
+  topicId: WEB-02
+
+- id: sql-injection
+  term: SQL injection (SQLi)
+  aliases: [SQLi]
+  short: "An attack where attacker-controlled input changes the structure of a database query because data was mixed into code."
+  long: >
+    Classic forms include tautology-based login bypass (making a WHERE clause
+    always true) and UNION-based extraction (appending a second query to read
+    other tables). The reliable fix is the [[parameterized-query]].
+  related: [parameterized-query, input-validation, least-privilege]
+  topicId: APP-01
+
+- id: parameterized-query
+  term: Parameterized query
+  aliases: [prepared statement, bind variables]
+  short: "A query whose structure is fixed in advance, with user data sent separately as parameters that can never become code."
+  related: [sql-injection, input-validation, allowlist]
+  topicId: APP-01
+
+- id: xss
+  term: Cross-site scripting (XSS)
+  aliases: [XSS]
+  short: "A web flaw where attacker-controlled content runs as script in another user's browser in the context of a trusted site."
+  long: >
+    Three common forms are reflected (echoed from the request), stored (saved
+    and served to others), and DOM-based (introduced entirely in client-side
+    code). XSS subverts the [[same-origin-policy]] because the script runs with
+    the victim site's origin.
+  related: [output-encoding, content-security-policy, same-origin-policy, sanitization]
+  topicId: WEB-05
+
+- id: same-origin-policy
+  term: Same-origin policy
+  aliases: [SOP]
+  short: "A browser rule that limits how a document or script from one origin (scheme, host, port) can interact with another origin."
+  related: [xss, csrf, content-security-policy]
+  topicId: WEB-04
+
+- id: content-security-policy
+  term: Content Security Policy (CSP)
+  aliases: [CSP]
+  short: "An HTTP response header that tells the browser which script and resource sources to allow, as a backup defense against XSS."
+  long: >
+    A strict CSP uses per-response nonces or hashes together with object-src
+    'none' and base-uri 'none'. Host allowlists are weak and frequently
+    bypassable. CSP is defense in depth, not a replacement for correct output
+    handling.
+  related: [xss, defense-in-depth, output-encoding]
+  topicId: WEB-07
+
+- id: cookie
+  term: Cookie
+  short: "A small piece of data a site stores in the browser and returns on later requests, often used to hold a session identifier."
+  related: [session, csrf, same-origin-policy]
+  topicId: IAM-04
+
+- id: session
+  term: Session
+  short: "Server-side state that represents a signed-in user, usually referenced by a session identifier kept in a cookie."
+  related: [cookie, authentication]
+  topicId: IAM-04
+
+- id: csrf
+  term: Cross-site request forgery (CSRF)
+  aliases: [CSRF, XSRF]
+  short: "An attack that makes a victim's browser send an unwanted authenticated request to a site where they are logged in."
+  related: [cookie, same-origin-policy]
+  topicId: WEB-06
+
+- id: responsible-disclosure
+  term: Responsible disclosure
+  aliases: [coordinated vulnerability disclosure, CVD]
+  short: "Reporting a vulnerability privately to those who can fix it and allowing reasonable time before any public release."
+  related: [vulnerability, rules-of-engagement]
+  topicId: GRC-08
+
+- id: accountability
+  term: Accountability
+  short: "The goal that an entity's actions can be traced uniquely to that entity, supporting audit and after-the-fact review."
+  related: [non-repudiation, authentication]
+  topicId: FND-01
+
+- id: assurance
+  term: Assurance
+  short: "Grounds for justified confidence that a security claim has been or will be met, built from credible evidence."
+  related: [cia-triad]
+  topicId: FND-01
+
+- id: cfaa
+  term: Computer Fraud and Abuse Act (CFAA)
+  aliases: [18 U.S.C. 1030]
+  short: "The main U.S. federal anti-hacking statute, which criminalizes accessing a computer without or beyond authorization."
+  long: >
+    Codified at 18 U.S.C. 1030. In Van Buren v. United States (2021) the
+    Supreme Court read exceeds authorized access narrowly, to cover entering
+    areas of a computer that are off limits, not merely misusing access one
+    already has. This glossary entry is background, not legal advice.
+  related: [authorization, responsible-disclosure, rules-of-engagement]
+  topicId: FND-07
+
+- id: rules-of-engagement
+  term: Rules of engagement (ROE)
+  aliases: [ROE]
+  short: "A written agreement that defines exactly what security testing is authorized: scope, timing, methods, and contacts."
+  related: [penetration-testing, authorization, responsible-disclosure]
+  topicId: FND-07
+
+- id: penetration-testing
+  term: Penetration testing
+  aliases: [pen testing, ethical hacking]
+  short: "Authorized, scoped testing that safely simulates attacks to find weaknesses before a real adversary does."
+  related: [rules-of-engagement, vulnerability]
+  topicId: FND-07
+
+- id: social-engineering
+  term: Social engineering
+  short: "Manipulating people into revealing information or taking actions, rather than attacking technology directly."
+  related: [phishing, spoofing]
+  topicId: HUM-01
+
+- id: registrable-domain
+  term: Registrable domain
+  aliases: [eTLD+1, organizational domain]
+  short: "The public suffix plus the one label before it, such as example.com, which is the part a single party controls."
+  related: [public-suffix, subdomain, domain-name]
+  topicId: WEB-02
+
+- id: public-suffix
+  term: Public suffix
+  aliases: [eTLD, effective top-level domain]
+  short: "A domain suffix under which the public can register names, such as com or co.uk, tracked by the Public Suffix List."
+  related: [registrable-domain, top-level-domain]
+  topicId: WEB-02
+
+- id: subdomain
+  term: Subdomain
+  short: "A label placed to the left of the registrable domain, such as the mail in mail.example.com, controlled by that domain's owner."
+  related: [registrable-domain, domain-name]
+  topicId: WEB-02
+
+- id: top-level-domain
+  term: Top-level domain (TLD)
+  aliases: [TLD]
+  short: "The rightmost label of a domain name, such as com, org, edu, or a country code like uk."
+  related: [public-suffix, domain-name]
+  topicId: WEB-02
+
+- id: userinfo
+  term: Userinfo
+  aliases: [URL credentials]
+  short: "An optional part of a URL before an @ sign that can mislead a reader about the real host; its password form is deprecated."
+  related: [url, phishing]
+  topicId: WEB-02
+
+- id: unicode-script
+  term: Script (writing system)
+  aliases: [Unicode script]
+  short: "A set of characters used by one or more languages, such as Latin, Cyrillic, Greek, or Han."
+  related: [unicode, mixed-script, confusable]
+  topicId: WEB-01
+
+- id: unicode-normalization
+  term: Unicode normalization
+  aliases: [NFC, NFD]
+  short: "Rewriting text into a canonical form so that strings that should be equal compare as equal, for example combining accents."
+  related: [unicode, code-point]
+  topicId: WEB-01
+
+- id: spoofing
+  term: Spoofing
+  short: "Faking the apparent source of a message, address, or identity so a target trusts it."
+  related: [phishing, spf, dmarc]
+  topicId: WEB-03
+
+- id: spf
+  term: Sender Policy Framework (SPF)
+  aliases: [SPF]
+  short: "A DNS record that lists which servers may send mail for a domain; it checks the envelope sender, not the visible From."
+  related: [dkim, dmarc, spoofing]
+  topicId: WEB-03
+
+- id: dkim
+  term: DomainKeys Identified Mail (DKIM)
+  aliases: [DKIM]
+  short: "An email signature that lets a domain take responsibility for a message, verified with a public key published in DNS."
+  related: [spf, dmarc, hash-function]
+  topicId: WEB-03
+
+- id: dmarc
+  term: DMARC
+  aliases: [domain-based message authentication reporting and conformance]
+  short: "A policy, published in DNS, that requires the From domain to align with a passing SPF or DKIM check and reports on failures."
+  related: [spf, dkim, spoofing]
+  topicId: WEB-03
+
+- id: sanitization
+  term: Sanitization
+  short: "Removing or neutralizing unsafe parts of untrusted content, such as stripping dangerous HTML before it is rendered."
+  related: [output-encoding, input-validation, xss]
+  topicId: WEB-05
+
+- id: allowlist
+  term: Allowlist
+  aliases: [allow-list, whitelist]
+  short: "A control that permits only values known to be good and rejects everything else, the opposite of blocking known-bad values."
+  related: [input-validation, parameterized-query]
+  topicId: APP-02
