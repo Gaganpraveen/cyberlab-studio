@@ -1,0 +1,382 @@
+# Glossary: governance, risk, and privacy (GRC-01 to GRC-08).
+# Ids are canonical and must stay stable. Legal terms here are background for
+# teaching, not legal advice.
+
+- id: risk-assessment
+  term: Risk assessment
+  aliases: [security risk assessment, cybersecurity risk assessment]
+  short: 'The process of identifying risks, estimating their likelihood and impact, and ranking them so decision makers can choose responses.'
+  long: >
+    NIST SP 800-30 describes four steps: prepare, conduct, communicate, and
+    maintain. Conducting an assessment means identifying threat sources and
+    events, [[vulnerability|vulnerabilities]], and predisposing conditions, then
+    determining [[likelihood]], [[impact]], and the resulting level of
+    [[risk]].
+  related: [risk, risk-register, risk-treatment, likelihood, impact]
+  topicId: GRC-01
+
+- id: risk-register
+  term: Risk register
+  aliases: [risk log, cybersecurity risk register, CSRR]
+  short: 'A working record of identified risks with their ratings, chosen responses, owners, and status, used to track and communicate risk decisions.'
+  long: >
+    NIST IR 8286 Rev. 1 describes a notional cybersecurity risk register with an
+    ID, priority, description, category, current likelihood, impact, and
+    exposure rating, response type, cost, and description, risk owner, and
+    status. Recording the evidence and assumptions behind each rating makes the
+    register transparent and open to challenge.
+  related: [risk-assessment, risk-treatment, residual-risk]
+  topicId: GRC-01
+
+- id: risk-treatment
+  term: Risk treatment
+  aliases: [risk response]
+  short: 'Choosing and carrying out a response to an assessed risk: accept it, avoid it, mitigate it with controls, or transfer part of it to another party.'
+  long: >
+    NIST IR 8286 Rev. 1 names the four responses accept, avoid, mitigate, and
+    transfer; SP 800-30 also lists sharing. Every response except avoidance
+    leaves some [[residual-risk]], and avoidance can create new risks in
+    whatever replaces the activity.
+  related: [risk-assessment, residual-risk, risk-appetite, security-control]
+  topicId: GRC-01
+
+- id: risk-appetite
+  term: Risk appetite
+  short: 'The amount and type of risk an organization is willing to take to meet its objectives, set by its senior leaders.'
+  long: >
+    Risk tolerance is its narrower, measurable partner: the variation an
+    organization can bear for a specific objective, such as no outage longer
+    than four hours during finals. NIST CSF 2.0 outcome GV.RM-02 calls for both
+    statements to be established, communicated, and maintained.
+  related: [risk, risk-treatment, residual-risk]
+  topicId: GRC-01
+
+- id: inherent-risk
+  term: Inherent risk
+  short: 'The level of risk estimated before the controls or responses under consideration are counted, used as a baseline for judging how much treatment helps.'
+  long: >
+    Definitions vary: some registers mean risk with no controls at all, while
+    others record current risk with existing controls in place. State which one
+    a register uses. Compare [[residual-risk]], the risk that remains after
+    treatment.
+  related: [residual-risk, risk-assessment]
+  topicId: GRC-01
+
+- id: nist-csf
+  term: NIST Cybersecurity Framework (CSF)
+  aliases: [CSF, CSF 2.0, NIST CSF]
+  short: 'A voluntary NIST taxonomy of cybersecurity outcomes in six Functions (Govern, Identify, Protect, Detect, Respond, Recover) that says what to achieve but not how.'
+  long: >
+    Version 2.0 was published in February 2024 as NIST CSWP 29. Organizations
+    use it to describe a current profile and a target profile and to plan how
+    to close the gap, drawing on control catalogs such as NIST SP 800-53 for
+    the how.
+  related: [security-framework, control-baseline, risk-assessment]
+  topicId: GRC-02
+
+- id: security-framework
+  term: Security framework
+  aliases: [cybersecurity framework, control framework]
+  short: 'A published, structured set of outcomes, practices, or controls that an organization uses to organize, assess, and communicate its security program.'
+  long: >
+    Outcome frameworks such as the [[nist-csf]] describe what to achieve;
+    control catalogs such as NIST SP 800-53 describe specific safeguards; and
+    management-system standards such as ISO/IEC 27001 specify how a security
+    program is run and continually improved.
+  related: [nist-csf, control-baseline, compliance, security-control]
+  topicId: GRC-02
+
+- id: control-baseline
+  term: Control baseline
+  aliases: [security control baseline, baseline]
+  short: 'A predefined starting set of security or privacy controls for a given system impact level, which an organization then tailors to its system.'
+  long: >
+    NIST SP 800-53B defines low, moderate, and high security baselines and a
+    privacy baseline drawn from the SP 800-53 catalog, with guidance on
+    tailoring and on overlays for particular communities or technologies.
+  related: [security-framework, security-control, common-control]
+  topicId: GRC-02
+
+- id: common-control
+  term: Common control
+  aliases: [inherited control]
+  short: 'A control implemented once and inherited by many systems, such as campus single sign-on or data center physical security, so its provider is responsible for it.'
+  long: >
+    NIST SP 800-37 treats common controls separately from controls that one
+    system implements for itself. A system that inherits a control relies on
+    its provider's implementation and evidence, so the inheritance should be
+    documented rather than assumed.
+  related: [control-baseline, security-control]
+  topicId: GRC-02
+
+- id: ferpa
+  term: Family Educational Rights and Privacy Act (FERPA)
+  aliases: [FERPA, 20 U.S.C. 1232g, 34 CFR Part 99]
+  short: 'A US federal law that protects the privacy of student education records at schools that receive funds under US Department of Education programs.'
+  long: >
+    Regulations are at 34 CFR Part 99. At colleges the rights belong to the
+    student, who may inspect records, seek amendment, and consent before
+    personally identifiable information from
+    [[education-record|education records]] is disclosed, subject to
+    exceptions such as school officials with a legitimate educational interest
+    and properly designated directory information. Background for teaching,
+    not legal advice.
+  related: [education-record, irb, pii]
+  topicId: GRC-04
+
+- id: education-record
+  term: Education record
+  aliases: [education records, student records]
+  short: 'Under FERPA, a record directly related to a student and maintained by an educational institution or by a party acting for it.'
+  long: >
+    Exclusions include notes kept in the sole possession of their maker as a
+    personal memory aid, law enforcement unit records, certain employment
+    records, treatment records, records created after a person is no longer a
+    student, and grades on peer-graded papers before a teacher records them.
+    Background for teaching, not legal advice.
+  related: [ferpa, pii]
+  topicId: GRC-04
+
+- id: irb
+  term: Institutional review board (IRB)
+  aliases: [IRB, ethics review board]
+  short: 'A committee that reviews research involving human subjects to protect participants, as the Common Rule (45 CFR 46) requires for covered research.'
+  long: >
+    Under the Common Rule, research is a systematic investigation designed to
+    develop or contribute to generalizable knowledge, and a human subject is a
+    living individual about whom an investigator, professional or student,
+    obtains information through interaction or obtains identifiable private
+    information. The IRB process decides whether a project is exempt or needs
+    expedited or full review.
+  related: [ferpa, responsible-disclosure]
+  topicId: GRC-04
+
+- id: data-minimization
+  term: Data minimization
+  aliases: [minimization]
+  short: 'Collecting, using, keeping, and sharing only the personal data a stated purpose needs, in the least identifying form and for the shortest time that serves it.'
+  long: >
+    It applies to every copy, including logs, backups, exports, and test data.
+    Techniques range from not collecting a field at all to coarsening,
+    pseudonymizing, aggregating, and deleting on a schedule. See
+    [[privacy-by-design]].
+  related: [privacy-by-design, pii, de-identification]
+  topicId: GRC-03
+
+- id: privacy-by-design
+  term: Privacy by design
+  aliases: [privacy by default, data protection by design]
+  short: 'Building privacy protections into a system from its first requirements and making the protective option the default.'
+  long: >
+    It treats privacy as an engineering property with requirements and tests.
+    NIST IR 8062 frames privacy engineering around three objectives:
+    predictability, manageability, and disassociability.
+  related: [data-minimization, pii]
+  topicId: GRC-03
+
+- id: pii
+  term: Personally identifiable information (PII)
+  aliases: [PII, personal data, personal information]
+  short: 'Information that identifies a specific person, or can be linked to them when combined with other available information, such as a name, a student ID, or a set of quasi-identifiers.'
+  long: >
+    Whether data counts as PII depends on context: a room number alone may
+    identify no one, while room number, major, and class year together may
+    single out one student. Legal definitions differ from law to law.
+  related: [data-minimization, de-identification, ferpa]
+  topicId: GRC-03
+
+- id: de-identification
+  term: De-identification
+  aliases: [anonymization, deidentification]
+  short: 'Removing or transforming identifying information so that data can no longer reasonably be linked to a specific person, judged against other information an attacker could use.'
+  long: >
+    Pseudonymization, which replaces identifiers with tokens, is weaker:
+    whoever holds the mapping, or a second dataset with the same token, can
+    re-identify people. Small groups and unusual combinations of attributes
+    make de-identification hard; formal approaches such as
+    [[differential-privacy]] give provable bounds.
+  related: [pii, data-minimization, differential-privacy]
+  topicId: GRC-03
+
+- id: compliance
+  term: Compliance
+  aliases: [regulatory compliance, conformance]
+  short: 'Conformance with a stated set of requirements, such as a law, contract, or standard, shown by evidence for a defined scope; related to security but not the same thing.'
+  long: >
+    A compliance claim is only as strong as its scope and its evidence. An
+    organization can meet every requirement of a standard and still be
+    breached, and it can be secure in ways no checklist asks about.
+  related: [security-framework, security-control]
+  topicId: GRC-07
+
+- id: audit
+  term: Audit
+  aliases: [security audit, control assessment, audit evidence]
+  short: 'A systematic examination of evidence against stated criteria, such as a policy, standard, law, or contract, for a defined scope and period, ending in findings or an opinion.'
+  long: >
+    Assessors examine documents and records, interview the people who run a
+    control, and test or observe the control in operation, usually on a sample
+    drawn from an independent population. Independence matters: a team's
+    self-assessment, internal audit, and a CPA examining a [[soc-2-report]]
+    offer different levels of [[assurance]]. A clean result is evidence about
+    what was sampled during the period examined, not a guarantee.
+  related: [compliance, assurance, soc-2-report, security-control]
+  topicId: GRC-07
+
+- id: business-continuity
+  term: Business continuity
+  aliases: [BC, business continuity planning, BCP]
+  short: "Keeping an organization's essential functions running during and after a disruption, by any workable means, including manual and fallback processes."
+  long: >
+    A business continuity plan sustains mission and business processes. NIST
+    SP 800-34 distinguishes it from a [[disaster-recovery]] plan, which
+    restores systems, and from an incident response plan, which handles
+    attacks.
+  related: [disaster-recovery, business-impact-analysis, rto]
+  topicId: GRC-05
+
+- id: disaster-recovery
+  term: Disaster recovery (DR)
+  aliases: [DR, disaster recovery plan, DRP]
+  short: 'Restoring information systems and data after a major disruption, often at an alternate site, to meet stated recovery objectives.'
+  long: >
+    Strategies range from restoring backups onto new hardware to cold, warm,
+    hot, and mirrored alternate sites, trading cost for speed. Recovery
+    capability should be measured with restore drills, not assumed.
+  related: [business-continuity, rto, rpo, backup]
+  topicId: GRC-05
+
+- id: rto
+  term: Recovery time objective (RTO)
+  aliases: [RTO]
+  short: 'The longest a system or resource can stay unavailable before the impact on the processes that depend on it becomes unacceptable.'
+  long: >
+    It is a target set from a [[business-impact-analysis]]. NIST SP 800-34
+    notes that it must normally be shorter than the maximum tolerable downtime
+    (MTD), so that verification and catch-up work also fit. Only measured
+    restores show whether it can be met.
+  related: [rpo, business-impact-analysis, disaster-recovery]
+  topicId: GRC-05
+
+- id: rpo
+  term: Recovery point objective (RPO)
+  aliases: [RPO]
+  short: 'The point in time to which data must be recoverable after an outage, which sets how much recent data loss is acceptable.'
+  long: >
+    Backup and replication frequency decide the RPO a design can actually
+    meet: with one backup a day, up to a day of changes can be lost. RPO
+    concerns data loss, not downtime.
+  related: [rto, backup, disaster-recovery]
+  topicId: GRC-05
+
+- id: business-impact-analysis
+  term: Business impact analysis (BIA)
+  aliases: [BIA]
+  short: 'An analysis of how the impact of an outage on each business process grows over time, used to set recovery priorities and objectives.'
+  long: >
+    A BIA identifies each process's maximum tolerable downtime (MTD), the
+    systems and resources it depends on, and the order of recovery. It is the
+    second step of the NIST SP 800-34 contingency planning process.
+  related: [rto, rpo, business-continuity]
+  topicId: GRC-05
+
+- id: tabletop-exercise
+  term: Tabletop exercise
+  aliases: [tabletop, TTX]
+  short: 'A discussion-based exercise in which a team talks through a realistic scenario, with new developments added by a facilitator, to test a plan and its assumptions.'
+  long: >
+    It costs far less than a functional drill or a full failover and is good
+    at exposing hidden assumptions, such as a password only one person knows.
+    Findings should become tracked actions and be retested.
+  related: [business-continuity, disaster-recovery, incident-response]
+  topicId: GRC-05
+
+- id: third-party-risk
+  term: Third-party risk
+  aliases: [vendor risk, third-party risk management, TPRM, supplier risk]
+  short: 'Risk that comes from relying on an outside organization, such as a vendor, cloud provider, or contractor, through the data it holds, the access it has, or the services you depend on.'
+  long: >
+    Managing it follows the relationship: know and tier the vendors, do due
+    diligence before signing, write requirements into the contract, monitor
+    over time, and close out with data return, deletion, and access removal.
+    Risk also arrives through each vendor's own
+    [[subprocessor|subprocessors]]. NIST SP 800-161 treats the wider field,
+    cybersecurity supply chain risk management (C-SCRM), for both acquired
+    products and services.
+  related: [subprocessor, soc-2-report, risk-assessment, shared-responsibility-model]
+  topicId: GRC-06
+
+- id: subprocessor
+  term: Subprocessor
+  aliases: [sub-processor, fourth party]
+  short: "A vendor's own supplier that receives or handles your organization's data on the vendor's behalf, such as its hosting, email, or analytics provider."
+  long: >
+    Your contract is usually with the vendor alone, so terms that require a
+    complete subprocessor list, advance notice of changes, and the same data
+    protections down the chain are how you keep visibility. A data-flow review
+    often finds subprocessors that a questionnaire left out. SOC reports use
+    the related term subservice organization.
+  related: [third-party-risk, data-minimization]
+  topicId: GRC-06
+
+- id: soc-2-report
+  term: SOC 2 report
+  aliases: [SOC 2, SOC 2 examination]
+  short: "A CPA's report on an examination of a service organization's description of its system and of the controls relevant to security, availability, processing integrity, confidentiality, or privacy."
+  long: >
+    Customers and business partners often request one before relying on a
+    service provider. Its value depends on details: whether the described
+    system includes the service you use, the date or period it covers, any
+    exceptions the examiner found, and the complementary user entity controls
+    the report expects the customer to operate. SOC 3 reports cover the same
+    categories for general use.
+  related: [audit, third-party-risk, compliance]
+  topicId: GRC-07
+
+- id: vulnerability-disclosure-policy
+  term: Vulnerability disclosure policy (VDP)
+  aliases: [VDP]
+  short: 'A public statement in which an organization tells outsiders which of its systems they may examine for security flaws, which methods are off limits, how to report what they find, and how the organization will respond.'
+  long: >
+    A good policy names the systems in scope and a reporting channel, rules
+    out harmful methods such as denial of service or viewing more data than
+    needed to show a flaw, promises acknowledgment and good-faith treatment
+    for reporters who follow it, and says whether testing within its terms is
+    authorized (its [[safe-harbor]]). It gives outsiders a front door into a
+    [[coordinated-vulnerability-disclosure]] process. CISA publishes a
+    template to help US federal agencies align their policies with Binding
+    Operational Directive 20-01. A bug bounty program adds payment for
+    qualifying reports.
+  related:
+    [coordinated-vulnerability-disclosure, safe-harbor, responsible-disclosure, rules-of-engagement]
+  topicId: GRC-08
+
+- id: coordinated-vulnerability-disclosure
+  term: Coordinated vulnerability disclosure (CVD)
+  aliases: [CVD, coordinated disclosure]
+  short: 'A process in which the finder of a vulnerability, the organization that can fix it, and sometimes a neutral coordinator share information privately so that a fix or mitigation is ready before details are published.'
+  long: >
+    A typical sequence is a private report, acknowledgment, validation, a fix,
+    an agreed publication date, and a public advisory that may credit the
+    finder. A coordinator can help when the vendor cannot be reached or when
+    many vendors share the same flaw. ISO/IEC 29147 covers receiving reports
+    and publishing remediation information, and ISO/IEC 30111 covers how
+    vendors process and remediate reports in between. It is the newer, more
+    neutral name for [[responsible-disclosure]].
+  related: [vulnerability-disclosure-policy, responsible-disclosure, vulnerability]
+  topicId: GRC-08
+
+- id: safe-harbor
+  term: Safe harbor (security research)
+  aliases: [safe harbour, research safe harbor]
+  short: "A promise in a vulnerability disclosure policy that good-faith research within the policy's terms will be treated as authorized and will not lead to legal action by the organization."
+  long: >
+    It covers only what the publishing organization can promise: it cannot
+    authorize testing of systems that others own, such as vendors, and it
+    does not bind other parties. CISA's template, and federal policies such as
+    the Department of Commerce's, say that if a third party takes legal action
+    over compliant research, the agency will make the authorization known.
+    Read the scope and the banned methods before relying on it.
+  related:
+    [vulnerability-disclosure-policy, rules-of-engagement, cfaa, good-faith-security-research]
+  topicId: GRC-08

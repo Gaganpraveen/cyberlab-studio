@@ -1,0 +1,303 @@
+# Glossary: identity and access management (IAM-01 to IAM-08).
+# Ids are canonical and must stay stable. Terms defined in foundations-web.yaml
+# (authentication, authorization, session, cookie, ...) are linked, not redefined.
+
+- id: authenticator
+  term: Authenticator
+  short: 'Something a user possesses and controls, such as a password, a code-generating app, or a security key, that is used to prove control of an account.'
+  long: >
+    NIST groups authenticators by factor: something you know, something you
+    have, and something you are. An authenticator is bound to an account, so a
+    successful [[authentication]] shows control of that authenticator, not the
+    real-world identity of the person holding it.
+  related: [authentication, mfa, passkey]
+  topicId: IAM-03
+
+- id: mfa
+  term: Multi-factor authentication (MFA)
+  aliases: [MFA, 2FA, two-factor authentication]
+  short: 'Authentication that requires two or more different kinds of factor, such as something you know and something you have, so one stolen factor is not enough.'
+  long: >
+    Two passwords are still one factor. MFA methods differ sharply in
+    phishing resistance: a one-time code or a push approval can be relayed by a
+    fake site in real time, while a [[webauthn]] or [[passkey]] sign-in is bound
+    to the real site's origin and cannot be replayed elsewhere.
+  related: [authenticator, passkey, webauthn, phishing]
+  topicId: IAM-03
+
+- id: passkey
+  term: Passkey
+  aliases: [FIDO credential, discoverable credential]
+  short: 'A FIDO credential, a key pair created for one site, that lets a user sign in by unlocking a device, with no password to type, steal, or reuse.'
+  long: >
+    The private key stays with the user's authenticator (a phone, computer,
+    security key, or credential manager) and the site stores only the public
+    key, so a breach of the site reveals nothing that can sign in elsewhere.
+    Synced passkeys are copied across a user's devices through a cloud
+    service; device-bound passkeys never leave one device. Passkeys are built
+    on [[webauthn]] and resist phishing because the browser ties every sign-in
+    to the site's origin.
+  related: [webauthn, mfa, authenticator, password-manager]
+  topicId: IAM-03
+
+- id: webauthn
+  term: Web Authentication (WebAuthn)
+  aliases: [WebAuthn, Web Authentication API]
+  short: 'A W3C standard browser API that lets a site register and verify public-key credentials scoped to its own domain, the basis of passkeys and security-key sign-in.'
+  related: [passkey, mfa, relying-party, authenticator]
+  topicId: IAM-03
+
+- id: password-manager
+  term: Password manager
+  aliases: [credential manager]
+  short: 'Software that generates, stores, and fills a unique password (and often a passkey) for each site, protected by a primary secret or a device unlock.'
+  long: >
+    Because it fills credentials only on the site where they were saved, a
+    password manager also refuses to help on a look-alike phishing domain, and
+    unique passwords make [[credential-stuffing]] useless.
+  related: [passkey, credential-stuffing, authenticator]
+  topicId: IAM-02
+
+- id: credential-stuffing
+  term: Credential stuffing
+  short: 'Automated sign-in attempts that replay username and password pairs leaked from another site, succeeding wherever people reused a password.'
+  related: [password-spraying, brute-force-attack, password-manager, mfa]
+  topicId: IAM-02
+
+- id: password-spraying
+  term: Password spraying
+  short: 'Trying a few very common passwords against many different accounts, so that no single account sees enough failures to trigger a lockout.'
+  related: [credential-stuffing, brute-force-attack, mfa]
+  topicId: IAM-02
+
+- id: brute-force-attack
+  term: Brute-force attack
+  aliases: [password guessing, exhaustive search]
+  short: 'Guessing a secret such as a password or key by systematically trying many candidates, either online against a sign-in service or offline against stolen hashes.'
+  long: >
+    Online guessing is limited by throttling and lockouts. Offline guessing
+    against a stolen database of password hashes is limited only by the
+    attacker's hardware and by how slow the [[password-hashing]] function is.
+  related: [password-spraying, credential-stuffing, password-hashing]
+  topicId: IAM-02
+
+- id: account-recovery
+  term: Account recovery
+  aliases: [password reset, forgot password]
+  short: 'The process that restores access when a user loses or forgets an authenticator; it must resist impersonation as well as sign-in itself does.'
+  long: >
+    Recovery is often the weakest path into an account: a reset link sent to a
+    compromised mailbox, or a help-desk agent persuaded by
+    [[social-engineering]], bypasses every sign-in control. Good recovery uses
+    single-use, short-lived, unguessable secrets and notifies the user.
+  related: [authenticator, mfa, social-engineering]
+  topicId: IAM-02
+
+- id: session-hijacking
+  term: Session hijacking
+  aliases: [session takeover, cookie theft]
+  short: "Taking over a signed-in user's session by stealing or reusing its session identifier or token, with no need for the user's password or second factor."
+  related: [session, cookie, session-fixation, xss]
+  topicId: IAM-04
+
+- id: session-fixation
+  term: Session fixation
+  short: 'An attack in which a victim is made to sign in with a session identifier the attacker already knows, so the attacker can reuse that identifier afterward.'
+  long: >
+    The standard defense is to issue a brand-new session identifier whenever a
+    user signs in or changes privilege level, and to reject identifiers the
+    server never issued.
+  related: [session, session-hijacking, cookie]
+  topicId: IAM-04
+
+- id: access-token
+  term: Access token
+  aliases: [bearer token, OAuth access token]
+  short: 'A credential a client presents to an API to show what access it has been granted, usually short-lived and scoped to specific permissions.'
+  long: >
+    In [[oauth]] an authorization server issues access tokens to a client for
+    use at a resource server. A bearer token works for anyone who holds it, so
+    it must travel only over encrypted connections and expire quickly; a
+    sender-constrained token also requires proof that the presenter holds a
+    private key.
+  related: [refresh-token, oauth, jwt, id-token]
+  topicId: IAM-04
+
+- id: refresh-token
+  term: Refresh token
+  short: 'A longer-lived credential that a client exchanges for fresh access tokens without asking the user to sign in again.'
+  long: >
+    A refresh token is sent only to the authorization server, never to APIs.
+    Because a stolen one can mint new [[access-token]]s, refresh tokens issued
+    to browser and mobile apps should be rotated on every use or bound to the
+    client, so that a replayed old token is detected.
+  related: [access-token, oauth, session]
+  topicId: IAM-04
+
+- id: jwt
+  term: JSON Web Token (JWT)
+  aliases: [JWT, JSON Web Token]
+  short: 'A compact, URL-safe token format (RFC 7519) that carries JSON claims, usually signed so a recipient can check who issued it and that it was not altered.'
+  long: >
+    A signed JWT has three Base64url parts, header, payload, and signature,
+    separated by dots. The payload is encoded, not encrypted, so anyone holding
+    the token can read it. Verifiers should pin the expected algorithm and key
+    and check the issuer, audience, and expiry claims, as RFC 8725 recommends.
+  related: [access-token, id-token, encoding]
+  topicId: IAM-04
+
+- id: oauth
+  term: OAuth 2.0
+  aliases: [OAuth, OAuth 2]
+  short: 'An authorization framework (RFC 6749) that lets a user grant an application limited access to their data on another service without sharing their password.'
+  long: >
+    The roles are the resource owner (usually the user), the client (the
+    application), the authorization server (which issues tokens), and the
+    resource server (the API). OAuth delivers an [[access-token]], not a
+    statement of who signed in; [[openid-connect]] adds that identity layer.
+  related: [access-token, refresh-token, pkce, openid-connect]
+  topicId: IAM-05
+
+- id: openid-connect
+  term: OpenID Connect (OIDC)
+  aliases: [OIDC]
+  short: 'An identity layer on top of OAuth 2.0 that lets an application sign a user in by receiving a signed ID token from an identity provider.'
+  related: [oauth, id-token, identity-provider, sso]
+  topicId: IAM-05
+
+- id: id-token
+  term: ID token
+  short: 'A signed JWT from an OpenID Connect provider that tells a client who the user is, who issued the token, which client it is for, and when it expires.'
+  long: >
+    A client must validate the signature and the iss (issuer), aud (audience),
+    exp (expiry), and nonce claims before trusting it. An ID token is meant for
+    the client; calling an API is the job of the [[access-token]].
+  related: [openid-connect, jwt, access-token]
+  topicId: IAM-05
+
+- id: pkce
+  term: Proof Key for Code Exchange (PKCE)
+  aliases: [PKCE]
+  short: 'An OAuth extension (RFC 7636) in which a client proves, when redeeming an authorization code, that it is the same client that started the flow.'
+  long: >
+    The client creates a random code verifier, sends its SHA-256 hash (the
+    code challenge) with the authorization request, and later presents the
+    verifier along with the code. Someone who intercepts only the code cannot
+    redeem it.
+  related: [oauth, access-token]
+  topicId: IAM-05
+
+- id: rbac
+  term: Role-based access control (RBAC)
+  aliases: [RBAC]
+  short: 'Access control in which permissions are assigned to roles, and users receive permissions only by being assigned to roles.'
+  long: >
+    RBAC is easy to audit when roles mirror job functions. It struggles with
+    per-object rules, such as letting authors edit only their own drafts, and
+    can drift into role explosion, many near-duplicate roles.
+  related: [abac, rebac, least-privilege, authorization]
+  topicId: IAM-06
+
+- id: abac
+  term: Attribute-based access control (ABAC)
+  aliases: [ABAC]
+  short: 'Access control that decides each request by evaluating rules over attributes of the subject, the object, the requested operation, and the environment.'
+  long: >
+    NIST SP 800-162 describes the model. A typical rule reads "clinicians may
+    read records of patients in their own department while on shift," which
+    would need many separate roles under [[rbac]].
+  related: [rbac, rebac, authorization]
+  topicId: IAM-06
+
+- id: rebac
+  term: Relationship-based access control (ReBAC)
+  aliases: [ReBAC]
+  short: 'Access control that grants access according to relationships between subjects and objects, such as owner, member, or parent folder, stored as a graph.'
+  long: >
+    A ReBAC system stores facts such as "alice is an editor of this folder"
+    and answers whether a chain of relationships connects a user to an
+    object, for example a viewer of a folder being a viewer of every document
+    in it. Google described Zanzibar, its global system for storing and
+    evaluating access control lists, at USENIX ATC 2019.
+  related: [rbac, abac, authorization]
+  topicId: IAM-06
+
+- id: service-account
+  term: Service account
+  aliases: [non-human identity, machine identity, workload identity]
+  short: 'An identity used by software rather than a person, such as an application, a build job, or a scheduled task, to authenticate to other systems.'
+  long: >
+    A service account should hold narrowly scoped permissions and short-lived
+    credentials. With workload identity, the platform vouches for which
+    workload is running and exchanges that proof for a temporary token, so no
+    long-lived secret has to be stored at all.
+  related: [secrets-management, least-privilege, access-token]
+  topicId: IAM-07
+
+- id: secrets-management
+  term: Secrets management
+  aliases: [secret manager, secrets manager]
+  short: 'The practice and tooling for storing, distributing, rotating, auditing, and revoking the credentials software uses, such as API keys, passwords, and private keys.'
+  long: >
+    A secrets manager encrypts secrets, releases each one only to the
+    identities allowed to read it, and logs every access. Dynamic secrets,
+    created on demand with a short lease, limit the damage when one leaks.
+  related: [service-account, least-privilege, temporary-credentials]
+  topicId: IAM-07
+
+- id: identity-provider
+  term: Identity provider (IdP)
+  aliases: [IdP, OpenID provider]
+  short: 'A service that authenticates users and issues signed assertions or tokens about them that other applications agree to trust.'
+  related: [relying-party, federation, sso, openid-connect, saml]
+  topicId: IAM-08
+
+- id: relying-party
+  term: Relying party (RP)
+  aliases: [RP, service provider]
+  short: "An application that relies on another party's authentication result, such as an identity provider's assertion or a WebAuthn signature, to sign a user in."
+  related: [identity-provider, federation, webauthn]
+  topicId: IAM-08
+
+- id: federation
+  term: Identity federation
+  aliases: [federated identity]
+  short: "An arrangement in which separate systems or organizations agree to trust identity assertions issued by one another's identity providers."
+  related: [sso, saml, openid-connect, identity-provider]
+  topicId: IAM-08
+
+- id: sso
+  term: Single sign-on (SSO)
+  aliases: [SSO]
+  short: 'An arrangement in which one sign-in at an identity provider gives a user access to many separate applications without signing in to each.'
+  long: >
+    SSO concentrates risk: it puts strong authentication and fast
+    [[deprovisioning]] in one place, but a stolen identity provider session or
+    signing key reaches every connected application.
+  related: [federation, identity-provider, saml, openid-connect]
+  topicId: IAM-08
+
+- id: saml
+  term: SAML 2.0
+  aliases: [SAML, Security Assertion Markup Language]
+  short: 'An XML-based OASIS standard in which an identity provider sends a signed assertion about a user to a service provider, widely used for enterprise single sign-on.'
+  related: [sso, federation, identity-provider]
+  topicId: IAM-08
+
+- id: scim
+  term: SCIM
+  aliases: [System for Cross-domain Identity Management]
+  short: 'A standard HTTP-based protocol and schema (RFC 7644 and RFC 7643) that lets an identity provider create, update, and remove user accounts and groups in other applications.'
+  related: [deprovisioning, identity-provider, federation]
+  topicId: IAM-08
+
+- id: deprovisioning
+  term: Deprovisioning
+  aliases: [offboarding, account deprovisioning]
+  short: "Removing or disabling an identity's accounts, access, and credentials when a person leaves or a system no longer needs them."
+  long: >
+    Deprovisioning is the leaver step of the joiner-mover-leaver lifecycle. It
+    must reach every system, including local accounts, API tokens, and
+    sessions that outlive the identity provider account, or access lingers.
+  related: [scim, federation, least-privilege]
+  topicId: IAM-08

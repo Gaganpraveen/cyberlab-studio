@@ -1,0 +1,381 @@
+# Glossary: research methods and capstones (RES).
+# Ids are canonical and must stay stable. Terms defined in other domain files
+# (for example threat-model, assurance, and the OPS terms precision and recall)
+# are linked, not redefined.
+
+- id: systematization-of-knowledge
+  term: Systematization of Knowledge (SoK)
+  aliases: [SoK, SoK paper]
+  short: 'A paper type at security venues that organizes an existing research area, for example with a new taxonomy, and adds insight beyond a plain survey.'
+  long: >
+    IEEE S&P asks authors to begin an SoK title with "SoK:" and judges these
+    papers on their treatment of existing work and their value to the
+    community rather than on new results. An SoK is a good first read in an
+    unfamiliar area, but its taxonomy is still an argument to check.
+  related: [peer-review]
+  topicId: RES-01
+
+- id: hypothesis
+  term: Hypothesis
+  aliases: [research hypothesis]
+  short: 'A specific, testable statement of what an experiment is expected to show, written down before the data are collected.'
+  long: >
+    A good hypothesis names the system, the comparison, the measure and the
+    conditions, for example "on traffic from a later month, detector D raises
+    fewer false alarms per day than the current rules while catching at least
+    as many attacks." The data must be able to contradict it. In statistics,
+    the null hypothesis is the "no effect" statement that a test tries to
+    reject; see [[statistical-significance]].
+  related: [baseline, control-group, threats-to-validity, statistical-significance]
+  topicId: RES-02
+
+- id: baseline
+  term: Baseline
+  aliases: [baseline system, point of comparison]
+  short: 'The reference system or condition a new method is compared against, such as the current defense, a simple method, or the previous state of the art.'
+  long: >
+    A baseline turns "our method scores 0.9" into "our method scores 0.9 where
+    the alternatives score 0.7," which is the claim that matters. Run every
+    baseline on the same data with the same tuning effort, and include at
+    least one simple, well-understood method. Comparing only against yourself,
+    or against numbers copied from other papers, is a common flaw.
+  related: [control-group, ablation-study, hypothesis]
+  topicId: RES-02
+
+- id: control-group
+  term: Control group
+  aliases: [control condition]
+  short: 'The participants or units in an experiment that do not receive the treatment being tested, so its effect can be measured against them.'
+  long: >
+    Random assignment makes the treatment and control groups alike on average
+    in everything except the treatment, including factors nobody thought to
+    measure. In security studies the control group usually keeps the current
+    defense rather than getting none, which is both more ethical and a fairer
+    comparison.
+  related: [baseline, hypothesis, threats-to-validity]
+  topicId: RES-02
+
+- id: threats-to-validity
+  term: Threats to validity
+  aliases: [validity threats, internal validity, external validity, construct validity]
+  short: "Reasons a study's conclusion might be wrong or might not apply beyond the study, such as a confounding factor, unrepresentative data, or a measure that misses the real goal."
+  long: >
+    Common categories are internal validity (did the treatment cause the
+    effect, or did something else?), external validity (does the result hold
+    in other settings?), construct validity (does the measure capture the
+    property of interest?) and conclusion validity (is the statistical
+    inference sound?). A threats-to-validity section names each threat and
+    says how the study addressed it or why it remains.
+  related: [sampling-bias, data-snooping, hypothesis]
+  topicId: RES-02
+
+- id: ablation-study
+  term: Ablation study
+  aliases: [ablation]
+  short: 'An experiment that removes or disables one component of a system at a time to measure how much each component contributes to the result.'
+  long: >
+    If a detector combines three feature groups, an ablation reruns it with
+    each group removed. Ablations test whether the idea a paper credits is
+    really what produces the improvement, which is the incremental testing
+    that benchmarking guidelines ask for.
+  related: [baseline, hypothesis]
+  topicId: RES-02
+
+- id: data-snooping
+  term: Data snooping
+  aliases: [data leakage, test-set leakage, temporal snooping]
+  short: 'Letting a model or analysis use information it would not have in practice, such as test data or future data, so results look better than they will be.'
+  long: >
+    Examples include tuning a threshold on the test set, normalizing features
+    with statistics computed over all the data, and randomly splitting
+    time-ordered data so that training includes samples from after the test
+    period. Arp et al. list it among the common pitfalls of machine learning in
+    security. Split by time and keep the test set sealed until the end.
+  related: [sampling-bias, threats-to-validity, baseline]
+  topicId: RES-02
+
+- id: sampling-bias
+  term: Sampling bias
+  aliases: [selection bias]
+  short: 'A distortion that arises when the collected data do not represent the population or setting that the conclusions are meant to cover.'
+  long: >
+    In security it often comes from convenience data: malware from one feed,
+    traffic from one campus, or phishing samples from a public list that
+    over-represents easy cases. More data does not fix it by itself; data
+    collected to match the deployment does, together with an honest statement
+    of what the data leave out.
+  related: [data-snooping, threats-to-validity, base-rate-fallacy]
+  topicId: RES-02
+
+- id: menlo-report
+  term: Menlo Report
+  aliases: [Menlo principles]
+  short: 'A 2012 report that adapts the ethical principles of human-subjects research to information and communication technology research, including security research.'
+  long: >
+    It builds on the Belmont Report's principles of respect for persons,
+    beneficence and justice, and adds respect for law and public interest.
+    USENIX Security asks authors to start their stakeholder-based ethics
+    analysis from these principles, and says institutional review board
+    approval does not replace that analysis.
+  related: [responsible-disclosure, peer-review]
+  topicId: RES-02
+
+- id: reproducibility
+  term: Reproducibility
+  aliases: [reproducible research]
+  short: "The ability of a different team to obtain a study's results using the original authors' artifacts and experimental setup."
+  long: >
+    ACM's artifact badging policy (version 1.1) separates three ideas.
+    Repeatability: the same team repeats its own measurement with the same
+    setup. Reproducibility: a different team obtains the result with the same
+    setup, usually the authors' artifacts. Replicability: a different team
+    obtains the result with a setup it developed independently. Results must
+    agree within a tolerance that keeps the main claims intact, not bit for
+    bit.
+  related: [research-artifact, artifact-evaluation]
+  topicId: RES-03
+
+- id: research-artifact
+  term: Research artifact
+  aliases: [artifact]
+  short: 'A digital object created for or produced by a study, such as code, scripts, datasets, models or raw results, that others need in order to check or reuse the work.'
+  long: >
+    ACM's badging policy defines artifacts this way. A useful artifact maps
+    each claim in the paper to a command that regenerates it, pins software
+    versions, records random seeds, states the data's license and access
+    conditions, and gives expected run times.
+  related: [reproducibility, artifact-evaluation]
+  topicId: RES-03
+
+- id: artifact-evaluation
+  term: Artifact evaluation
+  aliases: [AE, artifact review, artifact badging]
+  short: "A review in which a committee checks that a paper's code, data and scripts are available, work as documented, and can reproduce the main results."
+  long: >
+    Venues award badges for the outcome. ACM's policy defines Artifacts
+    Available, Artifacts Evaluated (Functional or Reusable) and Results
+    Validated (Reproduced or Replicated). USENIX Security 2026 requires
+    accepted papers to make their artifacts available and offers optional
+    evaluations for the Artifacts Functional and Results Reproduced badges.
+  related: [research-artifact, reproducibility, peer-review]
+  topicId: RES-03
+
+- id: confusion-matrix
+  term: Confusion matrix
+  aliases: [error matrix]
+  short: "A table that counts a classifier's true positives, false positives, false negatives and true negatives, from which most detection metrics are computed."
+  long: >
+    [[precision|Precision]], [[recall]], the
+    [[false-positive-rate|false-positive rate]] and accuracy all come from its
+    four cells. Publishing the raw counts, not only the rates, lets readers
+    recompute any metric and see the base rate.
+  related: [precision, recall, false-positive-rate]
+  topicId: RES-04
+
+- id: false-positive-rate
+  term: False-positive rate
+  aliases: [FPR, false alarm rate, fall-out]
+  short: 'The share of actual negatives that a detector wrongly flags: false positives divided by all actual negatives.'
+  long: >
+    Because benign events vastly outnumber attacks, even a tiny false-positive
+    rate can produce more false alarms than true ones; this is the
+    [[base-rate-fallacy|base-rate fallacy]]. One minus the false-positive rate
+    is the true negative rate, also called specificity.
+  related: [precision, recall, confusion-matrix, base-rate-fallacy]
+  topicId: RES-04
+
+- id: base-rate-fallacy
+  term: Base-rate fallacy
+  aliases: [base-rate neglect]
+  short: 'The error of judging an alert or test result while ignoring how rare the condition is, which makes rare-event detectors look far more precise than they are.'
+  long: >
+    If one event in 10,000 is an attack, a detector that catches every attack
+    but flags 1% of benign events raises about 100 false alarms for each real
+    one. Axelsson made this argument about intrusion detection in 1999, and
+    Arp et al. still found it common in machine-learning security papers in
+    2022. Report the base rate and the [[precision]] at that base rate.
+  related: [false-positive-rate, precision, recall]
+  topicId: RES-04
+
+- id: confidence-interval
+  term: Confidence interval
+  aliases: [CI, 95% confidence interval]
+  short: 'A range computed from data by a method that, over many repeated samples, would contain the true value a stated share of the time, such as 95%.'
+  long: >
+    An interval shows how far a measured rate could move with a different
+    sample. For proportions such as detection rates, the Wilson score interval
+    behaves better than the simple normal approximation, which can give limits
+    below 0% or above 100% when samples are small or rates are extreme.
+  related: [effect-size, statistical-significance]
+  topicId: RES-04
+
+- id: statistical-significance
+  term: Statistical significance
+  aliases: [statistically significant, significance level]
+  short: 'The label for a result whose p-value falls below a threshold chosen in advance, meaning the data would be unusual if there were no real effect.'
+  long: >
+    Significance is not importance. A tiny, useless difference can be
+    significant with enough data, and a large one can miss the threshold in a
+    small study. The American Statistical Association's 2016 statement warns
+    against basing conclusions only on whether a [[p-value]] crosses a
+    threshold. Report the [[effect-size|effect size]] and a
+    [[confidence-interval|confidence interval]] with any test.
+  related: [p-value, effect-size, confidence-interval]
+  topicId: RES-04
+
+- id: p-value
+  term: p-value
+  aliases: [p value]
+  short: 'The probability of data at least as extreme as those observed if a specified statistical model, usually "no effect", were true.'
+  long: >
+    A small p-value says the data fit poorly with the no-effect model. It is
+    not the probability that the hypothesis is true, and it does not measure
+    how large or important an effect is. Running many tests and reporting the
+    smallest p-value produces false discoveries.
+  related: [statistical-significance, hypothesis, effect-size]
+  topicId: RES-04
+
+- id: effect-size
+  term: Effect size
+  aliases: [magnitude of effect]
+  short: 'A number that states how large a difference or relationship is, such as the gap between two detection rates, separately from whether it is statistically significant.'
+  long: >
+    Common effect sizes for rates are the absolute difference, the relative
+    risk and the odds ratio. Report an effect size with its
+    [[confidence-interval|confidence interval]] so readers can judge both the
+    size and the uncertainty.
+  related: [confidence-interval, statistical-significance, p-value]
+  topicId: RES-04
+
+- id: formal-verification
+  term: Formal verification
+  aliases: [formal methods]
+  short: 'Using a mathematical model and proofs or exhaustive tools to show that a design or program satisfies a precisely stated property.'
+  long: >
+    A verification result is a statement about a model under stated
+    assumptions, not about the running system. It is strongest when the model
+    is close to the implementation and the assumptions, such as the attacker's
+    abilities, are explicit and justified. [[model-checking|Model checking]]
+    and machine-checked proofs are two main approaches.
+  related: [model-checking, invariant, safety-property]
+  topicId: RES-05
+
+- id: model-checking
+  term: Model checking
+  aliases: [model checker]
+  short: 'Automatically exploring every reachable state of a finite model of a system to check a property, and printing a counterexample trace when the property fails.'
+  long: >
+    Model checkers such as TLC for TLA+ explore every interleaving of
+    concurrent steps, which is where people tend to miss bugs. The catch is
+    state-space explosion: the number of states grows quickly with the number
+    of processes and values, so models are kept small and their limits are
+    stated.
+  related: [formal-verification, invariant, safety-property, liveness-property]
+  topicId: RES-05
+
+- id: invariant
+  term: Invariant
+  aliases: [state invariant]
+  short: 'A condition that must hold in every reachable state of a system, such as "a reset token changes the password at most once."'
+  long: >
+    Invariants express [[safety-property|safety properties]]: something bad
+    never happens. A model checker tests the invariant in every state it
+    reaches and, if it fails, reports a path from the initial state to the
+    violating one.
+  related: [safety-property, model-checking]
+  topicId: RES-05
+
+- id: safety-property
+  term: Safety property
+  short: 'A property stating that something bad never happens, so any violation can be shown by a finite sequence of steps.'
+  long: >
+    Examples: "no session is accepted after logout" and "two users never hold
+    the same lock." Because a violation is a finite trace, a
+    [[model-checking|model checker]] can show it as a concrete counterexample.
+  related: [liveness-property, invariant, model-checking]
+  topicId: RES-05
+
+- id: liveness-property
+  term: Liveness property
+  short: 'A property stating that something good eventually happens, such as every request eventually receiving an answer.'
+  long: >
+    No finite prefix of an execution can violate a liveness property, because
+    the good thing might still happen later. Checking liveness needs fairness
+    assumptions, for example that a process that stays ready to run is
+    eventually scheduled.
+  related: [safety-property, model-checking]
+  topicId: RES-05
+
+- id: dolev-yao-model
+  term: Dolev-Yao model
+  aliases: [Dolev-Yao attacker, symbolic attacker model]
+  short: 'A symbolic attacker model for protocol analysis in which the attacker controls the network but cannot break the cryptography.'
+  long: >
+    The attacker can read, block, replay and inject messages and combine
+    everything it has learned, but can decrypt only with the right key.
+    ProVerif and Tamarin analyze protocols against attackers of this kind. A
+    protocol proved secure in such a model can still fail through a weak
+    primitive, a side channel or an implementation bug.
+  related: [formal-verification, adversary-in-the-middle]
+  topicId: RES-05
+
+- id: assurance-case
+  term: Assurance case
+  aliases: [security case, assurance argument]
+  short: 'A structured argument that a system meets a security claim, linking the claim to sub-claims and to the evidence that supports each one.'
+  long: >
+    Each claim is backed by evidence such as tests, analyses, reviews or
+    proofs, and each step of reasoning states its assumptions. Writing one
+    makes gaps visible: a claim with no evidence, or evidence that rests on an
+    assumption nobody checked.
+  related: [assurance, threat-model, threats-to-validity]
+  topicId: RES-06
+
+- id: ground-truth
+  term: Ground truth
+  aliases: [ground-truth labels, gold labels]
+  short: "The correct labels for an evaluation dataset, such as which events really were attacks, against which a detector's output is scored."
+  long: >
+    Ground truth must be established independently of the system being
+    evaluated; labeling data with the detector itself makes the evaluation
+    circular. Record how labels were made, by whom, and how often independent
+    labelers agreed.
+  related: [confusion-matrix, sampling-bias]
+  topicId: RES-07
+
+- id: peer-review
+  term: Peer review
+  aliases: [refereeing, paper review]
+  short: 'The evaluation of a research paper by independent experts, usually anonymous, who recommend whether to publish it and how to improve it.'
+  long: >
+    Security conferences review in rounds, often give authors a rebuttal
+    period to answer factual questions and reviewer queries, and may accept a
+    paper subject to a shepherd approving agreed changes. Review is a filter,
+    not a verification: reviewers rarely rerun experiments.
+  related: [rebuttal, double-blind-review, artifact-evaluation, threats-to-validity]
+  topicId: RES-08
+
+- id: rebuttal
+  term: Rebuttal
+  aliases: [author response, rebuttal period]
+  short: "The authors' written reply to their paper's reviews, sent before the final decision, to correct misunderstandings, answer reviewers' questions and state planned changes."
+  long: >
+    Venues set when it happens and who gets one; IEEE S&P 2026, for example,
+    offers an interactive rebuttal only to papers that reach its second round.
+    A strong rebuttal answers the points that could change the decision
+    first, cites evidence, concedes valid criticism and promises only changes
+    the authors can deliver.
+  related: [peer-review, double-blind-review]
+  topicId: RES-08
+
+- id: double-blind-review
+  term: Double-blind review
+  aliases: [anonymous review, anonymized submission]
+  short: 'Peer review in which the reviewers do not know who the authors are and the authors do not know who the reviewers are.'
+  long: >
+    Authors anonymize the submission: no names or affiliations, their own
+    earlier work cited in the third person, and anonymized links to any
+    artifacts. Major security venues may reject papers that are not properly
+    anonymized without reviewing them.
+  related: [peer-review, rebuttal]
+  topicId: RES-08

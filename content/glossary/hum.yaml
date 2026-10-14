@@ -1,0 +1,317 @@
+# Glossary: human factors and usable security (HUM domain).
+# Ids are canonical and must stay stable. Terms that belong to other domains
+# (phishing, social-engineering, mfa, passkey, and so on) live in their files.
+
+- id: pretexting
+  term: Pretexting
+  aliases: [pretext]
+  short: 'Inventing a scenario and a false role, such as a help-desk technician or an auditor, to persuade someone to share information or take an action.'
+  long: >
+    The pretext is the story that explains why the attacker is asking. A good
+    one fits what the target already knows, which is why attackers research
+    names, roles, and jargon first. MITRE CAPEC catalogs it as CAPEC-407.
+  related: [social-engineering, vishing, spear-phishing]
+  topicId: HUM-01
+
+- id: spear-phishing
+  term: Spear phishing
+  aliases: [spearphishing, targeted phishing]
+  short: 'Phishing tailored to a specific person or small group, using researched details such as names, roles, and current projects to make the message believable.'
+  related: [phishing, whaling, business-email-compromise]
+  topicId: HUM-01
+
+- id: whaling
+  term: Whaling
+  aliases: [executive phishing]
+  short: 'Spear phishing aimed at senior executives, whose authority over payments and sensitive data makes them especially valuable targets.'
+  related: [spear-phishing, business-email-compromise]
+  topicId: HUM-01
+
+- id: smishing
+  term: Smishing
+  aliases: [SMS phishing, text-message phishing]
+  short: 'Phishing delivered by SMS or another text-messaging service, usually urging the recipient to tap a link or call a number.'
+  related: [phishing, vishing]
+  topicId: HUM-01
+
+- id: vishing
+  term: Vishing
+  aliases: [voice phishing, phone phishing]
+  short: 'Phishing by voice call, in which the caller poses as a trusted party, such as a help desk or a bank, to obtain credentials, codes, or access.'
+  related: [phishing, pretexting, smishing]
+  topicId: HUM-01
+
+- id: baiting
+  term: Baiting
+  aliases: [USB drop]
+  short: 'Leaving or offering something enticing, such as a labeled USB drive or a free download, so that the target opens or runs it.'
+  related: [social-engineering, quid-pro-quo]
+  topicId: HUM-01
+
+- id: quid-pro-quo
+  term: Quid pro quo
+  aliases: [quid pro quo attack]
+  short: 'A social-engineering approach that offers a service or reward, such as free technical support or a gift, in exchange for information or access.'
+  related: [social-engineering, baiting, pretexting]
+  topicId: HUM-01
+
+- id: tailgating
+  term: Tailgating
+  aliases: [piggybacking]
+  short: 'Following an authorized person through a controlled entrance without presenting your own credential, usually by relying on their politeness.'
+  related: [social-engineering, pretexting]
+  topicId: HUM-01
+
+- id: business-email-compromise
+  term: Business email compromise
+  aliases: [BEC, CEO fraud, email account compromise, EAC]
+  short: 'Fraud in which a criminal impersonates, or takes over the mailbox of, an executive, employee, or supplier to redirect payments or obtain sensitive data.'
+  long: >
+    BEC messages often carry no link or attachment at all, only a request,
+    such as new bank details for a known supplier. Email authentication does
+    not stop it when the attacker uses a look-alike domain or a real but
+    compromised mailbox, so the main defense is a payment procedure built on
+    [[out-of-band-verification]] and a second approver.
+  related: [spear-phishing, whaling, out-of-band-verification, spoofing]
+  topicId: HUM-01
+
+- id: mfa-fatigue
+  term: MFA fatigue
+  aliases: [push bombing, MFA bombing, push fatigue]
+  short: 'Flooding a user with repeated multi-factor push prompts, often alongside a pretext call, until the user approves one just to make them stop.'
+  related: [vishing, social-engineering]
+  topicId: HUM-01
+
+- id: sim-swapping
+  term: SIM swapping
+  aliases: [SIM swap, SIM hijacking]
+  short: "Deceiving a mobile carrier into moving a victim's phone number to a SIM card the attacker controls, so calls and text-message codes go to the attacker."
+  related: [smishing, mfa-fatigue]
+  topicId: HUM-01
+
+- id: out-of-band-verification
+  term: Out-of-band verification
+  aliases: [callback verification, independent verification]
+  short: 'Confirming a request through a separate, previously trusted channel, such as a phone number on file, rather than any contact details supplied with the request.'
+  related: [business-email-compromise, pretexting]
+  topicId: HUM-01
+
+- id: security-awareness
+  term: Security awareness
+  aliases: [security awareness training, SAT, cybersecurity awareness]
+  short: 'Education that helps people recognize security threats and know what to do about them, such as pausing, verifying a request, and reporting it.'
+  long: >
+    Awareness is the broadest layer of a learning program; NIST SP 800-50
+    Rev. 1 places it alongside role-based training and education. Its success
+    is measured by changed behavior, such as more and faster reports, not by
+    course completions.
+  related: [phishing-simulation, social-engineering, security-culture]
+  topicId: HUM-02
+
+- id: phishing-simulation
+  term: Phishing simulation
+  aliases: [simulated phishing, phishing exercise, phishing test]
+  short: 'An authorized exercise in which an organization sends realistic but harmless phishing emails to its own staff to practice and measure their responses.'
+  long: >
+    A simulation's click rate depends on how hard the email is for its
+    audience, so results should be read with a difficulty rating such as the
+    [[phish-scale]]. Ethical programs are announced in advance (though
+    individual emails are not), reviewed by legal staff, and never punitive.
+  related: [phish-scale, embedded-training, security-awareness, phishing]
+  topicId: HUM-02
+
+- id: embedded-training
+  term: Embedded training
+  aliases: [contextual training, just-in-time phishing training, teachable-moment training]
+  short: 'Training shown to a person immediately after they fall for a simulated phish, such as a page explaining the cues they missed.'
+  long: >
+    Common in industry, but a 15-month field study of more than 14,000
+    employees (Lain, Kostiainen, and Capkun, IEEE S&P 2022) found no
+    resilience benefit and higher click rates among employees who received
+    it.
+  related: [phishing-simulation, security-awareness]
+  topicId: HUM-02
+
+- id: phish-scale
+  term: NIST Phish Scale
+  aliases: [Phish Scale, NIST TN 2276]
+  short: "A NIST method that rates how hard a phishing email is for people to detect, by combining its number of visible cues with how well its premise fits the recipient's work."
+  long: >
+    Few cues and strong premise alignment make an email "very difficult";
+    many cues and weak alignment make it "least difficult." The rating gives
+    context to click and reporting rates, so campaigns of different
+    difficulty are not compared as if they were the same test.
+  related: [phishing-simulation, phishing]
+  topicId: HUM-02
+
+- id: security-warning
+  term: Security warning
+  aliases: [warning dialog, interstitial warning, browser warning]
+  short: 'A message that interrupts a person to alert them to a hazard and asks them to act, such as a full-page browser alert about an invalid certificate.'
+  long: >
+    Lorrie Faith Cranor defines warnings as communications that alert users
+    to take immediate action to avoid a hazard. A warning is worth showing
+    only when the system cannot decide on its own, a safe option exists, and
+    false alarms are rare enough that people still take it seriously.
+  related: [human-in-the-loop, habituation, false-positive]
+  topicId: HUM-03
+
+- id: human-in-the-loop
+  term: Human in the loop
+  aliases: [human-in-the-loop security, HITL]
+  short: 'A security design in which a person must perform a task, such as heeding a warning or verifying a request, for the protection to work.'
+  long: >
+    Cranor's framework (2008) treats that person as a system component who can
+    fail at predictable steps: noticing the communication, understanding it,
+    knowing what to do, remembering it, and being willing and able to act.
+    The first design question is whether the task can be automated instead.
+  related: [security-warning, usable-security]
+  topicId: HUM-03
+
+- id: habituation
+  term: Habituation
+  aliases: [warning fatigue]
+  short: "The fading of a person's response to a stimulus they see repeatedly, which leads people to dismiss familiar warnings without reading them."
+  long: >
+    Every warning that turns out to be a false alarm speeds habituation. In
+    security operations the same effect on analysts is called
+    [[alert-fatigue]].
+  related: [security-warning, alert-fatigue, false-positive]
+  topicId: HUM-03
+
+- id: usable-security
+  term: Usable security
+  aliases: [usable privacy and security, human-centered security, HCI-sec]
+  short: 'The study and practice of designing security so that people can use it correctly and willingly, making the secure way to do a task the easy way.'
+  long: >
+    Usable security treats user mistakes as design feedback rather than as
+    the users' fault. It applies the classic principle of
+    [[psychological-acceptability]]: a protection that people find too costly
+    will be bypassed.
+  related: [human-in-the-loop, psychological-acceptability, security-warning]
+  topicId: HUM-04
+
+- id: password-composition-rule
+  term: Password composition rule
+  aliases: [complexity rule, password complexity requirement, character-class rule]
+  short: 'A requirement that a password contain certain kinds of characters, such as an uppercase letter, a digit, and a symbol.'
+  long: >
+    People tend to satisfy these rules by decorating a familiar word, as in
+    Summer2026!, so the rules add burden without much unpredictability. NIST
+    SP 800-63B-4 says verifiers shall not impose them and relies on length
+    and a [[password-blocklist]] instead.
+  related: [password-blocklist, usable-security]
+  topicId: HUM-04
+
+- id: password-blocklist
+  term: Password blocklist
+  aliases: [banned password list, password denylist, breached password check]
+  short: 'A list of commonly used, expected, or previously compromised passwords that a site checks every new password against, rejecting any match.'
+  long: >
+    A blocklist targets exactly the guesses attackers try first. SP 800-63B-4
+    requires the whole proposed password to be compared, not substrings, and
+    the list should be large enough to catch likely guesses without
+    rejecting so many choices that users are frustrated.
+  related: [password-composition-rule, credential-stuffing, password-spraying]
+  topicId: HUM-04
+
+- id: privacy-notice
+  term: Privacy notice
+  aliases: [privacy policy, privacy statement, data notice]
+  short: 'A statement telling people what personal data an organization collects, why, who receives it, how long it is kept, and what choices they have.'
+  long: >
+    Full policies are rarely read, so effective notices are layered (a short
+    first layer linking to the full text) and timed to the moment a decision
+    is made, such as a just-in-time request when a feature first needs the
+    data.
+  related: [notice-and-choice, dark-pattern, data-minimization]
+  topicId: HUM-05
+
+- id: notice-and-choice
+  term: Notice and choice
+  aliases: [notice-and-consent, informed consent model]
+  short: 'The privacy model in which an organization discloses its data practices and each person decides whether to accept them.'
+  long: >
+    It works only if people can absorb the notice, the organization knows
+    its own data flows, and declining is possible and easy. When notices go
+    unread or choices are bundled, consent becomes a formality, which is one
+    argument for privacy-protective defaults and limits on collection.
+  related: [privacy-notice, dark-pattern, privacy-by-design]
+  topicId: HUM-05
+
+- id: dark-pattern
+  term: Dark pattern
+  aliases: [deceptive design, manipulative design, deceptive pattern]
+  short: 'An interface design that tricks or manipulates people into choices they would not otherwise make, such as a greyed-out "Reject" button.'
+  long: >
+    The US Federal Trade Commission's 2022 staff report describes privacy
+    dark patterns including defaults that maximize data sharing, confusing
+    toggles, choices buried in sub-tabs, and repeated prompts until a person
+    gives in.
+  related: [privacy-notice, notice-and-choice]
+  topicId: HUM-05
+
+- id: insider-threat
+  term: Insider threat
+  aliases: [insider risk, malicious insider, unintentional insider]
+  short: 'The threat that someone with authorized access, such as an employee, contractor, or partner, will harm the organization, whether intentionally or not.'
+  long: >
+    CISA distinguishes unintentional insiders (negligent or accidental),
+    intentional ones, collusive insiders who work with an outside threat
+    actor, and third parties such as vendors. Because insiders use legitimate
+    access, assessing an alert requires context, corroboration, and care to
+    keep evidence separate from assumptions.
+  related: [user-activity-monitoring, social-engineering, least-privilege]
+  topicId: HUM-06
+
+- id: user-activity-monitoring
+  term: User activity monitoring
+  aliases: [UAM, employee monitoring, user and entity behavior analytics, UEBA]
+  short: "Collecting and analyzing records of what users do on an organization's systems, such as file access and downloads, to detect possible insider threats."
+  long: >
+    Monitoring should be disclosed to employees, limited to what the defined
+    risks require, and restricted to people with a need to know. Because real
+    insider cases are rare, most alerts are false alarms, so an alert starts
+    an assessment rather than ending one; see [[base-rate-fallacy]].
+  related: [insider-threat, base-rate-fallacy]
+  topicId: HUM-06
+
+- id: security-culture
+  term: Security culture
+  aliases: [cyber security culture, cybersecurity culture, reporting culture]
+  short: 'The shared beliefs, norms, and habits that shape how people in an organization think and act about security, including what they expect to happen when they report a problem.'
+  long: >
+    Policies say what people should do; culture shows in what they actually
+    do, and above all in how the organization responds when someone admits a
+    mistake or raises a concern. The UK NCSC published six cyber security
+    culture principles in 2025, including building the safety, trust, and
+    processes that encourage openness around security.
+  related: [psychological-safety, security-awareness, post-incident-review]
+  topicId: HUM-07
+
+- id: psychological-safety
+  term: Psychological safety
+  aliases: [speaking up]
+  short: 'The belief that one will not be punished or humiliated for speaking up with ideas, questions, concerns, or mistakes, in the definition by Amy C. Edmondson that the UK NCSC quotes.'
+  long: >
+    In security, psychological safety decides whether people report their own
+    slips and suspicious events quickly. Punishing honest mistakes erodes it,
+    and the reports that would have revealed problems stop arriving. Blameless
+    post-incident reviews and fast, thankful replies to reporters help build it.
+  related: [security-culture, post-incident-review]
+  topicId: HUM-07
+
+- id: captcha
+  term: CAPTCHA
+  aliases: [CAPTCHAs, human verification challenge]
+  short: 'A challenge, such as distorted text, an audio clip, or an image puzzle, that a website uses to try to tell a person from an automated program.'
+  long: >
+    The name stands for Completely Automated Public Turing test to tell
+    Computers and Humans Apart. CAPTCHAs create barriers for people with
+    visual, hearing, cognitive, and other disabilities, and the W3C notes that
+    many can be defeated by algorithms or by crowd-sourced human solvers. WCAG
+    requires alternatives in more than one sensory mode, and non-interactive
+    controls such as limits on failed attempts often meet the same goal
+    without a puzzle.
+  related: [usable-security, credential-stuffing, brute-force-attack]
+  topicId: HUM-08

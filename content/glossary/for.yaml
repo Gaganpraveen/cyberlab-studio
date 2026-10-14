@@ -1,0 +1,434 @@
+# Glossary: digital forensics and evidence (FOR-01 to FOR-08).
+# Ids are canonical and must stay stable. Terms from other domains are linked, not redefined.
+
+- id: digital-evidence
+  term: Digital evidence
+  aliases: [electronic evidence]
+  short: 'Information stored or transmitted in digital form that may help prove or disprove a claim in an investigation or proceeding.'
+  long: >
+    Digital evidence can be changed without visible trace and copied perfectly,
+    so its value depends on [[integrity]] checks with [[hash-function|hashes]]
+    and on a documented [[chain-of-custody]].
+  related: [chain-of-custody, forensic-image, evidence-authentication]
+  topicId: FOR-01
+
+- id: chain-of-custody
+  term: Chain of custody
+  aliases: [CoC, custody log]
+  short: 'A continuous written record of who held an item of evidence, when, where, and why, from collection until it is presented.'
+  long: >
+    RFC 3227 lists what the record must answer: who discovered and collected
+    the evidence, who handled or examined it, who had custody in each period,
+    and when and how each transfer happened. A gap does not automatically make
+    evidence unusable, but it must be disclosed and explained.
+  related: [digital-evidence, evidence-authentication, forensic-image]
+  topicId: FOR-01
+
+- id: forensic-image
+  term: Forensic image
+  aliases: [bit-stream image, disk image, physical image, bit-for-bit copy]
+  short: 'A sector-by-sector copy of a storage device, including unallocated and slack space, verified against the source with a cryptographic hash.'
+  long: >
+    Stored as a raw file (often called dd format) or in a forensic container
+    format that adds case notes, compression, and stored hashes. Examiners
+    analyze working copies and keep a master image unchanged. Contrast
+    [[logical-acquisition]].
+  related: [write-blocker, logical-acquisition, hash-function, unallocated-space]
+  topicId: FOR-01
+
+- id: write-blocker
+  term: Write blocker
+  aliases: [write blocking, forensic bridge]
+  short: 'A hardware device or software layer that lets an examiner read a storage device while blocking every command that would write to it.'
+  long: >
+    A write blocker controls only what the host computer sends, and only on the
+    devices where it is enabled. It cannot stop a solid-state drive's own
+    controller from erasing blocks internally.
+  related: [forensic-image, tool-validation]
+  topicId: FOR-01
+
+- id: logical-acquisition
+  term: Logical acquisition
+  aliases: [logical copy, logical collection, targeted collection]
+  short: 'Collecting selected files, folders, or account data as the file system or service presents them, rather than every sector of a device.'
+  long: >
+    Smaller and easier to scope to an authorization than a [[forensic-image]],
+    but it misses deleted data, [[slack-space]], and anything nobody knew to
+    request. It is often the only option for cloud and server sources.
+  related: [forensic-image, digital-evidence]
+  topicId: FOR-01
+
+- id: evidence-authentication
+  term: Authentication of evidence
+  aliases: [authenticating evidence, FRE 901]
+  short: 'Showing that an item of evidence is what the party offering it claims it is, as U.S. Federal Rule of Evidence 901 requires.'
+  long: >
+    For copied data, Federal Rule of Evidence 902(14) allows authentication by
+    a qualified person's certification of a process of digital identification,
+    which ordinarily means matching hash values. This legal sense differs from
+    user [[authentication]].
+  related: [chain-of-custody, digital-evidence, hash-function]
+  topicId: FOR-01
+
+- id: tool-validation
+  term: Tool validation
+  aliases: [tool testing, forensic tool testing]
+  short: 'Testing a specific forensic tool version against data with known contents to show that it produces accurate results and to record its limits.'
+  long: >
+    NIST's Computer Forensics Tool Testing (CFTT) program publishes
+    specifications, test methods, and reports for tools such as disk imagers
+    and write blockers. A validation covers only the features, versions, and
+    conditions that were tested.
+  related: [write-blocker, forensic-image]
+  topicId: FOR-01
+
+- id: file-system-metadata
+  term: File-system metadata
+  aliases: [filesystem metadata, file metadata]
+  short: 'Data a file system keeps about each file rather than its contents, such as its name, size, owner, permissions, timestamps, and content locations.'
+  long: >
+    It lives in structures such as an [[inode]] on ext4 or a
+    [[master-file-table]] record on NTFS. The rules for updating it differ by
+    file system, operating system version, and configuration, so identify all
+    three before interpreting a value.
+  related: [mac-times, inode, master-file-table]
+  topicId: FOR-02
+
+- id: mac-times
+  term: MAC times
+  aliases: [MACB times, file timestamps, mtime, atime, ctime]
+  short: 'The modification, access, and change (or creation) timestamps a file system records for each file, often extended to MACB with birth time.'
+  long: >
+    On Unix-like systems ctime is the inode change time, not creation time.
+    Access times are often updated lazily or not at all, and a copied file
+    usually gets a new birth time while keeping the source's modification time.
+  related: [file-system-metadata, timeline-analysis, timestomping]
+  topicId: FOR-02
+
+- id: inode
+  term: Inode
+  aliases: [index node]
+  short: "On Unix-like file systems, the numbered record holding a file's owner, permissions, size, timestamps, and content locations, but not its name."
+  long: >
+    Names live in directory entries that point to an inode number, so one inode
+    can have several names (hard links). Changes to the inode itself, such as a
+    permission change, update its ctime.
+  related: [file-system-metadata, mac-times]
+  topicId: FOR-02
+
+- id: master-file-table
+  term: Master File Table (MFT)
+  aliases: [MFT]
+  short: "NTFS's central table with one record per file or directory, holding attributes such as timestamps, names, and the content or pointers to it."
+  long: >
+    Each record has a `$STANDARD_INFORMATION` attribute and one or more
+    `$FILE_NAME` attributes, each with its own four timestamps. Ordinary
+    programs can rewrite the first set more easily than the second, so a
+    disagreement between them is worth investigating.
+  related: [file-system-metadata, mac-times, timestomping]
+  topicId: FOR-02
+
+- id: file-signature
+  term: File signature
+  aliases: [magic number, file header]
+  short: "A characteristic byte sequence, usually at the start of a file, that identifies its format regardless of the file's name or extension."
+  long: >
+    For example, PDF files begin with `%PDF` and ZIP archives with `PK` followed
+    by bytes 03 04. [[file-carving|Carving]] tools search raw storage for these
+    signatures.
+  related: [file-carving]
+  topicId: FOR-02
+
+- id: known-file-filtering
+  term: Known-file filtering
+  aliases: [hash set filtering, NSRL filtering, known file filter]
+  short: 'Comparing file hashes against reference sets of known files so examiners can skip known software or flag known contraband and malware.'
+  long: >
+    NIST's National Software Reference Library publishes a Reference Data Set
+    of known, traceable software. Known does not mean harmless: NIST notes the
+    set includes some tools that may be considered malicious.
+  related: [hash-function, digital-evidence]
+  topicId: FOR-02
+
+- id: unallocated-space
+  term: Unallocated space
+  aliases: [free space, unallocated clusters]
+  short: 'Storage that the file system currently marks as available for new data, which often still holds the contents of deleted files.'
+  related: [slack-space, file-carving, forensic-image]
+  topicId: FOR-02
+
+- id: slack-space
+  term: Slack space
+  aliases: [file slack]
+  short: 'The unused bytes between the end of a file and the end of the last storage block allocated to it, which may hold older leftover data.'
+  related: [unallocated-space, forensic-image]
+  topicId: FOR-02
+
+- id: file-carving
+  term: File carving
+  aliases: [data carving, carving]
+  short: 'Recovering files from raw storage by recognizing their content, such as header and footer signatures, without relying on file-system metadata.'
+  long: >
+    Carving works best on contiguous files of formats with clear signatures.
+    Fragmented files, compressed data, and partly overwritten files produce
+    incomplete or false results, so carved output needs verification.
+  related: [unallocated-space, slack-space, file-signature]
+  topicId: FOR-02
+
+- id: network-forensics
+  term: Network forensics
+  aliases: [network forensic analysis]
+  short: 'Capturing, recording, and analyzing network activity to reconstruct what happened and to tie it to specific hosts at specific times.'
+  long: >
+    Its evidence ranges from full [[packet-capture|packet captures]] to
+    [[flow-record|flow records]] and device logs. Because most traffic is
+    encrypted, it usually establishes who communicated with whom, when, and how
+    much, rather than what was said.
+  related: [flow-record, packet-capture, network-address-translation, dhcp]
+  topicId: FOR-03
+
+- id: flow-record
+  term: Flow record
+  aliases: [NetFlow record, IPFIX record, flow data]
+  short: 'A summary of a set of packets that share the same addresses, ports, and protocol, with start and end times and packet and byte counts, but no payload.'
+  long: >
+    IPFIX (RFC 7011) defines a flow as a set of packets passing an observation
+    point during a time interval. Flow records are cheap to keep for months,
+    but they cannot show what was sent, and sampled export can miss short flows.
+  related: [network-forensics, packet-capture]
+  topicId: FOR-03
+
+- id: network-address-translation
+  term: Network address translation (NAT)
+  aliases: [NAT, carrier-grade NAT, CGN, address sharing]
+  short: 'Rewriting packet addresses and ports at a router or firewall so that many inside hosts share one outside address.'
+  long: >
+    Outside observers see only the shared address, so attributing traffic to an
+    inside host needs the translation log with ports and accurate timestamps.
+    RFC 6302 asks Internet-facing servers to log source ports for this reason.
+  related: [ip-address, port, dhcp, network-forensics]
+  topicId: FOR-03
+
+- id: dhcp
+  term: Dynamic Host Configuration Protocol (DHCP)
+  aliases: [DHCP, DHCP lease]
+  short: 'The protocol that leases IP addresses to devices for a limited time, so the same address can belong to different devices at different times.'
+  long: >
+    DHCP server logs map an address to a hardware (MAC) address and hostname for
+    each lease window, which makes them essential for attributing network
+    activity to a device.
+  related: [ip-address, network-address-translation, network-forensics]
+  topicId: FOR-03
+
+- id: order-of-volatility
+  term: Order of volatility
+  short: 'The practice of collecting the most short-lived evidence first, such as memory and network state, before disk contents and archives.'
+  long: >
+    RFC 3227 gives an example order: registers and cache; then routing table,
+    ARP cache, process table, kernel statistics, and memory; temporary file
+    systems; disk; remote logging and monitoring data; physical configuration
+    and network topology; and finally archival media.
+  related: [memory-forensics, live-acquisition, digital-evidence]
+  topicId: FOR-04
+
+- id: live-acquisition
+  term: Live acquisition
+  aliases: [live response, live collection]
+  short: 'Collecting evidence from a system while it is still running, which preserves volatile data but unavoidably changes the system somewhat.'
+  related: [order-of-volatility, memory-forensics, forensic-image]
+  topicId: FOR-04
+
+- id: memory-forensics
+  term: Memory forensics
+  aliases: [RAM forensics, memory analysis]
+  short: "Analyzing a captured copy of a computer's volatile memory to recover processes, network connections, and other state that may never reach disk."
+  long: >
+    Tools rebuild the kernel's bookkeeping from raw bytes, either by walking the
+    lists the kernel maintains or by scanning all of memory for structures,
+    which also finds exited and hidden objects.
+  related: [memory-image, memory-smear, process-tree, order-of-volatility, live-acquisition]
+  topicId: FOR-04
+
+- id: memory-image
+  term: Memory image
+  aliases: [memory dump, RAM dump, memory capture]
+  short: "A file holding a copy of a computer's physical memory, captured from a running system or written by it, for later analysis."
+  long: >
+    Because memory keeps changing, an image cannot be re-read and compared with
+    its source the way a disk image can. Its hash protects the file from the
+    moment it is computed, and the acquisition notes carry the rest.
+  related: [memory-forensics, memory-smear, live-acquisition]
+  topicId: FOR-04
+
+- id: memory-smear
+  term: Memory smear
+  aliases: [smear]
+  short: 'Inconsistency inside a memory image caused by memory changing while it was being copied, so different parts reflect slightly different moments.'
+  long: >
+    Smear can produce structures that point to data that has since changed.
+    Treat garbled or contradictory structures as possible acquisition artifacts
+    before reading meaning into them.
+  related: [memory-image, memory-forensics]
+  topicId: FOR-04
+
+- id: process-tree
+  term: Process tree
+  aliases: [process hierarchy, parent-child process relationships]
+  short: 'The arrangement of running and recently ended processes by which process started which, used to spot unusual parent-child relationships.'
+  long: >
+    A word processor starting a command shell is a classic lead. Some malicious
+    code can forge its recorded parent, so treat the tree as evidence to
+    corroborate rather than proof.
+  related: [memory-forensics, malware]
+  topicId: FOR-04
+
+- id: utc
+  term: Coordinated Universal Time (UTC)
+  aliases: [UTC, Zulu time]
+  short: 'The worldwide reference time scale that civil time zones are defined against, used to put events from different systems on one clock.'
+  related: [timeline-analysis, clock-skew]
+  topicId: FOR-05
+
+- id: timeline-analysis
+  term: Timeline analysis
+  aliases: [timeline reconstruction, event reconstruction, super timeline]
+  short: 'Ordering timestamped events from many sources on a single normalized clock to reconstruct what happened and in what sequence.'
+  long: >
+    Each timestamp is first decoded, converted to [[utc|UTC]] with the zone
+    rule for its date, and corrected for measured [[clock-skew]], with the raw
+    value and every assumption kept beside the result. A timeline shows
+    sequence and proximity, not cause or identity.
+  related: [utc, clock-skew, mac-times, timestomping]
+  topicId: FOR-05
+
+- id: clock-skew
+  term: Clock skew
+  aliases: [clock drift, clock offset]
+  short: "The difference between a device's clock and a reference time such as UTC, which must be measured and corrected before events from different systems are compared."
+  related: [utc, timeline-analysis]
+  topicId: FOR-05
+
+- id: timestomping
+  term: Timestomping
+  aliases: [timestamp manipulation, timestamp tampering, T1070.006]
+  short: 'Deliberately changing file timestamps so that a file appears to have been created, modified, or accessed at a different time.'
+  long: >
+    MITRE ATT&CK lists it as technique T1070.006 (Indicator Removal:
+    Timestomp). Detection relies on inconsistencies, such as NTFS
+    `$STANDARD_INFORMATION` times that disagree with the `$FILE_NAME` times or
+    with independent records like logs; because adversaries may alter both
+    sets, agreement between them is not proof either.
+  related: [mac-times, master-file-table, timeline-analysis]
+  topicId: FOR-05
+
+- id: email-header
+  term: Email header
+  aliases: [message header, full headers, header fields]
+  short: 'The block of fields at the top of an email, such as From, Date, Message-ID, and Received, some written by the sender and some added by servers in transit.'
+  long: >
+    Defined by RFC 5322. Each server that handles a message prepends a Received
+    field, so the newest hops are on top. Read the route from the bottom up,
+    but trust it from the top down, only as far as servers you can vouch for.
+  related: [authentication-results, spoofing, spf, dkim, dmarc]
+  topicId: FOR-06
+
+- id: authentication-results
+  term: Authentication-Results header field
+  aliases: [Authentication-Results, RFC 8601]
+  short: "A header field in which a receiving domain's verifier records the outcome of checks such as SPF, DKIM, and DMARC for a message."
+  long: >
+    Defined by RFC 8601. Each field names its verifier with an authserv-id.
+    Because senders can insert fake fields, trust only fields from your own
+    verifier; border servers are expected to delete or obscure instances that
+    claim to come from inside their trust boundary.
+  related: [email-header, spf, dkim, dmarc]
+  topicId: FOR-06
+
+- id: document-metadata
+  term: Document metadata
+  aliases: [file properties, embedded metadata, EXIF, core properties]
+  short: 'Information stored inside a file about the file itself, such as author, software, revision count, and internal creation and modification dates.'
+  long: >
+    Office Open XML files keep it in `docProps/core.xml`; PDFs and photos have
+    their own formats. It travels with the file when copied, unlike
+    [[file-system-metadata]], but it reflects the author's software and
+    settings and is easy to edit.
+  related: [file-system-metadata, mac-times]
+  topicId: FOR-06
+
+- id: browser-artifact
+  term: Browser artifact
+  aliases: [browser history, web history, browser forensics]
+  short: 'A record a web browser keeps as a side effect of use, such as visit history, download records, cookies, cached files, or saved session state.'
+  long: >
+    Most browsers store these records per profile in SQLite databases, such as
+    `places.sqlite` in Firefox and `History` in Chromium-based browsers. They
+    attribute activity to a browser profile, not a person, and they have gaps:
+    private modes, clearing, and expiry. Collect them with any
+    [[write-ahead-log]] files and keep unrelated personal entries out of view.
+  related: [write-ahead-log, timeline-analysis, pii]
+  topicId: FOR-07
+
+- id: logon-session
+  term: Logon session
+  aliases: [Logon ID, logon type, event 4624]
+  short: 'The context Windows creates when an account successfully logs on, identified by a hexadecimal Logon ID that later events from the same session repeat.'
+  long: >
+    Event 4624 records the logon with a logon type, such as 2 for interactive,
+    3 for network, 7 for unlock, and 10 for Remote Desktop. Matching the Logon
+    ID in process-creation events (4688) ties each process to that logon, and
+    so to an account, which is not the same as a person.
+  related: [security-log, event-correlation, process-tree]
+  topicId: FOR-07
+
+- id: write-ahead-log
+  term: Write-ahead log (SQLite)
+  aliases: [WAL, WAL file, write-ahead logging]
+  short: 'A companion file to which SQLite appends new changes before a checkpoint moves them into the main database file.'
+  long: >
+    The file has the database's name plus `-wal`, and SQLite normally
+    checkpoints and deletes it when the last connection closes. Copying only
+    the main file from a running application can miss recent records, and
+    opening a copy can change it, so collect the WAL and `-shm` files too and
+    query only working copies.
+  related: [browser-artifact, forensic-image]
+  topicId: FOR-07
+
+- id: forensic-report
+  term: Forensic report
+  aliases: [examination report, report of examination, findings report, expert report]
+  short: 'The written account of a forensic examination: the request and its authority, the items examined, the methods, the findings, any opinions with their basis, and the limitations.'
+  long: >
+    A good report keeps observations, inferences, and opinions in separate,
+    labeled layers, so readers can trace each opinion back to the evidence. It
+    gives plausible alternative explanations due consideration, defines the
+    words it uses for strength, avoids claims of certainty, and is reviewed by
+    another qualified examiner before release.
+  related: [digital-evidence, likelihood-ratio, confirmation-bias, peer-review]
+  topicId: FOR-08
+
+- id: likelihood-ratio
+  term: Likelihood ratio
+  aliases: [LR]
+  short: 'How many times more probable an observation is if one hypothesis is true than if a competing hypothesis is true; a measure of how strongly evidence favors one explanation over the other.'
+  long: >
+    A ratio well above 1 supports the first hypothesis, a ratio near 1 does not
+    discriminate, and a ratio well below 1 supports the second. It measures the
+    strength of evidence, not the probability that a hypothesis is true, which
+    also depends on prior information; confusing the two is the transposed
+    conditional, a relative of the [[base-rate-fallacy]].
+  related: [hypothesis, base-rate-fallacy, forensic-report]
+  topicId: FOR-08
+
+- id: confirmation-bias
+  term: Confirmation bias
+  aliases: [confirmatory bias]
+  short: 'The tendency to seek, interpret, and remember information in ways that support what one already believes.'
+  long: >
+    In forensics it can lead an examiner to read ambiguous records as support
+    for a favored theory. Countermeasures include writing down competing
+    hypotheses before analysis, looking for evidence that would refute the
+    favored one, keeping irrelevant context away from the examiner, and
+    independent technical review.
+  related: [hypothesis, peer-review, forensic-report]
+  topicId: FOR-08

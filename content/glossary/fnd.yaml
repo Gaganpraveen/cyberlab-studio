@@ -1,0 +1,338 @@
+# Glossary: security foundations (FND-01 to FND-08).
+# Foundation terms such as cia-triad, risk, threat-model, attack-surface,
+# least-privilege, and defense-in-depth live in foundations-web.yaml; this file
+# links to them and never redefines them.
+
+- id: security-policy
+  term: Security policy
+  aliases: [policy]
+  short: 'A statement of what a system or organization allows and forbids: who may do what to which information, and when.'
+  long: >
+    Lampson separates policy (what the system is supposed to do) from
+    mechanism (how it does it) and [[assurance]] (evidence that it really
+    works). A useful policy is specific enough that a test could show it was
+    violated. Goals such as [[confidentiality]] and [[integrity]] are
+    categories of policy.
+  related: [security-control, cia-triad, assurance]
+  topicId: FND-01
+
+- id: security-control
+  term: Security control
+  aliases: [safeguard, countermeasure, control]
+  short: 'A safeguard, whether technical, procedural, or physical, that protects a security goal by preventing, detecting, or limiting harm.'
+  long: >
+    Controls are often grouped by what they do (prevent, detect, respond,
+    recover) and by how they work (technical, administrative, physical).
+    Every control should trace back to a goal or [[risk]] it addresses, and
+    no control reduces risk to zero.
+  related: [security-policy, risk, defense-in-depth]
+  topicId: FND-02
+
+- id: asset
+  term: Asset
+  short: 'Anything of value that a system or organization must protect, such as data, services, devices, people, or reputation.'
+  long: >
+    Value depends on the stakeholder: a customer database is revenue to a
+    company and privacy to its customers. Knowing what assets exist, and
+    where, is the first step of any [[risk]] assessment.
+  related: [threat, vulnerability, risk, impact]
+  topicId: FND-02
+
+- id: threat
+  term: Threat
+  short: 'Any circumstance or event that could harm an organization or its people through a system, from attacks to errors, failures, and disasters.'
+  long: >
+    NIST SP 800-30 counts hostile attacks, human errors, structural failures
+    of equipment and software, and natural and man-made disasters as threat
+    sources. A [[threat-actor]] is the source of an adversarial threat; a
+    flood is a threat with no actor at all.
+  related: [threat-actor, vulnerability, likelihood, risk]
+  topicId: FND-02
+
+- id: likelihood
+  term: Likelihood
+  aliases: [probability of occurrence]
+  short: 'An estimate of how probable it is that a threat event will occur and cause harm within a stated period.'
+  long: >
+    NIST SP 800-30 splits it into the likelihood that an event is initiated
+    or occurs and the likelihood that it then causes harm. For adversaries,
+    estimates rest on intent, capability, and targeting, and on evidence
+    such as known exploitation. Combined with [[impact]], it yields [[risk]].
+  related: [impact, risk, threat]
+  topicId: FND-02
+
+- id: impact
+  term: Impact
+  aliases: [consequence, magnitude of harm]
+  short: 'The magnitude of harm that would result if a threat event occurred, for example to operations, assets, or individuals.'
+  long: >
+    FIPS 199 rates the impact of losing [[confidentiality]], [[integrity]],
+    or [[availability]] as LOW (limited), MODERATE (serious), or HIGH (severe
+    or catastrophic). Impact depends on the asset and on conditions such as
+    whether one compromise can spread.
+  related: [likelihood, risk, asset]
+  topicId: FND-02
+
+- id: residual-risk
+  term: Residual risk
+  short: 'The risk that remains after security controls are in place, which an owner with authority must either reduce further or accept.'
+  long: >
+    Controls lower [[likelihood]] or [[impact]] but never remove risk
+    entirely. Recording residual risk, and who accepted it, keeps decisions
+    explicit.
+  related: [risk, security-control, likelihood, impact]
+  topicId: FND-02
+
+- id: trust-boundary
+  term: Trust boundary
+  short: 'A place in a system where data or commands pass between parts trusted to different degrees, such as a browser and a server.'
+  long: >
+    Boundaries mark changes of owner, privilege, or assumption, not only
+    network edges; two processes on one machine can sit on opposite sides of
+    one. Every crossing should authenticate the source, authorize the action,
+    and validate the data, and every trust assumption should be written down
+    with its justification.
+  related: [threat-model, data-flow-diagram, attack-surface, zero-trust]
+  topicId: FND-03
+
+- id: data-flow-diagram
+  term: Data-flow diagram (DFD)
+  aliases: [DFD, data flow diagram]
+  short: 'A diagram of how data moves through a system, drawn with external entities, processes, data stores, data flows, and trust boundaries.'
+  long: >
+    DFDs are the most common starting point for threat modeling: analysts
+    walk each element and each flow that crosses a [[trust-boundary]] and ask
+    what could go wrong, often with [[stride]].
+  related: [threat-model, trust-boundary, stride]
+  topicId: FND-03
+
+- id: stride
+  term: STRIDE
+  short: 'A mnemonic for six threat categories: spoofing, tampering, repudiation, information disclosure, denial of service, and elevation of privilege.'
+  long: >
+    Each category is the violation of a property: [[authentication]],
+    [[integrity]], [[non-repudiation]], [[confidentiality]], [[availability]],
+    and [[authorization]]. Analysts ask the relevant questions at each element
+    of a [[data-flow-diagram]]. STRIDE is a prompt for finding threats, not a
+    guarantee of complete coverage.
+  related: [threat-model, data-flow-diagram, attack-tree, spoofing]
+  topicId: FND-03
+
+- id: attack-tree
+  term: Attack tree
+  short: "A tree whose root is an attacker's goal and whose branches are the alternative (OR) or required (AND) steps for reaching it."
+  long: >
+    Described by Bruce Schneier in 1999. Leaves carry labels such as possible
+    or impossible, cost, or required skill, and the labels propagate upward:
+    an OR node takes its best child, and an AND node needs all of its
+    children. Making one child of an AND node impossible removes the whole
+    branch.
+  related: [threat-model, stride, risk]
+  topicId: FND-03
+
+- id: zero-trust
+  term: Zero trust
+  aliases: [zero trust architecture, ZTA]
+  short: 'A security approach that grants no implicit trust because of network location and instead authenticates and authorizes each access to each resource.'
+  long: >
+    Zero trust moves defenses from the network perimeter to users, devices,
+    and resources. Being "inside" a network is not evidence of identity or
+    permission.
+  related: [trust-boundary, defense-in-depth, least-privilege, authentication]
+  topicId: FND-06
+
+- id: secure-by-design
+  term: Secure by design
+  aliases: [security by design]
+  short: 'Building products so that security is a core design goal from the start, with safe settings by default, rather than something customers must add later.'
+  long: >
+    The approach puts responsibility on the people who design and build a
+    product instead of on its users, for example by shipping with
+    [[fail-safe-defaults]], removing whole classes of flaws at their source,
+    and applying principles such as [[least-privilege]].
+  related: [fail-safe-defaults, least-privilege, defense-in-depth]
+  topicId: FND-05
+
+- id: separation-of-duties
+  term: Separation of duties
+  aliases: [separation of privilege, separation of responsibility, segregation of duties]
+  short: 'Dividing a sensitive action among several people, roles, or conditions so that no single party can complete it alone.'
+  long: >
+    Saltzer and Schroeder state the design version as separation of
+    privilege: a mechanism that needs two keys to unlock is more robust than
+    one that needs only one. In organizations it means, for example, that the
+    person who requests a payment cannot also approve it, which limits both
+    fraud and honest mistakes.
+  related: [least-privilege, complete-mediation, authorization]
+  topicId: FND-05
+
+- id: fail-safe-defaults
+  term: Fail-safe defaults
+  aliases: [default deny, fail closed, fail secure]
+  short: 'Basing access on explicit permission, so that anything not allowed is denied and a failure leaves the system in a safe state.'
+  long: >
+    One of Saltzer and Schroeder's design principles. An allow-list that
+    forgets an entry fails safely by refusing access; a block-list that
+    forgets an entry fails dangerously by granting it. Error handlers should
+    deny access rather than allow it.
+  related: [allowlist, complete-mediation, least-privilege]
+  topicId: FND-05
+
+- id: complete-mediation
+  term: Complete mediation
+  short: 'Checking every access to every protected resource for authority, every time, rather than relying on an earlier check.'
+  long: >
+    One of Saltzer and Schroeder's design principles. It is usually
+    implemented by a single reference monitor that cannot be bypassed.
+    Caching an access decision, or checking only in the user interface,
+    violates it.
+  related: [authorization, fail-safe-defaults, least-privilege]
+  topicId: FND-05
+
+- id: economy-of-mechanism
+  term: Economy of mechanism
+  aliases: [keep it simple]
+  short: 'Keeping security mechanisms as small and simple as possible, so they can be understood, reviewed, and tested thoroughly.'
+  long: >
+    One of Saltzer and Schroeder's design principles. Simple mechanisms leave
+    fewer places for flaws to hide, which is also why the trusted part of a
+    system should be small.
+  related: [open-design, least-common-mechanism, attack-surface]
+  topicId: FND-05
+
+- id: open-design
+  term: Open design
+  short: 'The principle that security should not depend on keeping the design secret, only on keeping specific keys or passwords secret.'
+  long: >
+    One of Saltzer and Schroeder's design principles, and the general form of
+    [[kerckhoffs-principle]]. Secret designs leak and cannot be reviewed by
+    outsiders, while keys can be changed when they are exposed.
+  related: [kerckhoffs-principle, economy-of-mechanism]
+  topicId: FND-05
+
+- id: least-common-mechanism
+  term: Least common mechanism
+  short: 'Minimizing mechanisms that are shared by several users and relied on by all of them, since each shared path can leak or spread harm.'
+  long: >
+    One of Saltzer and Schroeder's design principles. Shared caches, shared
+    temporary directories, and shared accounts are common examples; each can
+    become a channel between users who should be isolated.
+  related: [least-privilege, economy-of-mechanism]
+  topicId: FND-05
+
+- id: psychological-acceptability
+  term: Psychological acceptability
+  aliases: [usability of security]
+  short: 'Designing protection so that people can use it easily and correctly as part of their normal work, so they do not bypass it.'
+  long: >
+    One of Saltzer and Schroeder's design principles. A control that is
+    confusing or slow invites workarounds, such as shared passwords or
+    disabled checks, that leave the system weaker than a simpler control
+    people actually use.
+  related: [least-privilege, fail-safe-defaults]
+  topicId: FND-05
+
+- id: kerckhoffs-principle
+  term: "Kerckhoffs's principle"
+  aliases: [Kerckhoffs principle, Shannon's maxim]
+  short: 'A cryptosystem should remain secure even if the attacker knows everything about it except the key.'
+  long: >
+    Named after Auguste Kerckhoffs, who stated it for military ciphers, and
+    later restated by Claude Shannon as the assumption that the enemy knows
+    the system. It is the cryptographic form of [[open-design]]: the key is
+    the only thing that must stay secret.
+  related: [open-design, encryption]
+  topicId: FND-05
+
+- id: security-metric
+  term: Security metric
+  aliases: [security measure, security measurement]
+  short: 'A quantity measured to describe or track an aspect of security, such as the time taken to fix known exploited flaws.'
+  long: >
+    A metric is useful only when its link to the goal it stands for is
+    understood, its data source is known, and its uncertainty is reported.
+    Counts that are easy to collect, such as blocked attacks, often say
+    little about how secure a system actually is.
+  related: [risk, assurance, likelihood]
+  topicId: FND-08
+
+- id: exposure
+  term: Exposure
+  short: 'How reachable a part of a system is to attackers: who can reach it, from where, and what they must have or do first.'
+  long: >
+    A login page open to the whole internet is more exposed than the same
+    page reachable only from a staff VPN, even though the code is identical.
+    Some exposure is what the product is for; the rest is avoidable and
+    should be removed. Exposure is one input to [[likelihood]].
+  related: [attack-surface, likelihood, trust-boundary]
+  topicId: FND-04
+
+- id: common-mode-failure
+  term: Common-mode failure
+  aliases: [common-cause failure, correlated failure]
+  short: 'A single cause that makes several supposedly independent safeguards fail at once, such as one account that can switch off every layer.'
+  long: >
+    [[defense-in-depth|Defense in depth]] assumes layers fail for different
+    reasons. Shared credentials, administrators, code, blind spots, or
+    dependencies break that assumption, so the chance that every layer fails
+    can be far higher than the product of their separate failure rates.
+    Reliability engineers use the same term for redundant parts that fail
+    together.
+  related: [defense-in-depth, security-control, zero-trust]
+  topicId: FND-06
+
+- id: testing-scope
+  term: Testing scope
+  aliases: [scope of work, engagement scope]
+  short: 'The written list of systems, activities, and times that a security test is authorized to cover; anything outside it is unauthorized.'
+  long: >
+    A scope names the systems and addresses that are in and out of bounds,
+    the activities allowed and forbidden, the time window, and who approved
+    it. It is usually recorded with the [[rules-of-engagement]], and it is
+    valid only if the person who approves it has authority over every system
+    it lists.
+  related: [rules-of-engagement, authorization, penetration-testing]
+  topicId: FND-07
+
+- id: good-faith-security-research
+  term: Good-faith security research
+  aliases: [good faith security research]
+  short: "In the U.S. Justice Department's 2022 CFAA charging policy, accessing a computer solely to test, investigate, or fix a security flaw, in a way designed to avoid harm, with the results used mainly to promote security or safety."
+  long: >
+    The policy tells federal prosecutors not to charge such research under
+    the [[cfaa|CFAA]]. It is prosecutorial guidance, not a law: it does not
+    bind state prosecutors, civil lawsuits, or other countries, and the
+    department said that claiming to do research is not a free pass for
+    people acting in bad faith, such as finding flaws in order to extort the
+    owner. It does not replace [[authorization]].
+  related: [cfaa, responsible-disclosure, authorization]
+  topicId: FND-07
+
+- id: proxy-metric
+  term: Proxy metric
+  aliases: [proxy measure, surrogate metric, surrogate measure]
+  short: 'A measurable stand-in for a goal that cannot be measured directly, such as patch speed on exposed servers standing in for exposure to known attacks.'
+  long: >
+    A proxy is only as good as its link to the goal. Easy counts, such as
+    blocked attacks or completed trainings, can move without any change in
+    security. Once a proxy becomes a target, people can improve the number
+    instead of the goal, an effect often called Goodhart's law. Check proxies
+    against evidence that measures the goal more directly, such as authorized
+    tests.
+  related: [security-metric, threats-to-validity, baseline]
+  topicId: FND-08
+
+- id: calibration
+  term: Calibration
+  aliases: [probability calibration, calibrated forecast]
+  short: 'The match between stated probabilities and outcomes: events that a calibrated source calls 70% likely happen about 70% of the time.'
+  long: >
+    Calibration can be checked only when a forecast names an event and a time
+    window, such as the chance that exploitation of a flaw will be observed
+    in the next 30 days. Ratings such as "high" or 4 out of 5 cannot be
+    checked this way, because they do not say how often anything should
+    happen. Calibration is not the same as usefulness: a source that always
+    predicts the overall base rate can be calibrated yet unable to tell
+    risky cases from safe ones.
+  related: [likelihood, confidence-interval, security-metric]
+  topicId: FND-08
