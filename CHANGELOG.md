@@ -26,8 +26,8 @@ to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   with objectives, a worked example, a quiz and cited sources, and marked as a
   draft until an instructor reviews it. Animated sequence diagrams for
   protocol flows.
-- Attacks A to Z: 140 attack types in 15 categories with their lessons, labs
-  and MITRE ATT&CK, CWE and OWASP identifiers.
+- Attacks A to Z: 147 attack types in 15 categories with their lessons, labs
+  and MITRE ATT&CK, CWE, CAPEC and OWASP identifiers.
 - The library: textbooks, standards and open references mapped to topics down
   to the chapter, with access and license labels.
 - The glossary, labs, challenges, progress, settings and about pages.
@@ -41,4 +41,4 @@ to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   search index and the Markdown renderer load on demand.
 - Search ranks whole-word matches first.
 
-[Unreleased]: https://github.com/Gaganpraveen/cyberlab-studio/commits/main
+[Unreleased]: https://github.com/Gaganpraveen/cyberlab-studio/commits/build/v1

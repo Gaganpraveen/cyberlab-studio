@@ -58,9 +58,9 @@ not for attacking anyone.
 - **Lessons** with objectives, worked examples, animated protocol diagrams,
   a self-check quiz and cited sources. Every lesson starts as a draft until an
   instructor reviews it.
-- **Attacks A to Z**: an index of 140 attack types in 15 categories, each
-  linked to its lessons and labs and to its MITRE ATT&CK, CWE and OWASP
-  identifiers.
+- **Attacks A to Z**: an index of 147 attack types in 15 categories, each
+  linked to its lessons and labs and to its MITRE ATT&CK, CWE, CAPEC and
+  OWASP identifiers.
 - **A library** of textbooks, standards and open references, mapped down to
   the chapter for each topic, and a glossary of every term the lessons use.
 - A calm, warm dark theme (with a light theme), a `Ctrl`/`Cmd`+`K` search

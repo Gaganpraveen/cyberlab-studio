@@ -35,9 +35,30 @@ function capecUrl(id: string): string {
   return `https://capec.mitre.org/data/definitions/${id.replace('CAPEC-', '')}.html`;
 }
 
+// The 2026 LLM Top 10 is published as one file per risk; genai.owasp.org's
+// llm-top-10 page still presents the 2025 numbering.
+const LLM_2026_FILES: Record<string, string> = {
+  LLM01: 'LLM01_PromptInjection',
+  LLM02: 'LLM02_SensitiveInformationDisclosure',
+  LLM03: 'LLM03_ExcessiveAgency',
+  LLM04: 'LLM04_SupplyChain',
+  LLM05: 'LLM05_DataModelPoisoning',
+  LLM06: 'LLM06_UnboundedConsumption',
+  LLM07: 'LLM07_Misinformation',
+  LLM08: 'LLM08_HiddenContextExposure',
+  LLM09: 'LLM09_VectorAndEmbeddingWeaknesses',
+  LLM10: 'LLM10_ImproperOutputHandling',
+};
+
 function owaspUrl(id: string): string {
   if (id.startsWith('API')) return 'https://owasp.org/API-Security/';
-  if (id.startsWith('LLM')) return 'https://genai.owasp.org/llm-top-10/';
+  if (id.startsWith('LLM')) {
+    const [risk = '', year] = id.split(':');
+    const file = year === '2026' ? LLM_2026_FILES[risk] : undefined;
+    return file
+      ? `https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/main/2026/final/${file}.md`
+      : 'https://genai.owasp.org/llm-top-10/';
+  }
   return 'https://owasp.org/Top10/';
 }
 
