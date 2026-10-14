@@ -1,5 +1,6 @@
 import { BookOpen, FlaskConical, Search } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router';
 
 import { PageContainer } from '@/components/layout/AppShell';
 import { Badge, inputClasses, PageHeader } from '@/components/ui/primitives';
@@ -11,7 +12,15 @@ import { TopicCard } from './TopicCard';
 
 export default function LearnPage() {
   useDocumentTitle('Topic map');
+  const [params] = useSearchParams();
+  const domainParam = params.get('domain')?.toUpperCase();
   const [query, setQuery] = useState('');
+
+  // /learn?domain=NET opens the map scrolled to that domain.
+  useEffect(() => {
+    if (!domainParam) return;
+    document.getElementById(`domain-${domainParam}`)?.scrollIntoView({ block: 'start' });
+  }, [domainParam]);
   const [readyOnly, setReadyOnly] = useState(false);
 
   const normalized = query.trim().toLowerCase();
@@ -93,11 +102,15 @@ export default function LearnPage() {
           if (!topics || topics.length === 0) return null;
           const stats = domainStats(domain.id);
           return (
-            <section key={domain.id} aria-labelledby={`domain-${domain.id}`}>
+            <section
+              key={domain.id}
+              aria-labelledby={`domain-${domain.id}`}
+              className="scroll-mt-20"
+            >
               <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
                 <h2
                   id={`domain-${domain.id}`}
-                  className="text-fg flex items-center gap-2.5 text-lg font-semibold tracking-tight"
+                  className="text-fg flex scroll-mt-20 items-center gap-2.5 text-lg font-semibold tracking-tight"
                 >
                   <span className="text-fg-subtle font-mono text-sm">{domain.id}</span>
                   {domain.title}
