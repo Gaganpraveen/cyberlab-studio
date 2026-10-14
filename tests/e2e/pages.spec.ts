@@ -1,5 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, type Page, test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
+
+import { collectErrors, seriousViolations } from './helpers';
 
 /** Every top-level page, plus one of each detail page. */
 const PAGES = [
@@ -18,24 +20,6 @@ const PAGES = [
   { path: '/settings', heading: /Make it comfortable/ },
   { path: '/about', heading: /An open studio/ },
 ];
-
-function collectErrors(page: Page): string[] {
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(String(error)));
-  page.on('console', (message) => {
-    if (message.type() === 'error') errors.push(message.text());
-  });
-  return errors;
-}
-
-async function seriousViolations(page: Page): Promise<string[]> {
-  const results = await new AxeBuilder({ page })
-    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
-    .analyze();
-  return results.violations
-    .filter((v) => v.impact === 'serious' || v.impact === 'critical')
-    .map((v) => `${v.id}: ${v.help} (${v.nodes.length}) ${v.nodes[0]?.target.join(' ')}`);
-}
 
 for (const { path, heading } of PAGES) {
   test(`${path} renders without errors or serious accessibility issues`, async ({ page }) => {
