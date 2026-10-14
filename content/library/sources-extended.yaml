@@ -1,0 +1,604 @@
+# CyberLab Studio library, extended: more verified sources so every catalog topic has at
+# least three readings. Same schema and conventions as sources.yaml; access tiers (open,
+# free, paid) and what the app may do with each: docs/KNOWLEDGE_BASE.md.
+# Order: textbook, book, course-notes, standard, framework, guide, reference, paper; within
+# each kind, the most useful for a US intro or undergraduate course comes first.
+# Verified 2026-10-14 against the page named in each verifiedFrom. Omit any field you
+# cannot verify; never guess.
+
+# ---------------------------------------------------------------- standards
+
+- id: nist-sp-800-115
+  title: 'NIST SP 800-115: Technical Guide to Information Security Testing and Assessment'
+  authors: [Karen Scarfone, Murugiah Souppaya, Amanda Cody, Angela Orebaugh]
+  year: 2008
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/115/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [FND, GRC]
+  topics: [FND-07]
+  why: 'Explains planning and running authorized security tests: assessment planning, rules of engagement, review and target-identification techniques with their limits, and post-test reporting; it dates from 2008.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/115/final'
+
+- id: nist-sp-800-83
+  title: 'NIST SP 800-83 Rev. 1: Guide to Malware Incident Prevention and Handling for Desktops and Laptops'
+  authors: [Murugiah Souppaya, Karen Scarfone]
+  edition: 'Revision 1'
+  year: 2013
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/83/r1/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [MAL, OPS]
+  topics: [MAL-01, MAL-08, OPS-06]
+  why: 'Explains malware categories, prevention through policy, awareness, vulnerability mitigation, and endpoint defenses such as antivirus and application allowlisting, and malware incident containment, eradication, and recovery; dated (2013) on tools.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/83/r1/final'
+
+- id: nist-sp-800-92
+  title: 'NIST SP 800-92: Guide to Computer Security Log Management'
+  authors: [Karen Kent, Murugiah Souppaya]
+  year: 2006
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/92/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [OPS]
+  topics: [OPS-01, OPS-03]
+  sections:
+    - title: 'Sec. 3: Log Management Infrastructure (functions such as event correlation; 3.4 Security Information and Event Management Software)'
+      topics: [OPS-03]
+    - title: 'Secs. 4-5: Log Management Planning and Operational Processes'
+      topics: [OPS-01]
+  why: 'Classic guide to planning and running log management: log sources, centralized syslog and SIEM infrastructure, parsing, normalization, event correlation, and retention; older than current tooling but clear on concepts.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/92/final'
+
+- id: nist-sp-800-37
+  title: 'NIST SP 800-37 Rev. 2: Risk Management Framework for Information Systems and Organizations: A System Life Cycle Approach for Security and Privacy'
+  edition: 'Revision 2'
+  year: 2018
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/37/r2/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, grad, practitioner]
+  domains: [GRC]
+  topics: [GRC-01, GRC-02, GRC-07]
+  why: "Defines the Risk Management Framework steps (prepare, categorize, select, implement, assess, authorize, monitor), separating control assessment from the authorizing official's risk-acceptance decision."
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/37/r2/final'
+
+- id: nist-sp-800-53a
+  title: 'NIST SP 800-53A Rev. 5: Assessing Security and Privacy Controls in Information Systems and Organizations'
+  edition: 'Revision 5 (Release 5.2.0)'
+  year: 2025
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/53/a/r5/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [grad, practitioner]
+  domains: [GRC]
+  topics: [GRC-02, GRC-07]
+  why: 'Assessment procedures for every SP 800-53 Rev. 5 control, with guidance on building assessment plans and analyzing results; the source for what counts as control evidence (examine, interview, test).'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/53/a/r5/final'
+
+- id: nist-sp-800-184
+  title: 'NIST SP 800-184: Guide for Cybersecurity Event Recovery'
+  authors:
+    - Michael Bartock
+    - Jeffrey Cichonski
+    - Murugiah Souppaya
+    - Matthew Smith
+    - Gregory Witte
+    - Karen Scarfone
+  year: 2016
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/184/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [OPS, GRC, MAL]
+  topics: [OPS-06, OPS-08, GRC-05, MAL-07]
+  why: 'Tactical and strategic guidance on recovery planning, playbooks, testing, and improving recovery from lessons learned, with an example scenario and recovery metrics.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/184/final'
+
+- id: nist-sp-800-177
+  title: 'NIST SP 800-177 Rev. 1: Trustworthy Email'
+  authors: [Scott Rose, Stephen Nightingale, Simson Garfinkel, Ramaswamy Chandramouli]
+  edition: 'Revision 1'
+  year: 2019
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/177/r1/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [WEB, NET, CRY]
+  topics: [WEB-03]
+  why: "Guidance on sender-domain authentication (SPF, DKIM, DMARC), TLS for email transport, and S/MIME, useful for judging what a message's authentication results actually establish."
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/177/r1/final'
+
+- id: nist-sp-800-50
+  title: 'NIST SP 800-50 Rev. 1: Building a Cybersecurity and Privacy Learning Program'
+  authors:
+    - Marian Merritt
+    - Susan Hansche
+    - Brenda Ellis
+    - Kevin Sanchez-Cherry
+    - Julie Nethery Snyder
+    - Donald Walden
+  edition: 'Revision 1'
+  year: 2024
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/50/r1/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [HUM]
+  topics: [HUM-07, HUM-02]
+  why: 'Life cycle guidance for awareness, training, and education programs aimed at behavior change and a security and privacy culture, with suggested metrics and evaluation methods.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/50/r1/final'
+
+- id: nist-sp-800-124
+  title: 'NIST SP 800-124 Rev. 2: Guidelines for Managing the Security of Mobile Devices in the Enterprise'
+  authors: [Gema Howell, Joshua Franklin, Vincent Sritapan, Murugiah Souppaya, Karen Scarfone]
+  edition: 'Revision 2'
+  year: 2023
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/124/r2/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [IOT]
+  topics: [IOT-04, IOT-03]
+  why: 'Covers mobile threats and platform protections such as hardware-backed storage, app sandboxing, and data encryption, plus app permission restriction, app vetting, and the device deployment life cycle.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/124/r2/final'
+
+- id: nist-sp-800-163
+  title: 'NIST SP 800-163 Rev. 1: Vetting the Security of Mobile Applications'
+  authors: [Michael Ogata, Joshua Franklin, Jeffrey Voas, Vincent Sritapan, Stephen Quirolgico]
+  edition: 'Revision 1'
+  year: 2019
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/163/r1/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [IOT]
+  topics: [IOT-03, IOT-04]
+  why: 'Describes an app vetting process (intake, testing, approval, re-vetting) and the security requirements it checks, such as access to platform resources, credential storage, and encryption of sensitive app data.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/163/r1/final'
+
+- id: nist-sp-800-121
+  title: 'NIST SP 800-121 Rev. 2: Guide to Bluetooth Security'
+  authors:
+    - John Padgette
+    - John Bahr
+    - Mayank Batra
+    - Marcel Holtmann
+    - Rhonda Smithbey
+    - Lily Chen
+    - Karen Scarfone
+  edition: 'Revision 2 (Update 1)'
+  year: 2022
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/121/r2/upd1/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [IOT]
+  topics: [IOT-02]
+  why: 'Explains the security features of Bluetooth BR/EDR and low energy, including pairing, known vulnerabilities, and recommendations for organizations that use Bluetooth.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/121/r2/upd1/final'
+
+- id: nist-sp-800-190
+  title: 'NIST SP 800-190: Application Container Security Guide'
+  authors: [Murugiah Souppaya, John Morello, Karen Scarfone]
+  year: 2017
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/190/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [CLD]
+  topics: [CLD-04, CLD-05]
+  why: 'Explains the security risks of container images, registries, orchestrators, containers, and host operating systems, with countermeasures for each.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/190/final'
+
+- id: nist-sp-800-63c
+  title: 'NIST SP 800-63C-4: Digital Identity Guidelines: Federation and Assertions'
+  authors:
+    - David Temoshok
+    - Justin Richer
+    - Yee-Yin Choong
+    - James Fenton
+    - Naomi Lefkovitz
+    - Andrew Regenscheid
+    - Ryan Galluzzo
+  edition: 'Revision 4'
+  year: 2025
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/63/c/4/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, grad, practitioner]
+  domains: [IAM]
+  topics: [IAM-08, IAM-05]
+  why: 'Current US federal guideline (final July 2025) for identity federation: identity providers, relying parties, assertions, federation assurance levels, and trust agreements.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/63/c/4/final'
+
+- id: nist-sp-800-55
+  title: 'NIST SP 800-55: Measurement Guide for Information Security (Vol. 1: Identifying and Selecting Measures; Vol. 2: Developing an Information Security Measurement Program)'
+  authors: [Katherine Schroeder, Hung Trinh, Victoria Pillitteri]
+  year: 2024
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/55/v1/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, grad, practitioner]
+  domains: [FND, RES, GRC]
+  topics: [FND-08, RES-04]
+  sections:
+    - title: 'Vol. 1, Sec. 3: Measurement Considerations (data quality, uncertainty and errors); Appendices B and C: data analysis and likelihood modeling'
+      topics: [FND-08, RES-04]
+      url: 'https://csrc.nist.gov/pubs/sp/800/55/v1/final'
+    - title: 'Vol. 2: Developing an Information Security Measurement Program'
+      topics: [FND-08]
+      url: 'https://csrc.nist.gov/pubs/sp/800/55/v2/final'
+  why: 'Current NIST measurement guide (December 2024, superseding Rev. 1 of 2008) on implementation, effectiveness, efficiency, and impact measures, data quality, uncertainty and errors, and qualitative versus quantitative assessment.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/55/v1/final'
+
+- id: nist-sp-800-160-v1
+  title: 'NIST SP 800-160 Vol. 1 Rev. 1: Engineering Trustworthy Secure Systems'
+  authors: [Ron Ross, Mark Winstead, Michael McEvilley]
+  edition: 'Revision 1'
+  year: 2022
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/160/v1/r1/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, grad, practitioner]
+  domains: [FND, RES]
+  topics: [FND-05, FND-06, RES-06]
+  sections:
+    - title: 'Appendix E: Principles for Trustworthy Secure Design'
+      topics: [FND-05, FND-06]
+  why: 'Systems security engineering guidance whose Appendix E defines about 30 secure design principles, among them defense in depth, least privilege, least functionality, and protective failure, with life cycle processes that suit a secure-system design capstone.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/160/v1/r1/final'
+
+- id: nist-ir-8374
+  title: 'NIST IR 8374 Rev. 1: Ransomware Risk Management: A Cybersecurity Framework 2.0 Community Profile'
+  authors: [Murugiah Souppaya, William Barker, William Fisher, Karen Kent]
+  edition: 'Revision 1'
+  year: 2026
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/ir/8374/r1/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [MAL, GRC, OPS]
+  topics: [MAL-07]
+  why: 'Maps the CSF 2.0 outcomes that help govern, identify, protect, detect, respond to, and recover from ransomware, including data-theft extortion; final June 2026, superseding the 2022 edition.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/ir/8374/r1/final'
+
+- id: nist-sp-800-82
+  title: 'NIST SP 800-82 Rev. 3: Guide to Operational Technology (OT) Security'
+  authors:
+    - Keith Stouffer
+    - Michael Pease
+    - CheeYee Tang
+    - Timothy Zimmerman
+    - Victoria Pillitteri
+    - Suzanne Lightman
+    - Adam Hahn
+    - Stephanie Saravia
+    - Aslam Sherule
+    - Michael Thompson
+  edition: 'Revision 3'
+  year: 2023
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/82/r3/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, grad, practitioner]
+  domains: [IOT]
+  topics: [IOT-07]
+  why: 'The main US guide to securing industrial control systems and other OT while respecting performance, reliability, and safety needs; an initial public draft of Rev. 4 appeared in September 2026.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/82/r3/final'
+
+- id: nist-ir-8259
+  title: 'NIST IR 8259 Rev. 1: Foundational Cybersecurity Activities for IoT Product Manufacturers'
+  authors: [Michael Fagan, Katerina Megas, Barbara Cuthill, Jeffrey Marron, Brad Hoehn]
+  edition: 'Revision 1'
+  year: 2026
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/ir/8259/r1/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [IOT]
+  topics: [IOT-05, IOT-06]
+  sections:
+    - title: 'Sec. 4.3: support and lifespan expectations, software updates, and product retirement options'
+      topics: [IOT-05, IOT-06]
+  why: 'Current (April 2026) NIST guidance on what IoT manufacturers should do before and after sale, including support lifespan, software updates, and product retirement; it supersedes the 2020 edition.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/ir/8259/r1/final'
+
+- id: nist-ir-8259a
+  title: 'NIST IR 8259A: IoT Device Cybersecurity Capability Core Baseline'
+  authors: [Michael Fagan, Katerina Megas, Karen Scarfone, Matthew Smith]
+  year: 2020
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/ir/8259/a/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [IOT]
+  topics: [IOT-05, IOT-06]
+  why: 'Baseline device capabilities, such as device identification, configuration, data protection, interface access control, software update, and cybersecurity state awareness, to specify when building or buying IoT devices.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/ir/8259/a/final'
+
+- id: nist-sp-800-193
+  title: 'NIST SP 800-193: Platform Firmware Resiliency Guidelines'
+  authors: [Andrew Regenscheid]
+  year: 2018
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/193/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [grad, practitioner]
+  domains: [SYS, IOT]
+  topics: [SYS-07, IOT-06]
+  why: 'Defines how platforms protect firmware against unauthorized changes, detect corruption, and recover securely, built on roots of trust for update, detection, and recovery.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/193/final'
+
+- id: nist-sp-800-161
+  title: 'NIST SP 800-161 Rev. 1: Cybersecurity Supply Chain Risk Management Practices for Systems and Organizations'
+  authors: [Jon Boyens, Angela Smith, Nadya Bartol, Kris Winkler, Alex Holbrook, Matthew Fallon]
+  edition: 'Revision 1 (Update 1)'
+  year: 2024
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/161/r1/upd1/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [grad, practitioner]
+  domains: [GRC, CLD]
+  topics: [GRC-06, CLD-06]
+  why: 'Guidance for identifying, assessing, and reducing risks from acquired products and services, from C-SCRM strategy and policies to supplier risk assessments, with an assessment scoping questionnaire.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/161/r1/upd1/final'
+
+- id: nist-sp-800-204d
+  title: 'NIST SP 800-204D: Strategies for the Integration of Software Supply Chain Security in DevSecOps CI/CD Pipelines'
+  authors: [Ramaswamy Chandramouli, Frederick Kautz, Santiago Torres-Arias]
+  year: 2024
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/204/d/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [grad, practitioner]
+  domains: [CLD]
+  topics: [CLD-07, CLD-06]
+  why: 'Strategies for securing CI/CD pipelines, the software supply chain that carries code through build, test, packaging, and deployment, from secure builds and code commits to evidence of artifact integrity.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/204/d/final'
+
+- id: nist-sp-800-226
+  title: 'NIST SP 800-226: Guidelines for Evaluating Differential Privacy Guarantees'
+  authors: [Joseph Near, David Darais, Naomi Lefkovitz, Gary Howarth]
+  year: 2025
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/226/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [grad, practitioner]
+  domains: [AI, GRC]
+  topics: [AI-07, GRC-03]
+  sections:
+    - title: 'Sec. 3.5: Machine Learning; Appendix B.6: differentially private stochastic gradient descent'
+      topics: [AI-07]
+  why: 'Explains the differential privacy guarantee, the "differential privacy pyramid" of factors to evaluate, common privacy hazards, and differentially private machine learning.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/226/final'
+
+- id: rfc-5322-internet-message-format
+  title: 'RFC 5322: Internet Message Format'
+  authors: [P. Resnick]
+  year: 2008
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/info/rfc5322'
+  kind: standard
+  access: open
+  license: 'IETF Trust Legal Provisions (BCP 78)'
+  level: [undergrad, practitioner]
+  domains: [FOR, WEB]
+  topics: [FOR-06]
+  why: 'Draft Standard that defines email message syntax and header fields such as From, Sender, Reply-To, Date, and Message-ID, plus the Received and Return-Path trace fields; the baseline for reading message headers as evidence (updated by RFC 6854).'
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion; do not alter RFC text (code components: Revised BSD).'
+  verifiedFrom: 'https://www.rfc-editor.org/info/rfc5322'
+
+- id: rfc-8601-authentication-results
+  title: 'RFC 8601: Message Header Field for Indicating Message Authentication Status'
+  authors: [M. Kucherawy]
+  year: 2019
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/info/rfc8601'
+  kind: standard
+  access: open
+  license: 'IETF Trust Legal Provisions (BCP 78)'
+  level: [undergrad, practitioner]
+  domains: [FOR, WEB]
+  topics: [FOR-06, WEB-03]
+  why: 'Proposed Standard for the Authentication-Results header field, where receiving mail servers record the outcome of checks such as SPF, DKIM, and DMARC for later readers and filters (obsoletes RFC 7601).'
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion; do not alter RFC text (code components: Revised BSD).'
+  verifiedFrom: 'https://www.rfc-editor.org/info/rfc8601'
+
+- id: rfc-9989-dmarc
+  title: 'RFC 9989: Domain-Based Message Authentication, Reporting, and Conformance (DMARC)'
+  authors: [T. Herr, J. Levine]
+  year: 2026
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/info/rfc9989'
+  kind: standard
+  access: open
+  license: 'IETF Trust Legal Provisions (BCP 78)'
+  level: [undergrad, practitioner]
+  domains: [WEB, FOR]
+  topics: [WEB-03, FOR-06]
+  why: 'Standards Track DMARC (May 2026), obsoleting RFC 7489 and RFC 9091: how a domain owner publishes policy for mail whose SPF or DKIM results do not align with the visible From domain; reporting is specified in companion RFCs 9990 and 9991.'
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion; do not alter RFC text (code components: Revised BSD).'
+  verifiedFrom: 'https://www.rfc-editor.org/info/rfc9989'
+
+- id: rfc-9116-security-txt
+  title: 'RFC 9116: A File Format to Aid in Security Vulnerability Disclosure'
+  authors: [E. Foudil, Y. Shafranovich]
+  year: 2022
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/info/rfc9116'
+  kind: standard
+  access: open
+  license: 'IETF Trust Legal Provisions (BCP 78)'
+  level: [undergrad, practitioner]
+  domains: [GRC]
+  topics: [GRC-08]
+  why: 'Informational RFC defining security.txt, a machine-readable file under /.well-known/ where organizations publish how to report vulnerabilities to them.'
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion; do not alter RFC text (code components: Revised BSD).'
+  verifiedFrom: 'https://www.rfc-editor.org/info/rfc9116'
+
+- id: rfc-4732-internet-dos-considerations
+  title: 'RFC 4732: Internet Denial-of-Service Considerations'
+  authors: [M. Handley, E. Rescorla, Internet Architecture Board]
+  year: 2006
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/info/rfc4732'
+  kind: standard
+  access: open
+  license: 'IETF Trust Legal Provisions (BCP 78)'
+  level: [undergrad, grad, practitioner]
+  domains: [MAL, NET]
+  topics: [MAL-06, MAL-05]
+  why: 'IAB survey of denial-of-service attacks against Internet protocols, including distributed attacks from remotely controlled compromised hosts (bots), and of the protocol-design and operational defenses against them.'
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion; do not alter RFC text (code components: Revised BSD).'
+  verifiedFrom: 'https://www.rfc-editor.org/info/rfc4732'
+
+- id: rfc-7644-scim-protocol
+  title: 'RFC 7644: System for Cross-domain Identity Management: Protocol'
+  authors: [P. Hunt, K. Grizzle, M. Ansari, E. Wahlstroem, C. Mortimore]
+  year: 2015
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/info/rfc7644'
+  kind: standard
+  access: open
+  license: 'IETF Trust Legal Provisions (BCP 78)'
+  level: [grad, practitioner]
+  domains: [IAM]
+  topics: [IAM-08]
+  why: 'Proposed Standard HTTP protocol (SCIM) that identity providers and applications use to create, update, and delete user and group accounts across domains, the mechanism behind automated provisioning and deprovisioning (updated by RFC 9865 and RFC 9967).'
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion; do not alter RFC text (code components: Revised BSD).'
+  verifiedFrom: 'https://www.rfc-editor.org/info/rfc7644'
+
+- id: rfc-8995-brski
+  title: 'RFC 8995: Bootstrapping Remote Secure Key Infrastructure (BRSKI)'
+  authors: [M. Pritikin, M. Richardson, T. Eckert, M. Behringer, K. Watsen]
+  year: 2021
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/info/rfc8995'
+  kind: standard
+  access: open
+  license: 'IETF Trust Legal Provisions (BCP 78)'
+  level: [grad, practitioner]
+  domains: [IOT]
+  topics: [IOT-05]
+  why: "Proposed Standard for zero-touch onboarding: a new device proves its identity with a manufacturer-installed certificate (IDevID) and obtains a signed voucher before enrolling in the owner's PKI."
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion; do not alter RFC text (code components: Revised BSD).'
+  verifiedFrom: 'https://www.rfc-editor.org/info/rfc8995'
+
+- id: rfc-9019-iot-firmware-update-architecture
+  title: 'RFC 9019: A Firmware Update Architecture for Internet of Things'
+  authors: [B. Moran, H. Tschofenig, D. Brown, M. Meriac]
+  year: 2021
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/info/rfc9019'
+  kind: standard
+  access: open
+  license: 'IETF Trust Legal Provisions (BCP 78)'
+  level: [grad, practitioner]
+  domains: [IOT]
+  topics: [IOT-06]
+  why: 'Informational architecture from the IETF SUIT working group for secure firmware updates on constrained IoT devices, built around a protected manifest that describes and authorizes each firmware image.'
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion; do not alter RFC text (code components: Revised BSD).'
+  verifiedFrom: 'https://www.rfc-editor.org/info/rfc9019'
+
+# ---------------------------------------------------------------- guides
+
+- id: cisa-incident-vulnerability-response-playbooks
+  title: 'Federal Government Cybersecurity Incident and Vulnerability Response Playbooks'
+  publisher: 'Cybersecurity and Infrastructure Security Agency (CISA)'
+  url: 'https://www.cisa.gov/resources-tools/resources/federal-government-cybersecurity-incident-and-vulnerability-response-playbooks'
+  kind: guide
+  access: open
+  license: 'US Government work (CISA; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [OPS]
+  topics: [OPS-05, OPS-06]
+  why: 'Standard procedures, developed by CISA under Executive Order 14028, for federal agencies to identify, coordinate, remediate, recover from, and track mitigations of incidents and vulnerabilities.'
+  use: 'Link, quote, adapt, and ingest with attribution to CISA; skip any third-party material.'
+  verifiedFrom: 'https://www.cisa.gov/resources-tools/resources/federal-government-cybersecurity-incident-and-vulnerability-response-playbooks'
+
+- id: cisa-insider-threat-mitigation-guide
+  title: 'Insider Threat Mitigation Guide'
+  publisher: 'Cybersecurity and Infrastructure Security Agency (CISA)'
+  url: 'https://www.cisa.gov/resources-tools/resources/insider-threat-mitigation-guide'
+  kind: guide
+  access: free
+  license: 'No explicit license found (CISA publication)'
+  level: [undergrad, practitioner]
+  domains: [HUM]
+  topics: [HUM-06]
+  why: "Guidance, scaled to an organization's size and maturity, for building insider threat programs and threat management teams around a four-part framework (define, detect and identify, assess, and manage), using case studies."
+  use: 'Link and short attributed quotes; the page names no license, so do not copy or ingest until one is confirmed.'
+  verifiedFrom: 'https://www.cisa.gov/resources-tools/resources/insider-threat-mitigation-guide'
