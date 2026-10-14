@@ -9,6 +9,7 @@ import {
   Monitor,
   Moon,
   Presentation,
+  ShieldAlert,
   Sun,
   Target,
 } from 'lucide-react';
@@ -17,9 +18,10 @@ import { type ReactNode, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
 import { Kbd } from '@/components/ui/primitives';
+import { ATTACK_CATEGORIES, ATTACKS } from '@/content/attacks';
 import { TOPICS } from '@/content/catalog';
 import { GLOSSARY } from '@/content/glossary';
-import { hasLesson } from '@/content/lessons';
+import { getLesson, hasLesson } from '@/content/lessons';
 import { LIBRARY } from '@/content/library';
 import { CHALLENGES, LABS } from '@/labs/registry';
 import { updateSettings, useSettings } from '@/lib/settings';
@@ -124,7 +126,7 @@ export function CommandPalette({
           <Command label="Search CyberLab Studio" loop>
             <div className="border-line flex items-center gap-2 border-b px-4">
               <Command.Input
-                placeholder="Search topics, labs, challenges, terms, books…"
+                placeholder="Search topics, attacks, labs, terms, books…"
                 className="text-fg placeholder:text-fg-subtle h-14 w-full bg-transparent text-base outline-none"
               />
               <Kbd>Esc</Kbd>
@@ -169,7 +171,11 @@ export function CommandPalette({
                   <Item
                     key={topic.id}
                     value={`topic ${topic.id} ${topic.title}`}
-                    keywords={[topic.domainTitle, topic.activity]}
+                    keywords={[
+                      topic.domainTitle,
+                      topic.activity,
+                      ...(getLesson(topic.id)?.keywords ?? []),
+                    ]}
                     onSelect={() => go(`/learn/${topic.id.toLowerCase()}`)}
                     icon={
                       hasLesson(topic.id) ? (
@@ -185,6 +191,28 @@ export function CommandPalette({
                   </Item>
                 ))}
               </Command.Group>
+
+              {ATTACKS.length > 0 && (
+                <Command.Group heading="Attacks" className={groupClasses}>
+                  {ATTACKS.map((attack) => (
+                    <Item
+                      key={attack.id}
+                      value={`attack ${attack.name}`}
+                      keywords={[
+                        ...attack.aliases,
+                        ...attack.attack,
+                        ...attack.cwe,
+                        ...attack.owasp,
+                      ]}
+                      onSelect={() => go(`/attacks/${attack.id}`)}
+                      icon={<ShieldAlert className="size-4" />}
+                      hint={ATTACK_CATEGORIES[attack.category].label}
+                    >
+                      {attack.name}
+                    </Item>
+                  ))}
+                </Command.Group>
+              )}
 
               {CHALLENGES.length > 0 && (
                 <Command.Group heading="Challenges" className={groupClasses}>

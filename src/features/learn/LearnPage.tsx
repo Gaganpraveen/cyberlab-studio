@@ -8,6 +8,7 @@ import { DOMAINS, TOPICS } from '@/content/catalog';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 
 import { CATALOG_SUMMARY, domainStats, topicStatus } from './catalogStats';
+import { domainIcon } from './domainIcons';
 import { TopicCard } from './TopicCard';
 
 export default function LearnPage() {
@@ -101,6 +102,7 @@ export default function LearnPage() {
           const topics = byDomain.get(domain.id);
           if (!topics || topics.length === 0) return null;
           const stats = domainStats(domain.id);
+          const Icon = domainIcon(domain.id);
           return (
             <section
               key={domain.id}
@@ -112,8 +114,9 @@ export default function LearnPage() {
                   id={`domain-${domain.id}`}
                   className="text-fg flex scroll-mt-20 items-center gap-2.5 text-lg font-semibold tracking-tight"
                 >
-                  <span className="text-fg-subtle font-mono text-sm">{domain.id}</span>
+                  <Icon className="text-accent size-5" aria-hidden />
                   {domain.title}
+                  <span className="text-fg-subtle font-mono text-xs font-normal">{domain.id}</span>
                 </h2>
                 <Badge tone={stats.ready > 0 ? 'accent' : 'neutral'}>
                   {stats.ready} of {stats.total} ready
