@@ -48,8 +48,7 @@ export const challenges: ChallengeDefinition[] = [
     points: 15,
     kind: 'flag',
     topicIds: ['CRY-01'],
-    prompt:
-      'Once the Caesar cipher is broken, the plaintext contains a flag. Submit it.',
+    prompt: 'Once the Caesar cipher is broken, the plaintext contains a flag. Submit it.',
     hints: [
       'The flag has the shape CTF{...} and sits at the end of the decrypted message.',
       'Braces and underscores are not letters, so they pass through the cipher unchanged.',

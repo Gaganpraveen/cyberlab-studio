@@ -108,9 +108,9 @@ export default function LoginSecurityLab() {
   const guide = (
     <div className="space-y-5">
       <p className="text-fg-muted text-sm leading-relaxed">
-        Offline cracking needs a stolen hash; an <strong className="text-fg">online</strong> attack just talks to the
-        login form. You will walk into a weak account with a wordlist, then add the controls that stop the very same
-        run.
+        Offline cracking needs a stolen hash; an <strong className="text-fg">online</strong> attack
+        just talks to the login form. You will walk into a weak account with a wordlist, then add
+        the controls that stop the very same run.
       </p>
       <LabSteps
         steps={[
@@ -122,8 +122,8 @@ export default function LoginSecurityLab() {
         ]}
       />
       <Callout tone="info" title="A model, not a real service">
-        No password is hashed and nothing is sent anywhere. The attack is a bounded walk through a wordlist of{' '}
-        {WORDLIST.length} common passwords; the account is fictional.
+        No password is hashed and nothing is sent anywhere. The attack is a bounded walk through a
+        wordlist of {WORDLIST.length} common passwords; the account is fictional.
       </Callout>
     </div>
   );
@@ -141,17 +141,31 @@ export default function LoginSecurityLab() {
           <div className="border-line bg-surface/40 rounded-xl border p-4">
             <h3 className="text-fg mb-1 text-sm font-semibold">Target</h3>
             <p className="text-fg-muted text-xs">
-              Account <code className="text-fg">{TARGET_USER}</code> reused a common password. The attacker runs a
-              wordlist of {WORDLIST.length} passwords against the login form.
+              Account <code className="text-fg">{TARGET_USER}</code> reused a common password. The
+              attacker runs a wordlist of {WORDLIST.length} passwords against the login form.
             </p>
           </div>
 
           <div className="border-line bg-surface/40 rounded-xl border p-4">
-            <div className="text-fg-subtle mb-2 text-xs font-semibold tracking-[0.1em] uppercase">Defenses</div>
+            <div className="text-fg-subtle mb-2 text-xs font-semibold tracking-[0.1em] uppercase">
+              Defenses
+            </div>
             <div className="flex flex-wrap gap-2">
-              <DefenseToggle label="rate limiting" on={defenses.rateLimit} onEnable={() => enable('rateLimit', 'rate limiting')} />
-              <DefenseToggle label="account lockout" on={defenses.lockout} onEnable={() => enable('lockout', 'account lockout')} />
-              <DefenseToggle label="MFA" on={defenses.mfa} onEnable={() => enable('mfa', 'multi-factor authentication')} />
+              <DefenseToggle
+                label="rate limiting"
+                on={defenses.rateLimit}
+                onEnable={() => enable('rateLimit', 'rate limiting')}
+              />
+              <DefenseToggle
+                label="account lockout"
+                on={defenses.lockout}
+                onEnable={() => enable('lockout', 'account lockout')}
+              />
+              <DefenseToggle
+                label="MFA"
+                on={defenses.mfa}
+                onEnable={() => enable('mfa', 'multi-factor authentication')}
+              />
             </div>
           </div>
 
@@ -163,7 +177,9 @@ export default function LoginSecurityLab() {
             <div
               className={cn(
                 'space-y-2 rounded-xl border p-4',
-                report.authenticated ? 'border-danger/40 bg-danger-soft' : 'border-success/40 bg-success-soft',
+                report.authenticated
+                  ? 'border-danger/40 bg-danger-soft'
+                  : 'border-success/40 bg-success-soft',
               )}
             >
               <div className="flex items-center gap-2">
@@ -184,7 +200,9 @@ export default function LoginSecurityLab() {
               ) : (
                 <p className="text-fg text-sm">
                   Blocked by <strong>{report.blockedBy}</strong>
-                  {report.found ? ' — the password was guessed, but the second factor refused the session.' : ' before the password was reached.'}
+                  {report.found
+                    ? ' — the password was guessed, but the second factor refused the session.'
+                    : ' before the password was reached.'}
                 </p>
               )}
             </div>
@@ -197,8 +215,8 @@ export default function LoginSecurityLab() {
         <div className="space-y-4 p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-fg-muted max-w-md text-sm">
-              Probe usernames and watch the login error. If existing and missing accounts answer differently, an
-              attacker can map valid accounts.
+              Probe usernames and watch the login error. If existing and missing accounts answer
+              differently, an attacker can map valid accounts.
             </p>
             <DefenseToggle
               label="generic errors"
@@ -228,7 +246,9 @@ export default function LoginSecurityLab() {
             <div
               className={cn(
                 'rounded-lg border p-3 text-sm',
-                probe.leaks ? 'border-warning/40 bg-warning-soft' : 'border-success/40 bg-success-soft',
+                probe.leaks
+                  ? 'border-warning/40 bg-warning-soft'
+                  : 'border-success/40 bg-success-soft',
               )}
             >
               <div className="text-fg font-mono text-xs">{probe.message}</div>

@@ -94,7 +94,12 @@ export function resourceById(id: string): Resource | undefined {
  * Decide whether `user` may perform `action` on `resource` under `policy`.
  * Admins bypass ownership (a deliberate, explicit override).
  */
-export function authorize(user: User, resource: Resource, action: Action, policy: Policy): Decision {
+export function authorize(
+  user: User,
+  resource: Resource,
+  action: Action,
+  policy: Policy,
+): Decision {
   // Role check: admin-only resources.
   if (resource.adminOnly) {
     if (policy.roleCheck && user.role !== 'admin') {

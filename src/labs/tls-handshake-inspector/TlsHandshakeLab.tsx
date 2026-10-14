@@ -239,22 +239,33 @@ export default function TlsHandshakeLab() {
   const guide = (
     <div className="space-y-5">
       <p className="text-fg-muted text-sm leading-relaxed">
-        A browser will not trust a site on its say-so. You will play the <strong className="text-fg">client</strong>:
-        verify real signatures made with the Web Crypto API, reject the certificates a real browser rejects, then add
-        the two protections — HSTS and pinning — that close what plain validation leaves open.
+        A browser will not trust a site on its say-so. You will play the{' '}
+        <strong className="text-fg">client</strong>: verify real signatures made with the Web Crypto
+        API, reject the certificates a real browser rejects, then add the two protections — HSTS and
+        pinning — that close what plain validation leaves open.
       </p>
       <LabSteps
         steps={[
-          { title: 'Turn verification on', body: 'See why a client that accepts anything is no client at all.' },
-          { title: 'Validate four certificates', body: 'Accept the valid one; reject expired, mismatched, self-signed.' },
+          {
+            title: 'Turn verification on',
+            body: 'See why a client that accepts anything is no client at all.',
+          },
+          {
+            title: 'Validate four certificates',
+            body: 'Accept the valid one; reject expired, mismatched, self-signed.',
+          },
           { title: 'Read the rejections', body: 'Each failure names exactly one broken check.' },
-          { title: 'Stop SSL stripping', body: 'Enable HSTS so the first request is never plain http.' },
+          {
+            title: 'Stop SSL stripping',
+            body: 'Enable HSTS so the first request is never plain http.',
+          },
           { title: 'Pin the key', body: 'Refuse even a rogue certificate the trusted CA signed.' },
         ]}
       />
       <Callout tone="info" title="Real crypto, fictional certificates">
-        Keys are generated in this tab with ECDSA P-256 and signatures are really produced and verified. No TLS
-        connection is ever made; every host and certificate is on the reserved <code>example.test</code> domain.
+        Keys are generated in this tab with ECDSA P-256 and signatures are really produced and
+        verified. No TLS connection is ever made; every host and certificate is on the reserved{' '}
+        <code>example.test</code> domain.
       </Callout>
     </div>
   );
@@ -266,8 +277,8 @@ export default function TlsHandshakeLab() {
         guide={guide}
         workspace={
           <div className="text-fg-muted flex h-full items-center justify-center gap-2 p-8 text-sm">
-            <KeyRound className="size-4 animate-pulse" aria-hidden /> Generating the certificate authority and
-            certificates…
+            <KeyRound className="size-4 animate-pulse" aria-hidden /> Generating the certificate
+            authority and certificates…
           </div>
         }
       />
@@ -319,7 +330,10 @@ export default function TlsHandshakeLab() {
               const result = results[s.kind];
               const report = result?.report;
               return (
-                <div key={s.kind} className="border-line bg-surface/40 space-y-3 rounded-xl border p-4">
+                <div
+                  key={s.kind}
+                  className="border-line bg-surface/40 space-y-3 rounded-xl border p-4"
+                >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <div className="text-fg text-sm font-semibold">{s.title}</div>
@@ -342,7 +356,12 @@ export default function TlsHandshakeLab() {
                       <CheckRow label="Subject matches the host" pass={report.hostnameMatches} />
                     </div>
                   )}
-                  <Button size="sm" variant="secondary" onClick={() => validate(s.kind)} className="w-full">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => validate(s.kind)}
+                    className="w-full"
+                  >
                     Validate
                   </Button>
                 </div>
@@ -403,14 +422,16 @@ export default function TlsHandshakeLab() {
               <>
                 <Lock className="text-success size-4 shrink-0" aria-hidden />
                 <span>
-                  https://{EXPECTED_HOST} <span className="text-fg-subtle">(http refused and upgraded)</span>
+                  https://{EXPECTED_HOST}{' '}
+                  <span className="text-fg-subtle">(http refused and upgraded)</span>
                 </span>
               </>
             ) : (
               <>
                 <CircleX className="text-danger size-4 shrink-0" aria-hidden />
                 <span>
-                  http://{EXPECTED_HOST} <span className="text-fg-subtle">(downgradable by an on-path attacker)</span>
+                  http://{EXPECTED_HOST}{' '}
+                  <span className="text-fg-subtle">(downgradable by an on-path attacker)</span>
                 </span>
               </>
             )}
@@ -484,8 +505,8 @@ export default function TlsHandshakeLab() {
                 {shortFp(setup.rogue.fingerprint)}
               </div>
               <p className="text-fg-muted text-xs leading-relaxed">
-                A different key, also signed by {TRUSTED_CA_NAME} for {EXPECTED_HOST} — as a mis-issuing or
-                compromised CA would. Valid on paper; wrong key.
+                A different key, also signed by {TRUSTED_CA_NAME} for {EXPECTED_HOST} — as a
+                mis-issuing or compromised CA would. Valid on paper; wrong key.
               </p>
             </div>
           </div>

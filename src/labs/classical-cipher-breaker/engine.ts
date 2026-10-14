@@ -12,7 +12,7 @@
 
 /** Relative frequency of each letter A–Z in ordinary English text, as a percent. */
 export const ENGLISH_FREQ: readonly number[] = [
-  8.17, 1.49, 2.78, 4.25, 12.70, 2.23, 2.02, 6.09, 6.97, 0.15, 0.77, 4.03, 2.41, 6.75, 7.51, 1.93,
+  8.17, 1.49, 2.78, 4.25, 12.7, 2.23, 2.02, 6.09, 6.97, 0.15, 0.77, 4.03, 2.41, 6.75, 7.51, 1.93,
   0.1, 5.99, 6.33, 9.06, 2.76, 0.98, 2.36, 0.15, 1.97, 0.07,
 ];
 
@@ -84,7 +84,10 @@ export interface CaesarCandidate {
 }
 
 /** Try all 26 decryption shifts and rank them by how English-like the result is. */
-export function breakCaesar(cipher: string): { best: CaesarCandidate; candidates: CaesarCandidate[] } {
+export function breakCaesar(cipher: string): {
+  best: CaesarCandidate;
+  candidates: CaesarCandidate[];
+} {
   const candidates: CaesarCandidate[] = [];
   for (let shift = 0; shift < 26; shift++) {
     const text = caesarShift(cipher, shift);
@@ -118,7 +121,7 @@ function vigenereApply(text: string, key: string, dir: 1 | -1): string {
       out += String.fromCharCode(((((code - A + shift) % 26) + 26) % 26) + A);
       j++;
     } else if (isLower(code)) {
-      out += String.fromCharCode((((((code - 97 + shift) % 26) + 26) % 26)) + 97);
+      out += String.fromCharCode(((((code - 97 + shift) % 26) + 26) % 26) + 97);
       j++;
     } else {
       out += text[i];

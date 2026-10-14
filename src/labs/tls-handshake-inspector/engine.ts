@@ -128,8 +128,10 @@ export async function verifyCert(cert: Cert, policy: Policy): Promise<VerifyRepo
 
   const reasons: string[] = [];
   if (!signatureValid) reasons.push('Signature not from a trusted CA (untrusted or self-signed).');
-  if (!notExpired) reasons.push('Certificate is outside its validity period (expired or not yet valid).');
-  if (!matches) reasons.push(`Certificate subject (${cert.subject}) does not match ${policy.hostname}.`);
+  if (!notExpired)
+    reasons.push('Certificate is outside its validity period (expired or not yet valid).');
+  if (!matches)
+    reasons.push(`Certificate subject (${cert.subject}) does not match ${policy.hostname}.`);
   if (!pinOk) reasons.push('Certificate does not match the pinned key.');
 
   return {

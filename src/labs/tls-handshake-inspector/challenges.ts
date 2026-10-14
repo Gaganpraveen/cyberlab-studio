@@ -79,10 +79,7 @@ export const challenges: ChallengeDefinition[] = [
       'The requested host is shop.example.test — the client is reaching for that name.',
       'Look at the certificate&rsquo;s **subject** field, not the host you asked for.',
     ],
-    acceptedHashes: [
-      hashAnswer('other.example.test'),
-      hashAnswer('https://other.example.test'),
-    ],
+    acceptedHashes: [hashAnswer('other.example.test'), hashAnswer('https://other.example.test')],
     solution:
       'The certificate&rsquo;s subject is **other.example.test**, but the client asked for shop.example.test, so the names do not match and the certificate is rejected. A valid signature only proves the authority issued the certificate; it says nothing about *which* site may use it. Checking that the subject (or a subject-alternative name) matches the host you intended to reach is what stops an attacker from presenting a legitimately-signed certificate for a site they do not control.',
   },

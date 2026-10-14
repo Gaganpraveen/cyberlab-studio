@@ -78,9 +78,15 @@ describe('hostname mismatch', () => {
   it('matches a single-label wildcard but not the bare domain or deeper names', async () => {
     const ca = await createCa('Example Trust Root CA');
     const cert = await validLeaf(ca, '*.example.test');
-    expect((await verifyCert(cert, policyFor(ca, { hostname: 'shop.example.test' }))).hostnameMatches).toBe(true);
-    expect((await verifyCert(cert, policyFor(ca, { hostname: 'example.test' }))).hostnameMatches).toBe(false);
-    expect((await verifyCert(cert, policyFor(ca, { hostname: 'a.b.example.test' }))).hostnameMatches).toBe(false);
+    expect(
+      (await verifyCert(cert, policyFor(ca, { hostname: 'shop.example.test' }))).hostnameMatches,
+    ).toBe(true);
+    expect(
+      (await verifyCert(cert, policyFor(ca, { hostname: 'example.test' }))).hostnameMatches,
+    ).toBe(false);
+    expect(
+      (await verifyCert(cert, policyFor(ca, { hostname: 'a.b.example.test' }))).hostnameMatches,
+    ).toBe(false);
   });
 });
 

@@ -104,9 +104,9 @@ export default function AccessControlLab() {
   const guide = (
     <div className="space-y-5">
       <p className="text-fg-muted text-sm leading-relaxed">
-        Broken access control is the most common web vulnerability. The policy here starts by trusting any{' '}
-        <strong className="text-fg">logged-in</strong> caller. You will walk in as Mallory, take what is not yours, then
-        add the two checks that stop you.
+        Broken access control is the most common web vulnerability. The policy here starts by
+        trusting any <strong className="text-fg">logged-in</strong> caller. You will walk in as
+        Mallory, take what is not yours, then add the two checks that stop you.
       </p>
       <LabSteps
         steps={[
@@ -118,8 +118,8 @@ export default function AccessControlLab() {
         ]}
       />
       <Callout tone="info" title="A model, not a server">
-        <code>authorize()</code> is a pure function over fixed users and resources. No request leaves your browser; the
-        accounts and documents are fictional.
+        <code>authorize()</code> is a pure function over fixed users and resources. No request
+        leaves your browser; the accounts and documents are fictional.
       </Callout>
     </div>
   );
@@ -261,7 +261,15 @@ export default function AccessControlLab() {
             )}
           >
             <div className="flex items-center gap-2">
-              <Badge tone={response.decision.allowed ? (isExploit(response.resource, response.caller, response.decision) ? 'danger' : 'success') : 'success'}>
+              <Badge
+                tone={
+                  response.decision.allowed
+                    ? isExploit(response.resource, response.caller, response.decision)
+                      ? 'danger'
+                      : 'success'
+                    : 'success'
+                }
+              >
                 {response.decision.allowed ? '200 OK' : '403 Forbidden'}
               </Badge>
               <span className="text-fg-muted text-xs">{response.decision.reason}</span>

@@ -3,13 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { hashAnswer } from '../answers';
 import { challenges } from './challenges';
-import {
-  CLICKJACK_FLAG,
-  CSRF_FLAG,
-  CSRF_NONE,
-  forgeTransfer,
-  framingAttack,
-} from './engine';
+import { CLICKJACK_FLAG, CSRF_FLAG, CSRF_NONE, forgeTransfer, framingAttack } from './engine';
 
 describe('CSRF', () => {
   it('forges a state change by riding the session cookie when undefended', () => {

@@ -3,13 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { hashAnswer } from '../answers';
 import { challenges } from './challenges';
-import {
-  LOGIN_FLAG,
-  NO_DEFENSES,
-  type Defenses,
-  probeUser,
-  runAttack,
-} from './engine';
+import { LOGIN_FLAG, NO_DEFENSES, type Defenses, probeUser, runAttack } from './engine';
 
 const only = (patch: Partial<Defenses>): Defenses => ({ ...NO_DEFENSES, ...patch });
 

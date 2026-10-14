@@ -87,7 +87,12 @@ function IcChart({ scores, best }: { scores: KeyLengthScore[]; best: number }) {
                 className={cn('w-full rounded-sm', isBest ? 'bg-success' : 'bg-accent/50')}
                 style={{ height: `${Math.min(100, (s.ic / max) * 100)}%` }}
               />
-              <span className={cn('text-[0.65rem] tabular-nums', isBest ? 'text-success' : 'text-fg-subtle')}>
+              <span
+                className={cn(
+                  'text-[0.65rem] tabular-nums',
+                  isBest ? 'text-success' : 'text-fg-subtle',
+                )}
+              >
                 {s.length}
               </span>
             </div>
@@ -173,22 +178,35 @@ export default function ClassicalCipherLab() {
   const guide = (
     <div className="space-y-5">
       <p className="text-fg-muted text-sm leading-relaxed">
-        Classical ciphers hide letters, not their <strong className="text-fg">frequencies</strong>. You will break two
-        of them with nothing but counting: a Caesar cipher by trying every shift, and a Vigenere cipher by using the
-        index of coincidence to peel a repeating key apart.
+        Classical ciphers hide letters, not their <strong className="text-fg">frequencies</strong>.
+        You will break two of them with nothing but counting: a Caesar cipher by trying every shift,
+        and a Vigenere cipher by using the index of coincidence to peel a repeating key apart.
       </p>
       <LabSteps
         steps={[
-          { title: 'Read the fingerprint', body: 'See how English letter frequencies betray a cipher.' },
-          { title: 'Brute-force Caesar', body: 'Score all 26 shifts and take the most English-like one.' },
-          { title: 'Find the key length', body: 'Use the index of coincidence to size the Vigenere key.' },
-          { title: 'Recover the keyword', body: 'Solve each column as a Caesar shift and read the key.' },
+          {
+            title: 'Read the fingerprint',
+            body: 'See how English letter frequencies betray a cipher.',
+          },
+          {
+            title: 'Brute-force Caesar',
+            body: 'Score all 26 shifts and take the most English-like one.',
+          },
+          {
+            title: 'Find the key length',
+            body: 'Use the index of coincidence to size the Vigenere key.',
+          },
+          {
+            title: 'Recover the keyword',
+            body: 'Solve each column as a Caesar shift and read the key.',
+          },
           { title: 'Decrypt', body: 'Read both hidden flags out of the plaintext.' },
         ]}
       />
       <Callout tone="info" title="Real computation, no secrets stored">
-        The analysis genuinely runs in your browser — chi-squared scoring and the index of coincidence over the
-        provided ciphertext. Nothing is sent anywhere; both messages are fictional.
+        The analysis genuinely runs in your browser — chi-squared scoring and the index of
+        coincidence over the provided ciphertext. Nothing is sent anywhere; both messages are
+        fictional.
       </Callout>
     </div>
   );
@@ -204,7 +222,9 @@ export default function ClassicalCipherLab() {
       <TabsContent value="caesar" className="min-h-0 flex-1 overflow-y-auto">
         <div className="space-y-4 p-5">
           <div>
-            <div className="text-fg-subtle mb-1 text-xs font-semibold tracking-[0.1em] uppercase">Ciphertext</div>
+            <div className="text-fg-subtle mb-1 text-xs font-semibold tracking-[0.1em] uppercase">
+              Ciphertext
+            </div>
             <pre className="border-line bg-surface-2 text-fg-muted overflow-x-auto rounded-lg border p-3 font-mono text-xs whitespace-pre-wrap">
               {CAESAR_CIPHERTEXT}
             </pre>
@@ -232,13 +252,17 @@ export default function ClassicalCipherLab() {
 
           <div>
             <div className="mb-1 flex items-center gap-2">
-              <span className="text-fg-subtle text-xs font-semibold tracking-[0.1em] uppercase">Decrypted</span>
+              <span className="text-fg-subtle text-xs font-semibold tracking-[0.1em] uppercase">
+                Decrypted
+              </span>
               {caesarBroken && <Badge tone="success">English found</Badge>}
             </div>
             <pre
               className={cn(
                 'overflow-x-auto rounded-lg border p-3 font-mono text-xs whitespace-pre-wrap',
-                caesarBroken ? 'border-success/40 bg-success-soft text-fg' : 'border-line bg-surface-2 text-fg-muted',
+                caesarBroken
+                  ? 'border-success/40 bg-success-soft text-fg'
+                  : 'border-line bg-surface-2 text-fg-muted',
               )}
             >
               {caesarText}
@@ -260,7 +284,9 @@ export default function ClassicalCipherLab() {
       <TabsContent value="vigenere" className="min-h-0 flex-1 overflow-y-auto">
         <div className="space-y-4 p-5">
           <div>
-            <div className="text-fg-subtle mb-1 text-xs font-semibold tracking-[0.1em] uppercase">Ciphertext</div>
+            <div className="text-fg-subtle mb-1 text-xs font-semibold tracking-[0.1em] uppercase">
+              Ciphertext
+            </div>
             <pre className="border-line bg-surface-2 text-fg-muted max-h-32 overflow-auto rounded-lg border p-3 font-mono text-xs whitespace-pre-wrap">
               {VIGENERE_CIPHERTEXT}
             </pre>
@@ -287,7 +313,9 @@ export default function ClassicalCipherLab() {
                 <span className="text-fg-subtle text-xs">(length {solution.keyLength})</span>
               </div>
               <div>
-                <div className="text-fg-subtle mb-1 text-xs font-semibold tracking-[0.1em] uppercase">Decrypted</div>
+                <div className="text-fg-subtle mb-1 text-xs font-semibold tracking-[0.1em] uppercase">
+                  Decrypted
+                </div>
                 <pre className="border-success/40 bg-success-soft text-fg max-h-40 overflow-auto rounded-lg border p-3 font-mono text-xs whitespace-pre-wrap">
                   {solution.plaintext}
                 </pre>

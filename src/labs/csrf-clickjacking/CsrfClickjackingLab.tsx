@@ -35,13 +35,7 @@ export default function CsrfClickjackingLab() {
     const r = forgeTransfer(defenses);
     setCsrf(r);
     if (r.accepted) {
-      add(
-        evidence(
-          'danger',
-          'Forged transfer accepted',
-          `${r.reason}\nFlag: ${r.flag}`,
-        ),
-      );
+      add(evidence('danger', 'Forged transfer accepted', `${r.reason}\nFlag: ${r.flag}`));
     } else {
       if (defenses.sameSite) markChallengeSolved('csrf-samesite');
       if (defenses.csrfToken) markChallengeSolved('csrf-token');
@@ -72,22 +66,29 @@ export default function CsrfClickjackingLab() {
   const guide = (
     <div className="space-y-5">
       <p className="text-fg-muted text-sm leading-relaxed">
-        Both attacks abuse the fact that a victim is already <strong className="text-fg">logged in</strong>. CSRF rides
-        the session cookie the browser attaches for you; clickjacking frames the real page and steals the click. You will
-        fire each, then switch on the header or cookie flag that stops it.
+        Both attacks abuse the fact that a victim is already{' '}
+        <strong className="text-fg">logged in</strong>. CSRF rides the session cookie the browser
+        attaches for you; clickjacking frames the real page and steals the click. You will fire
+        each, then switch on the header or cookie flag that stops it.
       </p>
       <LabSteps
         steps={[
-          { title: 'Forge a request', body: 'Make the victim&rsquo;s browser POST a transfer to the bank.' },
-          { title: 'Withhold the cookie', body: 'Use SameSite so the cookie is not sent cross-site.' },
+          {
+            title: 'Forge a request',
+            body: 'Make the victim&rsquo;s browser POST a transfer to the bank.',
+          },
+          {
+            title: 'Withhold the cookie',
+            body: 'Use SameSite so the cookie is not sent cross-site.',
+          },
           { title: 'Add a token', body: 'Require a value the attacker origin cannot read.' },
           { title: 'Hijack a click', body: 'Frame the bank under a decoy and steal the click.' },
           { title: 'Refuse the frame', body: "Send frame-ancestors 'none' and break the overlay." },
         ]}
       />
       <Callout tone="info" title="A model of the browser, not a live site">
-        No cross-origin request is actually sent. The functions model what a browser and server would do with these
-        defenses on or off; both sites are fictional.
+        No cross-origin request is actually sent. The functions model what a browser and server
+        would do with these defenses on or off; both sites are fictional.
       </Callout>
     </div>
   );
@@ -105,7 +106,8 @@ export default function CsrfClickjackingLab() {
           <div className="border-line bg-surface/40 rounded-xl border p-4 text-xs">
             <div className="text-fg-muted">
               The victim is logged into <code className="text-fg">{BANK_ORIGIN}</code>. They open{' '}
-              <code className="text-danger">{ATTACKER_ORIGIN}</code>, which auto-submits a hidden form:
+              <code className="text-danger">{ATTACKER_ORIGIN}</code>, which auto-submits a hidden
+              form:
             </div>
             <pre className="text-fg-muted mt-2 overflow-x-auto font-mono text-[0.7rem] whitespace-pre-wrap">
               {`POST ${BANK_ORIGIN}/transfer
@@ -116,7 +118,9 @@ amount=5000&to=attacker`}
           </div>
 
           <div className="border-line bg-surface/40 rounded-xl border p-4">
-            <div className="text-fg-subtle mb-2 text-xs font-semibold tracking-[0.1em] uppercase">Server defenses</div>
+            <div className="text-fg-subtle mb-2 text-xs font-semibold tracking-[0.1em] uppercase">
+              Server defenses
+            </div>
             <div className="flex flex-wrap gap-2">
               <Button
                 size="sm"
@@ -145,7 +149,9 @@ amount=5000&to=attacker`}
             <div
               className={cn(
                 'space-y-2 rounded-xl border p-4',
-                csrf.accepted ? 'border-danger/40 bg-danger-soft' : 'border-success/40 bg-success-soft',
+                csrf.accepted
+                  ? 'border-danger/40 bg-danger-soft'
+                  : 'border-success/40 bg-success-soft',
               )}
             >
               <div className="flex items-center gap-2">
@@ -174,7 +180,8 @@ amount=5000&to=attacker`}
         <div className="space-y-4 p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-fg-muted max-w-sm text-sm">
-              The attacker page stacks the bank&rsquo;s real Transfer button, invisible, on top of a tempting decoy.
+              The attacker page stacks the bank&rsquo;s real Transfer button, invisible, on top of a
+              tempting decoy.
             </p>
             <div className="flex gap-2">
               <Button
@@ -183,7 +190,11 @@ amount=5000&to=attacker`}
                 onClick={() => setReveal((r) => !r)}
                 className="gap-1.5"
               >
-                {reveal ? <EyeOff className="size-3.5" aria-hidden /> : <Eye className="size-3.5" aria-hidden />}
+                {reveal ? (
+                  <EyeOff className="size-3.5" aria-hidden />
+                ) : (
+                  <Eye className="size-3.5" aria-hidden />
+                )}
                 {reveal ? 'Hide overlay' : 'Reveal overlay'}
               </Button>
               <Button
@@ -225,7 +236,9 @@ amount=5000&to=attacker`}
                   aria-hidden={!reveal}
                 >
                   <div className="border-danger/50 bg-danger-soft rounded-lg border-2 border-dashed p-3">
-                    <div className="text-fg-subtle mb-1 text-center text-[0.6rem]">{BANK_ORIGIN} (framed)</div>
+                    <div className="text-fg-subtle mb-1 text-center text-[0.6rem]">
+                      {BANK_ORIGIN} (framed)
+                    </div>
                     <div className="bg-danger/80 rounded-md px-6 py-3 text-center font-bold text-white">
                       Transfer $5,000 →
                     </div>
@@ -243,7 +256,9 @@ amount=5000&to=attacker`}
             <div
               className={cn(
                 'space-y-2 rounded-xl border p-4',
-                clickjack.clickStolen ? 'border-danger/40 bg-danger-soft' : 'border-success/40 bg-success-soft',
+                clickjack.clickStolen
+                  ? 'border-danger/40 bg-danger-soft'
+                  : 'border-success/40 bg-success-soft',
               )}
             >
               <Badge tone={clickjack.clickStolen ? 'danger' : 'success'}>

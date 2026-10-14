@@ -44,20 +44,23 @@ export function forgeTransfer(defenses: CsrfDefenses): CsrfResult {
     return {
       accepted: false,
       carriedCookie,
-      reason: 'Rejected: the forged request carries no anti-CSRF token, and the attacker origin cannot read one.',
+      reason:
+        'Rejected: the forged request carries no anti-CSRF token, and the attacker origin cannot read one.',
     };
   }
   if (!carriedCookie) {
     return {
       accepted: false,
       carriedCookie,
-      reason: 'Rejected: the SameSite cookie was not sent on a cross-site request, so the server sees no session.',
+      reason:
+        'Rejected: the SameSite cookie was not sent on a cross-site request, so the server sees no session.',
     };
   }
   return {
     accepted: true,
     carriedCookie,
-    reason: "Accepted: the browser attached the victim's session cookie and the server trusted the request.",
+    reason:
+      "Accepted: the browser attached the victim's session cookie and the server trusted the request.",
     flag: CSRF_FLAG,
   };
 }
@@ -79,13 +82,15 @@ export function framingAttack(frameProtection: boolean): ClickjackResult {
     return {
       framed: false,
       clickStolen: false,
-      reason: "Blocked: the browser refused to frame the bank (frame-ancestors 'none' / X-Frame-Options: DENY).",
+      reason:
+        "Blocked: the browser refused to frame the bank (frame-ancestors 'none' / X-Frame-Options: DENY).",
     };
   }
   return {
     framed: true,
     clickStolen: true,
-    reason: "The bank loads in a transparent iframe over a decoy; the victim's click lands on the hidden Transfer button.",
+    reason:
+      "The bank loads in a transparent iframe over a decoy; the victim's click lands on the hidden Transfer button.",
     flag: CLICKJACK_FLAG,
   };
 }

@@ -70,7 +70,12 @@ export function runAttack(defenses: Defenses): AttackReport {
   const needed = idx + 1; // attempts required to reach the correct password
 
   if (defenses.lockout && LOCKOUT_THRESHOLD < needed) {
-    return { attempts: LOCKOUT_THRESHOLD, found: false, authenticated: false, blockedBy: 'account lockout' };
+    return {
+      attempts: LOCKOUT_THRESHOLD,
+      found: false,
+      authenticated: false,
+      blockedBy: 'account lockout',
+    };
   }
   if (defenses.rateLimit && RATE_LIMIT < needed) {
     return { attempts: RATE_LIMIT, found: false, authenticated: false, blockedBy: 'rate limiting' };
