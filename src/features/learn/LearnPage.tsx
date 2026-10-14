@@ -1,8 +1,9 @@
-import { BookOpen, FlaskConical, Search } from 'lucide-react';
+import { BookOpen, FlaskConical, Grid3x3, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
 
 import { PageContainer } from '@/components/layout/AppShell';
+import { ButtonLink } from '@/components/ui/Button';
 import { Badge, inputClasses, PageHeader } from '@/components/ui/primitives';
 import { DOMAINS, TOPICS } from '@/content/catalog';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
@@ -55,6 +56,11 @@ export default function LearnPage() {
         eyebrow="Topic map"
         title="The whole field, one map"
         description={`${CATALOG_SUMMARY.topics} topics across ${CATALOG_SUMMARY.domains} domains. ${CATALOG_SUMMARY.lessons} have full lessons today; the rest show what is coming. Topics with a flask have a hands-on lab.`}
+        actions={
+          <ButtonLink to="/coverage" icon={<Grid3x3 className="size-4" aria-hidden />}>
+            Coverage map
+          </ButtonLink>
+        }
       />
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">

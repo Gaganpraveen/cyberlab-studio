@@ -8,7 +8,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { useDeferredValue, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link, useParams, useSearchParams } from 'react-router';
 
 import { PageContainer } from '@/components/layout/AppShell';
 import { ButtonLink } from '@/components/ui/Button';
@@ -234,7 +234,11 @@ function AttackRow({ attack }: { attack: Attack }) {
 function AttackIndex() {
   useDocumentTitle('Attacks A to Z');
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState<AttackCategory | 'all'>('all');
+  const [params] = useSearchParams();
+  const [category, setCategory] = useState<AttackCategory | 'all'>(() => {
+    const requested = params.get('category');
+    return requested && requested in ATTACK_CATEGORIES ? (requested as AttackCategory) : 'all';
+  });
   const [labsOnly, setLabsOnly] = useState(false);
   const deferred = useDeferredValue(query.trim().toLowerCase());
 

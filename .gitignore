@@ -9,7 +9,7 @@ src-tauri/target/
 src-tauri/gen/
 
 # Tests
-coverage/
+/coverage/
 playwright-report/
 test-results/
 blob-report/

@@ -103,7 +103,7 @@ function TopBar({
       >
         <Menu className="size-5" />
       </button>
-      <div className="lg:hidden">
+      <div className="shrink-0 lg:hidden">
         <Logo />
       </div>
 

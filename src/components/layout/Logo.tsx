@@ -25,9 +25,9 @@ export function LogoMark({ className }: { className?: string }) {
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <span className={cn('inline-flex items-center gap-2.5', className)}>
+    <span className={cn('inline-flex shrink-0 items-center gap-2.5', className)}>
       <LogoMark />
-      <span className="text-fg text-[0.9375rem] font-semibold tracking-tight">
+      <span className="text-fg text-[0.9375rem] font-semibold tracking-tight whitespace-nowrap">
         CyberLab <span className="text-fg-muted font-normal">Studio</span>
       </span>
     </span>

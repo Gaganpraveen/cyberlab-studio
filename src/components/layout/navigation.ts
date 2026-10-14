@@ -1,6 +1,7 @@
 import {
   BookMarked,
   FlaskConical,
+  Grid3x3,
   Home,
   Info,
   Library,
@@ -63,6 +64,12 @@ export const PRIMARY_NAV: NavItem[] = [
 ];
 
 export const SECONDARY_NAV: NavItem[] = [
+  {
+    to: '/coverage',
+    label: 'Coverage map',
+    icon: Grid3x3,
+    description: 'What the curriculum covers, area by area',
+  },
   {
     to: '/settings',
     label: 'Settings',
