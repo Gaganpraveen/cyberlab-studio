@@ -311,7 +311,7 @@ export default function LibraryPage() {
           href={`${SITE.repoUrl}/blob/${SITE.contentBranch}/docs/KNOWLEDGE_BASE.md`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-accent-text hover:underline"
+          className="link"
         >
           knowledge base guide
         </a>

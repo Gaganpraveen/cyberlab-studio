@@ -199,7 +199,7 @@ export default function SettingsPage() {
       <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
         <p className="text-fg-subtle text-sm">
           Looking for your saved progress? It lives on the{' '}
-          <Link to="/progress" className="text-accent-text hover:underline">
+          <Link to="/progress" className="link">
             Progress page
           </Link>
           , with export and import.

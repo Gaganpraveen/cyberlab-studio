@@ -375,6 +375,7 @@ function CoverageMatrix({ facts }: { facts: Map<string, TopicFacts[]> }) {
 
           <aside
             className="border-line min-w-0 flex-1 lg:sticky lg:top-24 lg:border-l lg:pl-8"
+            aria-label="Topic details"
             aria-live="polite"
           >
             <TopicPanel facts={active} lens={lens} total={total} />
@@ -595,7 +596,7 @@ export default function CoveragePage() {
               href={`${SITE.repoUrl}/blob/${SITE.contentBranch}/docs/CONTENT_GUIDE.md`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-accent-text hover:underline"
+              className="link"
             >
               content guide
             </a>{' '}
@@ -609,16 +610,16 @@ export default function CoveragePage() {
               href={`${SITE.repoUrl}/blob/${SITE.contentBranch}/docs/KNOWLEDGE_BASE.md`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-accent-text hover:underline"
+              className="link"
             >
               knowledge base guide
             </a>
             , or browse the{' '}
-            <Link to="/library" className="text-accent-text hover:underline">
+            <Link to="/library" className="link">
               library
             </Link>{' '}
             and the{' '}
-            <Link to="/glossary" className="text-accent-text hover:underline">
+            <Link to="/glossary" className="link">
               {GLOSSARY.length} glossary terms
             </Link>
             .

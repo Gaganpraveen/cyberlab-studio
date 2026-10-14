@@ -26,6 +26,8 @@ import {
   memo,
   type ReactElement,
   type ReactNode,
+  useEffect,
+  useRef,
   useState,
 } from 'react';
 import ReactMarkdown, { type Components, defaultUrlTransform } from 'react-markdown';
@@ -232,6 +234,25 @@ function CopyButton({ text }: { text: string }) {
 }
 
 /** Fenced code: a language label and a copy button; `sequence` blocks become diagrams. */
+/**
+ * Whether an element is wider than its box. A block that scrolls sideways is
+ * made focusable so keyboard users can scroll it too.
+ */
+function useScrollable<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  const [scrollable, setScrollable] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const check = () => setScrollable(el.scrollWidth > el.clientWidth + 1);
+    check();
+    const observer = new ResizeObserver(check);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  return [ref, scrollable] as const;
+}
+
 function Pre({ children }: ComponentPropsWithoutRef<'pre'>) {
   const code = Children.toArray(children)[0];
   const className = isValidElement(code)
@@ -241,11 +262,29 @@ function Pre({ children }: ComponentPropsWithoutRef<'pre'>) {
   const text = textOf(children).replace(/\n$/, '');
 
   if (language === 'sequence') return <SequenceDiagram source={text} />;
+  return (
+    <CodeBlock label={language ? languageLabels[language] : undefined} text={text}>
+      {children}
+    </CodeBlock>
+  );
+}
 
-  const label = language ? languageLabels[language] : undefined;
+function CodeBlock({
+  label,
+  text,
+  children,
+}: {
+  label?: string;
+  text: string;
+  children: ReactNode;
+}) {
+  const [ref, scrollable] = useScrollable<HTMLPreElement>();
   return (
     <div className="group relative">
-      <pre>{children}</pre>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a region that scrolls must be reachable by keyboard (WCAG 2.1.1) */}
+      <pre ref={ref} tabIndex={scrollable ? 0 : undefined}>
+        {children}
+      </pre>
       <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100">
         {label && (
           <span className="text-fg-subtle font-sans text-[0.6875rem] font-medium tracking-wide uppercase">
@@ -259,8 +298,14 @@ function Pre({ children }: ComponentPropsWithoutRef<'pre'>) {
 }
 
 function Table({ children }: ComponentPropsWithoutRef<'table'>) {
+  const [ref, scrollable] = useScrollable<HTMLDivElement>();
   return (
-    <div className="border-line overflow-x-auto rounded-xl border">
+    <div
+      ref={ref}
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a region that scrolls must be reachable by keyboard (WCAG 2.1.1)
+      tabIndex={scrollable ? 0 : undefined}
+      className="border-line overflow-x-auto rounded-xl border"
+    >
       <table>{children}</table>
     </div>
   );

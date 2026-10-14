@@ -141,6 +141,19 @@
   color-scheme: light;
 }
 
+/* An inline text link: accent color plus an underline, so it never relies on color alone. */
+@utility link {
+  color: var(--c-accent-text);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in oklab, var(--c-accent-text) 40%, transparent);
+  transition: text-decoration-color 150ms;
+  &:hover {
+    text-decoration-color: currentColor;
+  }
+}
+
 @layer base {
   html {
     font-size: calc(100% * var(--font-scale, 1));

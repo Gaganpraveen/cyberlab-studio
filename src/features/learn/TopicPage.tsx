@@ -188,7 +188,7 @@ function PrereqList({ ids }: { ids: string[] }) {
           const topic = getTopic(id);
           return (
             <li key={id}>
-              <Link to={`/learn/${id.toLowerCase()}`} className="text-accent-text hover:underline">
+              <Link to={`/learn/${id.toLowerCase()}`} className="link">
                 {topic?.title ?? id}
               </Link>
             </li>
@@ -447,12 +447,7 @@ function SourceList({ sources }: { sources: LessonDetail['sources'] }) {
     <ol className="list-decimal space-y-2 pl-5 text-sm">
       {sources.map((source) => (
         <li key={source.url} className="text-fg-muted pl-1">
-          <a
-            href={source.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-accent-text hover:underline"
-          >
+          <a href={source.url} target="_blank" rel="noopener noreferrer" className="link">
             {source.title}
           </a>
           {source.publisher && <span className="text-fg-subtle"> · {source.publisher}</span>}
@@ -561,7 +556,7 @@ function LessonView({ topic, lesson }: { topic: TopicRecord; lesson: LessonMeta 
                   href={editOnGitHubUrl(lesson.file)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-accent-text hover:underline"
+                  className="link"
                 >
                   Suggest an edit on GitHub
                 </a>
@@ -637,12 +632,7 @@ function ComingSoon({ topic }: { topic: TopicRecord }) {
           <p className="text-fg-muted text-sm leading-relaxed">
             Lessons are plain Markdown files, so an instructor can write or adapt one in
             GitHub&rsquo;s editor.{' '}
-            <a
-              href={newFileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent-text hover:underline"
-            >
+            <a href={newFileUrl} target="_blank" rel="noopener noreferrer" className="link">
               Start this lesson on GitHub
             </a>{' '}
             and follow the{' '}
@@ -650,7 +640,7 @@ function ComingSoon({ topic }: { topic: TopicRecord }) {
               href={`${SITE.repoUrl}/blob/${SITE.contentBranch}/docs/CONTENT_GUIDE.md`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-accent-text hover:underline"
+              className="link"
             >
               content guide
             </a>
