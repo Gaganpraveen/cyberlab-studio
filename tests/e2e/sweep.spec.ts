@@ -67,10 +67,12 @@ async function rawMarkup(page: Page): Promise<string | undefined> {
   return match ? text.slice(Math.max(0, match.index - 40), match.index + 40) : undefined;
 }
 
+const CONTROLS = 'button:enabled, input[type="checkbox"]:enabled, input[type="radio"]:enabled';
+
 /**
- * Types awkward input into every field, then presses every enabled button once (each
- * occurrence of a label counts separately), closing any dialog a press opens. Returns the
- * presses made and any raw markup a press revealed.
+ * Types awkward input into every field, then presses every enabled button, checkbox and
+ * radio once (each occurrence of a label counts separately), closing any dialog a press
+ * opens. Returns the presses made and any raw markup a press revealed.
  */
 async function pressEveryControl(page: Page, scope: Locator) {
   const fields = scope.locator(
@@ -84,24 +86,26 @@ async function pressEveryControl(page: Page, scope: Locator) {
   for (let step = 0; step < 80; step++) {
     const seen = new Map<string, number>();
     let next: Locator | undefined;
-    for (const button of await scope.locator('button:enabled').filter({ visible: true }).all()) {
-      const label = (
-        (await button.getAttribute('aria-label')) ??
-        (await button.textContent()) ??
-        ''
-      )
-        .replace(/\s+/g, ' ')
-        .trim();
+    for (const control of await scope.locator(CONTROLS).filter({ visible: true }).all()) {
+      const label = await control.evaluate((el) =>
+        (
+          el.getAttribute('aria-label') ??
+          ((el as HTMLInputElement).labels?.[0] ?? el).textContent ??
+          ''
+        )
+          .replace(/\s+/g, ' ')
+          .trim(),
+      );
       const occurrence = (seen.get(label) ?? 0) + 1;
       seen.set(label, occurrence);
       const key = `${label} #${occurrence}`;
       if (pressed.has(key) || /^reset lab$/i.test(label)) continue;
       pressed.add(key);
-      next = button;
+      next = control;
       break;
     }
     if (!next) break;
-    await next.click({ timeout: 2_000 }).catch(() => undefined);
+    await next.click({ timeout: 2_000 }).catch(() => next.dispatchEvent('click'));
     if (await page.getByRole('dialog').count()) await page.keyboard.press('Escape');
     const raw = await rawMarkup(page);
     if (raw) revealed.push(`after ${[...pressed].at(-1)}: ${raw}`);
