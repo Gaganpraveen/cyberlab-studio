@@ -1,5 +1,6 @@
 import { accessControlLab } from './access-control-matrix';
 import { classicalCipherLab } from './classical-cipher-breaker';
+import { cloudIamPolicyLab } from './cloud-iam-policy';
 import { commandPathInjectionLab } from './command-path-injection';
 import { csrfClickjackingLab } from './csrf-clickjacking';
 import { ddosLab } from './ddos';
@@ -37,6 +38,7 @@ export const LABS: LabDefinition[] = [
   ssrfUrlFilterLab,
   osPermissionsLab,
   detectionRuleBuilderLab,
+  cloudIamPolicyLab,
 ];
 
 const labById = new Map(LABS.map((lab) => [lab.id, lab]));
