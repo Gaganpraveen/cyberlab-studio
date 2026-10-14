@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-motion="full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#191817" />
+    <meta
+      name="description"
+      content="CyberLab Studio: an open, hands-on cybersecurity learning studio with linked lessons, safe in-browser attack-and-defense labs, and graded challenges."
+    />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>CyberLab Studio</title>
+    <script>
+      // Apply the saved theme before first paint to avoid a flash.
+      (function () {
+        try {
+          var s = JSON.parse(localStorage.getItem('cyberlab:settings:v1') || '{}');
+          var t = s.theme || 'dark';
+          if (t === 'system') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.dataset.theme = t;
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>CyberLab Studio needs JavaScript to run its interactive lessons and labs.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

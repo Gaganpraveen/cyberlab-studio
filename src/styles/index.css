@@ -1,0 +1,300 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+@import '@fontsource-variable/source-serif-4';
+
+/*
+ * CyberLab Studio design tokens.
+ *
+ * Semantic colors are CSS variables that switch with [data-theme] on <html>.
+ * Every text/background pairing used for body text meets WCAG 2.2 AA (4.5:1);
+ * see docs/DESIGN.md for the measured ratios.
+ */
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+@custom-variant light (&:where([data-theme='light'], [data-theme='light'] *));
+@custom-variant presenter (&:where([data-presenter='on'], [data-presenter='on'] *));
+
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Source Serif 4 Variable', ui-serif, Georgia, 'Times New Roman', serif;
+  --font-mono:
+    'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono',
+    monospace;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --animate-fade-in: fade-in 220ms var(--ease-out-soft) both;
+  --animate-rise-in: rise-in 320ms var(--ease-out-soft) both;
+  --animate-pulse-dot: pulse-dot 1.6s ease-in-out infinite;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+}
+
+@theme inline {
+  --color-canvas: var(--c-canvas);
+  --color-surface: var(--c-surface);
+  --color-surface-2: var(--c-surface-2);
+  --color-surface-3: var(--c-surface-3);
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+  --color-fg: var(--c-fg);
+  --color-fg-muted: var(--c-fg-muted);
+  --color-fg-subtle: var(--c-fg-subtle);
+  --color-accent: var(--c-accent);
+  --color-accent-strong: var(--c-accent-strong);
+  --color-accent-text: var(--c-accent-text);
+  --color-accent-soft: var(--c-accent-soft);
+  --color-on-accent: var(--c-on-accent);
+  --color-success: var(--c-success);
+  --color-success-soft: var(--c-success-soft);
+  --color-warning: var(--c-warning);
+  --color-warning-soft: var(--c-warning-soft);
+  --color-danger: var(--c-danger);
+  --color-danger-soft: var(--c-danger-soft);
+  --color-info: var(--c-info);
+  --color-info-soft: var(--c-info-soft);
+  --color-code-bg: var(--c-code-bg);
+}
+
+:root,
+[data-theme='dark'] {
+  --c-canvas: #191817;
+  --c-surface: #201f1d;
+  --c-surface-2: #292825;
+  --c-surface-3: #33312e;
+  --c-line: #34322f;
+  --c-line-strong: #4d4a45;
+  --c-fg: #f3f0e8;
+  --c-fg-muted: #c2bdb2;
+  --c-fg-subtle: #9a958b;
+  --c-accent: #e8a46a;
+  --c-accent-strong: #f0b27c;
+  --c-accent-text: #f0b27c;
+  --c-accent-soft: rgb(232 164 106 / 0.14);
+  --c-on-accent: #191817;
+  --c-success: #7cc492;
+  --c-success-soft: rgb(124 196 146 / 0.13);
+  --c-warning: #e8c06a;
+  --c-warning-soft: rgb(232 192 106 / 0.13);
+  --c-danger: #f08a7e;
+  --c-danger-soft: rgb(240 138 126 / 0.13);
+  --c-info: #8fb4ee;
+  --c-info-soft: rgb(143 180 238 / 0.13);
+  --c-code-bg: #151413;
+  --c-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  --c-canvas: #faf8f4;
+  --c-surface: #ffffff;
+  --c-surface-2: #f3f0ea;
+  --c-surface-3: #e9e5dd;
+  --c-line: #e4dfd6;
+  --c-line-strong: #b9b2a6;
+  --c-fg: #1d1c1a;
+  --c-fg-muted: #4f4b45;
+  --c-fg-subtle: #6b665d;
+  --c-accent: #a8501e;
+  --c-accent-strong: #8f4218;
+  --c-accent-text: #a8501e;
+  --c-accent-soft: rgb(168 80 30 / 0.1);
+  --c-on-accent: #ffffff;
+  --c-success: #23703a;
+  --c-success-soft: rgb(35 112 58 / 0.1);
+  --c-warning: #835a00;
+  --c-warning-soft: rgb(131 90 0 / 0.1);
+  --c-danger: #b3261e;
+  --c-danger-soft: rgb(179 38 30 / 0.08);
+  --c-info: #1d5aa6;
+  --c-info-soft: rgb(29 90 166 / 0.08);
+  --c-code-bg: #f5f2ec;
+  --c-shadow: 0 1px 2px rgb(30 25 20 / 0.06), 0 8px 24px -12px rgb(30 25 20 / 0.18);
+  color-scheme: light;
+}
+
+@layer base {
+  html {
+    font-size: calc(100% * var(--font-scale, 1));
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-canvas text-fg font-sans antialiased;
+    font-feature-settings:
+      'cv11' 1,
+      'ss01' 1;
+    min-height: 100dvh;
+  }
+
+  ::selection {
+    background: var(--c-accent-soft);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Thin, quiet scrollbars that still meet contrast for the thumb. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--c-line-strong) transparent;
+  }
+
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--font-mono);
+  }
+
+  [data-motion='reduce'] *,
+  [data-motion='reduce'] *::before,
+  [data-motion='reduce'] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer components {
+  .shadow-elevated {
+    box-shadow: var(--c-shadow);
+  }
+
+  /* Long-form lesson typography. */
+  .prose-lesson {
+    @apply text-fg max-w-[72ch] text-[1.0625rem] leading-[1.75];
+  }
+  [data-serif='on'] .prose-lesson {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+  }
+  .prose-lesson > * + * {
+    margin-top: 1.1em;
+  }
+  .prose-lesson h2 {
+    @apply text-fg mt-12 scroll-mt-24 font-sans text-[1.5rem] leading-tight font-semibold tracking-tight;
+  }
+  .prose-lesson h3 {
+    @apply text-fg mt-8 scroll-mt-24 font-sans text-[1.1875rem] leading-snug font-semibold;
+  }
+  .prose-lesson h4 {
+    @apply text-fg mt-6 font-sans text-base font-semibold;
+  }
+  .prose-lesson p {
+    @apply text-fg;
+  }
+  .prose-lesson strong {
+    @apply text-fg font-semibold;
+  }
+  .prose-lesson a {
+    @apply text-accent-text decoration-accent/40 hover:decoration-accent underline underline-offset-[3px];
+  }
+  .prose-lesson ul,
+  .prose-lesson ol {
+    @apply space-y-1.5 pl-6;
+  }
+  .prose-lesson ul {
+    list-style: disc;
+  }
+  .prose-lesson ol {
+    list-style: decimal;
+  }
+  .prose-lesson li::marker {
+    color: var(--c-fg-subtle);
+  }
+  .prose-lesson :not(pre) > code {
+    @apply bg-surface-2 border-line rounded-md border px-1.5 py-0.5 text-[0.875em];
+  }
+  .prose-lesson pre {
+    @apply bg-code-bg border-line overflow-x-auto rounded-xl border p-4 text-[0.875rem] leading-relaxed;
+  }
+  .prose-lesson table {
+    @apply w-full border-collapse overflow-hidden text-[0.9375rem];
+  }
+  .prose-lesson th {
+    @apply border-line-strong text-fg border-b px-3 py-2 text-left font-sans font-semibold;
+  }
+  .prose-lesson td {
+    @apply border-line border-b px-3 py-2 align-top;
+  }
+  .prose-lesson hr {
+    @apply border-line my-10;
+  }
+  .prose-lesson blockquote {
+    @apply border-line-strong text-fg-muted border-l-2 pl-4;
+  }
+  .prose-lesson img {
+    @apply border-line rounded-xl border;
+  }
+}
+
+/* Syntax highlighting (highlight.js classes), tuned for both themes. */
+@layer components {
+  .hljs-comment,
+  .hljs-quote {
+    color: var(--c-fg-subtle);
+    font-style: italic;
+  }
+  .hljs-keyword,
+  .hljs-selector-tag,
+  .hljs-literal,
+  .hljs-built_in {
+    color: var(--c-accent-text);
+  }
+  .hljs-string,
+  .hljs-attr,
+  .hljs-template-variable,
+  .hljs-addition {
+    color: var(--c-success);
+  }
+  .hljs-number,
+  .hljs-symbol,
+  .hljs-bullet,
+  .hljs-variable {
+    color: var(--c-warning);
+  }
+  .hljs-title,
+  .hljs-section,
+  .hljs-name,
+  .hljs-type {
+    color: var(--c-info);
+  }
+  .hljs-deletion,
+  .hljs-meta {
+    color: var(--c-danger);
+  }
+}
