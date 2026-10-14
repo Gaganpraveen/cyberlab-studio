@@ -21,14 +21,13 @@ MIT License:
   zod                              4.6.7
   react-markdown                   10.1.0
   remark-gfm                       4.0.1
-  rehype-highlight                 7.0.2
+  lowlight                         3.3.0
   sql.js                           1.14.2   (SQLite itself is public domain)
   @uiw/react-codemirror            4.25.12
   @codemirror/lang-sql             6.10.0
 
 ISC License:
   lucide-react                     1.56.0
-  yaml                             2.9.1
 
 BSD-3-Clause License:
   highlight.js                     11.12.0
@@ -39,9 +38,20 @@ SIL Open Font License 1.1 (OFL-1.1) — the font files:
   @fontsource-variable/jetbrains-mono   5.3.0
 
 Build and tooling dependencies (Vite, TypeScript, ESLint, Prettier, Vitest,
-Playwright, Tailwind CSS, and their transitive dependencies) are listed in
-package.json / package-lock.json and are MIT- or similarly permissively
-licensed.
+Playwright, Tailwind CSS, the yaml parser used to compile content at build
+time, and their transitive dependencies) are listed in package.json /
+package-lock.json and are MIT- or similarly permissively licensed.
+
+================================================================================
+Desktop app (src-tauri/)
+================================================================================
+
+The Windows, macOS and Linux apps additionally bundle Tauri 2 and
+tauri-plugin-opener (MIT OR Apache-2.0) and the Rust crates listed in
+src-tauri/Cargo.lock, which are MIT, Apache-2.0 or similarly permissively
+licensed. Pages are displayed by the operating system's own web view
+(WebView2 on Windows, WKWebView on macOS, WebKitGTK on Linux), which is not
+bundled.
 
 ================================================================================
 Educational sources
@@ -59,8 +69,9 @@ terms:
     Creative Commons BY-SA 4.0.
   - NIST Special Publications and the Cybersecurity Framework — works of the
     U.S. federal government, not subject to copyright in the United States.
-  - MITRE ATT&CK(R) — (C) The MITRE Corporation; used with attribution under
-    MITRE's Terms of Use.
+  - MITRE ATT&CK(R), CWE(TM) and CAPEC(TM) — (C) The MITRE Corporation; the
+    attack index cites their identifiers with attribution under MITRE's
+    Terms of Use.
   - IETF RFCs (e.g., RFC 3492 Punycode, RFC 5890-5894 IDNA, RFC 6761) —
     (C) IETF Trust, used under the IETF Trust's licensing terms.
   - Unicode Technical Standards #39 and #46 and associated data — used under

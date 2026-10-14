@@ -1,6 +1,7 @@
 import {
   ArrowRight,
   BookOpen,
+  Download,
   FlaskConical,
   GraduationCap,
   Map,
@@ -14,7 +15,7 @@ import {
 import { Link } from 'react-router';
 
 import { PageContainer } from '@/components/layout/AppShell';
-import { ButtonLink } from '@/components/ui/Button';
+import { buttonClasses, ButtonLink } from '@/components/ui/Button';
 import { ExecutionBadge } from '@/components/ui/badges';
 import { Badge, Callout, Card, ProgressBar } from '@/components/ui/primitives';
 import { ATTACKS } from '@/content/attacks';
@@ -25,7 +26,9 @@ import { LIBRARY } from '@/content/library';
 import { isLabAvailable } from '@/features/labs/labStatus';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { CHALLENGES, LABS } from '@/labs/registry';
+import { isDesktopApp } from '@/lib/desktop';
 import { useProgress } from '@/lib/progress';
+import { SITE } from '@/lib/site';
 
 import { CATALOG_SUMMARY, domainStats } from '../learn/catalogStats';
 import { domainIcon } from '../learn/domainIcons';
@@ -334,6 +337,16 @@ export default function HomePage() {
               <ButtonLink to="/attacks" variant="secondary" size="lg">
                 <ShieldAlert className="size-5" aria-hidden /> Attacks A to Z
               </ButtonLink>
+              {!isDesktopApp && (
+                <a
+                  href={SITE.releasesUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={buttonClasses('ghost', 'lg')}
+                >
+                  <Download className="size-5" aria-hidden /> Desktop app
+                </a>
+              )}
             </div>
             <div className="mt-9 flex flex-wrap gap-x-9 gap-y-4">
               <Stat value={CATALOG_SUMMARY.lessons} label="Lessons" />

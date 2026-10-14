@@ -4,6 +4,8 @@ export const SITE = {
   repoUrl: 'https://github.com/Gaganpraveen/cyberlab-studio',
   /** The branch that holds the published content (the repository's default branch). */
   contentBranch: 'build/v1',
+  /** Windows, macOS and Linux installers, attached to each GitHub release. */
+  releasesUrl: 'https://github.com/Gaganpraveen/cyberlab-studio/releases/latest',
 } as const;
 
 /** GitHub's web editor for a file in the repository, e.g. "content/lessons/app-01.md". */

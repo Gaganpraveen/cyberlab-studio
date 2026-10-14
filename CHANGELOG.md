@@ -22,5 +22,23 @@ to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Repository engineering: MIT code license, CC BY-SA 4.0 content license,
   NOTICE, CI (format, lint, type-check, test, build), and a GitHub Pages
   deployment workflow.
+- Lessons for the curriculum, written from open textbooks and standards, each
+  with objectives, a worked example, a quiz and cited sources, and marked as a
+  draft until an instructor reviews it. Animated sequence diagrams for
+  protocol flows.
+- Attacks A to Z: 140 attack types in 15 categories with their lessons, labs
+  and MITRE ATT&CK, CWE and OWASP identifiers.
+- The library: textbooks, standards and open references mapped to topics down
+  to the chapter, with access and license labels.
+- The glossary, labs, challenges, progress, settings and about pages.
+- A coverage map of all 128 topics by lessons, labs, readings and attack types.
+- Desktop apps for Windows, macOS and Linux (Tauri), built by a release
+  workflow. External links open in the system browser.
+
+### Changed
+
+- The first download is about a third of its former size: lesson bodies, the
+  search index and the Markdown renderer load on demand.
+- Search ranks whole-word matches first.
 
 [Unreleased]: https://github.com/Gaganpraveen/cyberlab-studio/commits/main

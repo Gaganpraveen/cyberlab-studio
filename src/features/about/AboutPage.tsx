@@ -1,6 +1,7 @@
 import {
   Accessibility,
   BookOpenCheck,
+  Download,
   FlaskConical,
   GraduationCap,
   Lock,
@@ -16,6 +17,7 @@ import { Callout, PageHeader } from '@/components/ui/primitives';
 import { CATALOG_SUMMARY } from '@/features/learn/catalogStats';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { LABS } from '@/labs/registry';
+import { isDesktopApp } from '@/lib/desktop';
 import { SITE } from '@/lib/site';
 
 function Section({
@@ -33,7 +35,7 @@ function Section({
         <span className="text-accent-text mt-0.5">{icon}</span>
         {title}
       </h2>
-      <div className="text-fg-muted space-y-3 text-[0.9375rem] leading-relaxed [&_a]:text-accent-text [&_a:hover]:underline">
+      <div className="text-fg-muted space-y-3 text-[0.9375rem] leading-relaxed [&_a]:link">
         {children}
       </div>
     </section>
@@ -144,6 +146,30 @@ export default function AboutPage() {
               Report it on GitHub
             </a>{' '}
             or use the edit link on the lesson.
+          </p>
+        </Section>
+
+        <Section icon={<Download className="size-4" aria-hidden />} title="Desktop app">
+          <p>
+            The same studio runs as a desktop app for Windows, macOS and Linux, with every lesson
+            and lab built in, so it works on a projector laptop with no internet connection.{' '}
+            {isDesktopApp ? (
+              <>You are using it now. </>
+            ) : (
+              <>
+                Download the installer for your computer from the{' '}
+                <a href={SITE.releasesUrl} {...ext}>
+                  latest release
+                </a>
+                .{' '}
+              </>
+            )}
+            Links to readings open in your usual browser.
+          </p>
+          <p>
+            The installers are not yet signed with an Apple or Microsoft certificate. On a Mac,
+            right-click the app and choose Open the first time; on Windows, choose More info, then
+            Run anyway.
           </p>
         </Section>
 
