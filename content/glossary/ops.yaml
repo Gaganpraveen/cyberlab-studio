@@ -1,0 +1,369 @@
+# Glossary: detection and incident response (OPS-01 to OPS-08).
+# Ids are canonical and must stay stable; link existing terms from other files
+# instead of redefining them.
+
+- id: security-log
+  term: Security log
+  aliases: [audit log, event log, audit trail, log]
+  short: 'A time-ordered record of security-relevant events, such as sign-ins, process starts, and access denials, written by a system, application, or device.'
+  long: >
+    A useful record answers when (a synchronized UTC timestamp), where (host and
+    service), who (user and source address), and what (action, target, and
+    outcome). Logs support detection, investigation, and
+    [[accountability]], but they are only as trustworthy as the system that
+    wrote them and the pipeline that protected them.
+  related: [telemetry, log-retention, log-injection, siem]
+  topicId: OPS-01
+
+- id: telemetry
+  term: Telemetry
+  aliases: [security telemetry, observability data]
+  short: 'The data that systems send out for monitoring, including log records, network flow summaries, endpoint sensor events, and health metrics.'
+  related: [security-log, siem]
+  topicId: OPS-01
+
+- id: log-retention
+  term: Log retention
+  aliases: [retention period, retention schedule]
+  short: 'How long each class of log data is kept searchable, then archived, before it is deliberately deleted.'
+  long: >
+    Retention must be long enough for intrusions that are discovered months
+    later, and short enough to limit cost and privacy risk. Many organizations
+    keep a recent "hot" tier for fast searching and a cheaper "cold" archive.
+  related: [security-log]
+  topicId: OPS-01
+
+- id: log-injection
+  term: Log injection
+  aliases: [log forging, CWE-117]
+  short: 'Writing untrusted input into a log without neutralizing line breaks or delimiters, so an attacker can forge entries that look like real records.'
+  long: >
+    The fix is to encode or strip carriage returns, line feeds, and delimiter
+    characters, or to write structured records (such as JSON) whose encoder
+    escapes them. It is a form of [[injection]].
+  related: [security-log, injection]
+  topicId: OPS-01
+
+- id: siem
+  term: SIEM
+  aliases: [security information and event management, log analytics platform]
+  short: 'A system that collects, normalizes, stores, and searches security logs from many sources, and runs detection rules and correlations over them.'
+  related: [security-log, telemetry, detection-rule, sigma-rule, event-correlation]
+  topicId: OPS-03
+
+- id: mitre-attack
+  term: MITRE ATT&CK
+  aliases: [ATT&CK, ATTACK framework]
+  short: 'A public knowledge base, maintained by MITRE, of adversary tactics (goals) and techniques (methods) observed in real attacks, used to plan detection coverage and hunts.'
+  long: >
+    Each technique has an id such as T1110 (Brute Force) and links to
+    detection strategies, which group platform-specific analytics and name the
+    kinds of log data they need.
+  related: [security-log, threat-hunting, indicator-of-compromise]
+  topicId: OPS-07
+
+- id: detection-rule
+  term: Detection rule
+  aliases: [detection, analytic, correlation rule, alert rule, use case]
+  short: 'A precise, testable condition over log events that raises an alert, with a severity and context, when matching activity appears.'
+  long: >
+    A rule is judged by [[precision]] (how many of its alerts are real),
+    [[recall]] (how many real attacks it catches), and alert volume. Good
+    practice keeps each rule in version control with labeled test events.
+  related: [sigma-rule, false-positive, false-negative, siem]
+  topicId: OPS-02
+
+- id: sigma-rule
+  term: Sigma rule
+  aliases: [Sigma, Sigma format]
+  short: 'A detection rule written in Sigma, an open YAML format with a log source, named searches, and a condition, that tools convert into many SIEM query languages.'
+  long: >
+    A rule requires a `title`, a `logsource`, and a `detection` section ending
+    in a `condition`. Keys in one search are joined with AND, list values with
+    OR, and string matching is case-insensitive by default.
+  related: [detection-rule, siem]
+  topicId: OPS-02
+
+- id: false-positive
+  term: False positive
+  aliases: [false alarm, FP, type I error]
+  short: 'An alert on activity that is not actually malicious or not what the rule was meant to catch.'
+  long: >
+    Its counterpart, a true positive, is an alert on real malicious activity.
+    Some teams also record benign positives: alerts that correctly matched the
+    behavior, such as an administrator's authorized test, but needed no
+    response. Too many false positives cause [[alert-fatigue]].
+  related: [false-negative, precision, alert-fatigue, detection-rule]
+  topicId: OPS-02
+
+- id: false-negative
+  term: False negative
+  aliases: [miss, missed detection, FN, type II error]
+  short: 'Malicious activity that a detection rule or sensor failed to alert on.'
+  long: >
+    False negatives are hard to count because nobody sees them until another
+    source, an exercise, or an investigation reveals the attack. Recall
+    measures how many real attacks a rule catches.
+  related: [false-positive, recall, detection-rule]
+  topicId: OPS-02
+
+- id: alert-fatigue
+  term: Alert fatigue
+  aliases: [alarm fatigue, alert overload]
+  short: 'The desensitization that sets in when analysts receive more alerts, especially false ones, than they can meaningfully investigate, so real alerts get dismissed or missed.'
+  related: [false-positive, precision, detection-rule]
+  topicId: OPS-02
+
+- id: precision
+  term: Precision
+  aliases: [positive predictive value, PPV]
+  short: 'The fraction of alerts that are real: true positives divided by all alerts (true positives plus false positives).'
+  long: >
+    Precision depends on how rare attacks are in the events a rule sees, so a
+    low false-positive rate can still give low precision when benign events
+    vastly outnumber malicious ones.
+  related: [recall, false-positive, detection-rule, false-positive-rate, confusion-matrix]
+  topicId: OPS-02
+
+- id: recall
+  term: Recall
+  aliases: [detection rate, true positive rate, TPR, sensitivity]
+  short: 'The fraction of real attacks that raised an alert: true positives divided by true positives plus false negatives.'
+  related: [precision, false-negative, detection-rule, confusion-matrix]
+  topicId: OPS-02
+
+- id: indicator-of-compromise
+  term: Indicator of compromise
+  aliases: [IOC, IoC, indicator, atomic indicator]
+  short: 'An observable artifact, such as a file hash, IP address, domain name, or file path, associated with known malicious activity.'
+  long: >
+    Indicators are quick to match but easy for an attacker to change, so
+    detections and hunts that target behavior, such as tactics and
+    techniques, tend to last longer.
+  related: [detection-rule, threat-hunting, mitre-attack]
+  topicId: OPS-07
+
+- id: threat-hunting
+  term: Threat hunting
+  aliases: [hunting, cyber threat hunting]
+  short: 'A proactive, hypothesis-driven search through telemetry for attacker activity that existing detection rules did not catch.'
+  long: >
+    A hunt starts from a testable hypothesis, often based on a
+    [[mitre-attack]] technique, and ends with a documented result: evidence
+    found, evidence absent, or a gap in the data. Successful hunts often become
+    new [[detection-rule|detection rules]].
+  related: [detection-rule, mitre-attack, indicator-of-compromise]
+  topicId: OPS-07
+
+- id: event-correlation
+  term: Event correlation
+  aliases: [correlation, log correlation, correlation rule]
+  short: 'Finding relationships between two or more log entries, usually by matching shared keys such as user, host, or IP address within a time window.'
+  long: >
+    Correlation reveals patterns that no single event shows, such as many
+    failed sign-ins followed by a success from the same address. It depends on
+    normalization: the same person, host, and clock must look the same in
+    every source.
+  related: [siem, detection-rule, sigma-rule, security-log]
+  topicId: OPS-03
+
+- id: ids
+  term: Intrusion detection system
+  aliases:
+    [IDS, NIDS, HIDS, network intrusion detection system, host-based intrusion detection system]
+  short: 'A system that monitors network traffic or host activity for signs of attacks and reports what it finds, without blocking it.'
+  long: >
+    A network IDS usually watches a copy of traffic from a tap or switch port,
+    while a host-based IDS runs on the machine it protects. NIST groups
+    detection and prevention systems together as IDPS. An alert usually shows
+    an attempt, not proof that the attempt succeeded.
+  related: [ips, signature-based-detection, anomaly-based-detection, false-positive, firewall]
+  topicId: OPS-04
+
+- id: ips
+  term: Intrusion prevention system
+  aliases: [IPS, NIPS, inline IDS]
+  short: 'An intrusion detection system placed in the traffic path so it can also block suspected attacks, for example by dropping packets or resetting connections.'
+  long: >
+    Because it acts on its own, every [[false-positive]] blocks legitimate
+    traffic. Teams usually run new rules in alert mode first and allow blocking
+    only for high-precision rules.
+  related: [ids, false-positive, firewall]
+  topicId: OPS-04
+
+- id: signature-based-detection
+  term: Signature-based detection
+  aliases: [misuse detection, signature detection, pattern matching]
+  short: 'Detection that compares observed events with patterns of known attacks, giving precise alerts but missing new attacks and changed variants.'
+  related: [anomaly-based-detection, ids, indicator-of-compromise]
+  topicId: OPS-04
+
+- id: anomaly-based-detection
+  term: Anomaly-based detection
+  aliases: [anomaly detection, behavioral anomaly detection]
+  short: 'Detection that flags significant deviations from a learned profile of normal activity, which can catch new attacks but often produces many false positives.'
+  long: >
+    Normal behavior drifts, unusual is not the same as malicious, and an
+    attacker who is present while the profile is learned can become part of
+    "normal." Because of the [[base-rate-fallacy]], anomaly scores often feed
+    triage and hunting rather than paging alerts.
+  related: [signature-based-detection, ids, false-positive, base-rate-fallacy]
+  topicId: OPS-04
+
+- id: security-incident
+  term: Security incident
+  aliases: [cybersecurity incident, incident]
+  short: 'An occurrence that actually or imminently jeopardizes the confidentiality, integrity, or availability of information or systems without lawful authority, or that violates law or security policy.'
+  long: >
+    This is the FISMA definition that NIST uses. An event is any observable
+    occurrence; an adverse event is one with a negative consequence; an
+    incident is declared when an adverse event meets the organization's
+    written incident criteria.
+  related: [triage, incident-severity, confidentiality, integrity, availability]
+  topicId: OPS-05
+
+- id: triage
+  term: Triage
+  aliases: [incident triage, alert triage]
+  short: 'The quick sorting of alerts and incidents to decide which are real, what kind they are, and which need attention first, before all the facts are known.'
+  long: >
+    Triage validates the report, assigns a category, rates severity and
+    priority, and records confidence and open questions. Incidents should be
+    prioritized by impact and urgency, not handled first come, first served.
+  related: [security-incident, incident-severity, false-positive]
+  topicId: OPS-05
+
+- id: incident-severity
+  term: Incident severity
+  aliases: [severity, severity level, impact rating, severity matrix]
+  short: 'A rating of how much harm an incident is causing or could cause, usually built from its impact on services, its impact on data, and how hard recovery will be.'
+  long: >
+    Severity differs from priority, which is the order of work and also
+    depends on urgency, such as whether the attacker is still active. Good
+    records keep current severity, potential severity, and confidence
+    separate.
+  related: [triage, security-incident]
+  topicId: OPS-05
+
+- id: incident-response
+  term: Incident response
+  aliases: [IR, incident handling, incident management]
+  short: 'The organized work of handling security incidents: detecting and analyzing them, limiting the damage, removing the cause, restoring operations, and learning from the result.'
+  long: >
+    NIST SP 800-61 Rev. 3 frames it with the CSF 2.0 Detect, Respond, and
+    Recover functions, with improvement running across all of them. A written
+    plan, [[playbook|playbooks]], and practiced roles let a team act quickly
+    without improvising every decision.
+  related: [security-incident, triage, containment, eradication, incident-recovery, playbook]
+  topicId: OPS-06
+
+- id: containment
+  term: Containment
+  aliases: [incident containment, isolation, quarantine]
+  short: 'Response actions that keep an incident from spreading or causing more harm, such as disabling an account, isolating a host, or blocking an address.'
+  long: >
+    Containment buys time but does not remove the intruder. Good choices weigh
+    ongoing harm, evidence preservation, business impact, reversibility, and
+    whether the intruder will notice; isolating a host from the network
+    usually preserves memory evidence that powering it off would destroy.
+  related: [incident-response, eradication, order-of-volatility, playbook]
+  topicId: OPS-06
+
+- id: eradication
+  term: Eradication
+  aliases: [remediation, eviction]
+  short: "Removing an intruder's footholds and the incident's cause: malware, persistence mechanisms, unauthorized accounts, stolen credentials and sessions, and the original entry path."
+  long: >
+    Eradication starts by scoping every affected host and account. Because a
+    cleaned system is hard to prove clean, systems an intruder controlled are
+    often rebuilt from known-good images after evidence is captured.
+  related: [containment, incident-recovery, persistence, incident-response]
+  topicId: OPS-06
+
+- id: incident-recovery
+  term: Incident recovery
+  aliases: [recovery, restoration]
+  short: 'Restoring systems, data, and services affected by an incident to normal, trusted operation, and confirming that they stay that way.'
+  long: >
+    Recovery starts when written criteria are met, verifies backups and other
+    restoration assets before use, fixes root causes before production use,
+    monitors restored systems, and ends when defined end criteria are met.
+  related: [eradication, backup, rpo, disaster-recovery, incident-response]
+  topicId: OPS-06
+
+- id: persistence
+  term: Persistence
+  aliases: [persistence mechanism, foothold, ATT&CK TA0003]
+  short: 'Anything an intruder sets up to keep access after a reboot, a password change, or other interruption, such as a scheduled task, a new account, or a web shell.'
+  long: >
+    It is a tactic in [[mitre-attack]] (TA0003). Missing even one persistence
+    mechanism during [[eradication]] lets the intruder return.
+  related: [eradication, mitre-attack, threat-hunting]
+  topicId: OPS-06
+
+- id: playbook
+  term: Playbook
+  aliases: [incident response playbook, runbook, response procedure]
+  short: 'A pre-approved, written procedure for one type of incident that lists triggers, steps, decision owners, actions responders may take without asking, evidence to collect, and who to notify.'
+  long: >
+    Playbooks speed response by settling decision rights in advance. They are
+    tested in exercises such as a [[tabletop-exercise]] and revised after
+    incidents, because no playbook foresees every case.
+  related: [incident-response, containment, tabletop-exercise]
+  topicId: OPS-06
+
+- id: post-incident-review
+  term: Post-incident review
+  aliases:
+    [
+      PIR,
+      postmortem,
+      blameless postmortem,
+      lessons learned,
+      after-action review,
+      after action report,
+    ]
+  short: 'A structured review after an incident or exercise that reconstructs what happened and why, judges how the response went, and produces tracked improvements.'
+  long: >
+    A blameless review assumes people acted reasonably with the information
+    they had, so it asks what in the system made the problem possible instead
+    of who to punish. Each finding should cite its evidence and become an
+    action item with an owner and a due date.
+  related: [incident-response, security-incident, playbook]
+  topicId: OPS-08
+
+- id: ttp
+  term: Tactics, techniques, and procedures (TTPs)
+  aliases: [TTP, TTPs, adversary behavior]
+  short: "An attacker's behavior described at three levels: tactics (goals, such as keeping a foothold), techniques (general methods), and procedures (the specific way a group carries them out)."
+  long: >
+    [[mitre-attack]] catalogs tactics and techniques with ids such as TA0003
+    and T1053.005. Hunts and detections built on TTPs tend to outlast those
+    built on a single [[indicator-of-compromise]], because behavior is costlier
+    for an attacker to change than a file hash or server address.
+  related: [mitre-attack, indicator-of-compromise, threat-hunting]
+  topicId: OPS-07
+
+- id: living-off-the-land
+  term: Living off the land (LOTL)
+  aliases: [LOTL, LotL, living-off-the-land techniques]
+  short: "An intruder's use of tools and features already present on a system, such as built-in administration utilities and scripting engines, so that activity resembles normal administration."
+  long: >
+    Because the tools are legitimate, detection depends on context: who ran
+    the tool, on which host, when, with what command line, and whether that
+    matches a baseline of normal use. Process creation and command-line
+    logging make that context visible.
+  related: [threat-hunting, ttp, security-log]
+  topicId: OPS-07
+
+- id: root-cause-analysis
+  term: Root cause analysis (RCA)
+  aliases: [RCA, causal analysis, contributing factor analysis, five whys]
+  short: 'Tracing an incident back through the conditions that allowed it, until reaching causes the organization can change to prevent it or similar incidents.'
+  long: >
+    Complex incidents usually have several contributing factors rather than a
+    single root cause, and "human error" is never a stopping point: the useful
+    questions are why an action made sense at the time and why nothing caught
+    it. Findings feed the action items of a [[post-incident-review]].
+  related: [post-incident-review, incident-response, security-incident]
+  topicId: OPS-08
