@@ -563,7 +563,11 @@ export default function CoveragePage() {
           icon={FlaskConical}
           label="Labs"
           value={`${labsAvailable}`}
-          detail={`ready to use, covering ${plural(withLab, 'topic')}; ${LABS.length - labsAvailable} more in development`}
+          detail={`ready to use, covering ${plural(withLab, 'topic')}${
+            labsAvailable < LABS.length
+              ? `; ${LABS.length - labsAvailable} more in development`
+              : ''
+          }`}
           progress={{ value: withLab, max: TOPICS.length }}
         />
         <Stat

@@ -1,4 +1,4 @@
-import { ChevronRight, Lock, ScanSearch } from 'lucide-react';
+import { ChevronRight, Lock, Pause, Play, ScanSearch } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 
@@ -26,7 +26,10 @@ export function SpotTheFake() {
   const [example, setExample] = useState(0);
   const [phase, setPhase] = useState<Phase>(reduced ? 'decoded' : 'typing');
   const [tick, setTick] = useState(0);
+  // Hovering or focusing the demo pauses it for a moment; the Pause button stops
+  // it until pressed again (WCAG 2.2.2).
   const [paused, setPaused] = useState(false);
+  const [stopped, setStopped] = useState(false);
 
   const domain = EXAMPLES[example]!;
   const cells = useMemo(() => inspect(domain), [domain]);
@@ -35,7 +38,7 @@ export function SpotTheFake() {
   const first = suspicious[0];
 
   useEffect(() => {
-    if (reduced || paused) return;
+    if (reduced || paused || stopped) return;
     let delay: number;
     let next: () => void;
     if (phase === 'typing') {
@@ -70,11 +73,11 @@ export function SpotTheFake() {
     }
     const timer = window.setTimeout(next, delay);
     return () => window.clearTimeout(timer);
-  }, [phase, tick, cells.length, reduced, paused]);
+  }, [phase, tick, cells.length, reduced, paused, stopped]);
 
   const showNext = () => {
     setExample((e) => (e + 1) % EXAMPLES.length);
-    setPhase(reduced ? 'decoded' : 'typing');
+    setPhase(reduced || stopped ? 'decoded' : 'typing');
     setTick(0);
   };
 
@@ -96,6 +99,20 @@ export function SpotTheFake() {
           <span className="bg-surface-3 size-2.5 rounded-full" />
         </span>
         <span className="text-fg-subtle ml-2 text-xs font-medium">Spot the fake</span>
+        {!reduced && (
+          <button
+            type="button"
+            onClick={() => setStopped((s) => !s)}
+            className="text-fg-muted hover:text-fg hover:bg-surface-2 ml-auto inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs transition-colors"
+          >
+            {stopped ? (
+              <Play className="size-3.5" aria-hidden />
+            ) : (
+              <Pause className="size-3.5" aria-hidden />
+            )}
+            {stopped ? 'Play demo' : 'Pause demo'}
+          </button>
+        )}
       </div>
 
       <div className="space-y-5 p-5">

@@ -98,6 +98,10 @@ function LabCard({ lab }: { lab: LabDefinition }) {
 export default function LabsPage() {
   useDocumentTitle('Labs');
   const ready = LABS.filter(isLabAvailable).length;
+  const readiness =
+    ready === LABS.length
+      ? `All ${LABS.length} labs are ready.`
+      : `${ready} of ${LABS.length} labs are ready; the rest are being built.`;
   const sorted = [...LABS].sort(
     (a, b) =>
       Number(isLabAvailable(b)) - Number(isLabAvailable(a)) || a.title.localeCompare(b.title),
@@ -107,7 +111,7 @@ export default function LabsPage() {
       <PageHeader
         eyebrow="Labs"
         title="Run the attack, then build the defense"
-        description={`Each lab is a small, fictional system that runs entirely inside your browser, so you can try a real technique safely and then fix it. ${ready} of ${LABS.length} labs are ready; the rest are being built.`}
+        description={`Each lab is a small, fictional system that runs entirely inside your browser, so you can try a real technique safely and then fix it. ${readiness}`}
       />
       <Callout tone="warning" title="Practice only here" className="mt-6">
         <p>
