@@ -1,0 +1,330 @@
+# Glossary: mobile, wireless, and cyber-physical security (IOT domain).
+# Ids are canonical and must stay stable. Terms from other domains are linked,
+# never redefined here.
+
+- id: wpa2
+  term: WPA2
+  aliases: [Wi-Fi Protected Access 2, WPA2-Personal, WPA2-Enterprise]
+  short: 'Wi-Fi Protected Access 2, the long-standing Wi-Fi security certification that authenticates devices with a shared passphrase (Personal) or per-user logins (Enterprise) and encrypts frames with AES-CCMP.'
+  long: >
+    In WPA2-Personal the passphrase and network name alone determine the
+    pairwise master key, so a recorded [[four-way-handshake]] allows offline
+    password guessing, and anyone who knows the passphrase can derive the
+    session keys of handshakes they observe. Many WPA2 implementations were
+    also vulnerable to the [[key-reinstallation-attack]]. Its successor is
+    [[wpa3|WPA3]].
+  related: [wpa3, four-way-handshake, key-reinstallation-attack]
+  topicId: IOT-01
+
+- id: wpa3
+  term: WPA3
+  aliases: [Wi-Fi Protected Access 3, WPA3-Personal, WPA3-Enterprise]
+  short: 'The successor to WPA2, introduced by the Wi-Fi Alliance in 2018, which replaces the shared-key handshake with SAE, requires Protected Management Frames, and adds a 192-bit Enterprise mode.'
+  long: >
+    WPA3-Personal uses [[sae|SAE]], which resists offline password guessing and
+    gives forward secrecy. Transition mode lets WPA2 and WPA3 clients share
+    one network, at the cost of a downgrade risk that the Transition Disable
+    indication reduces.
+  related: [wpa2, sae, protected-management-frames]
+  topicId: IOT-01
+
+- id: four-way-handshake
+  term: Four-way handshake
+  aliases: [4-way handshake]
+  short: 'The Wi-Fi exchange in which a client and an access point prove they share the pairwise master key and derive fresh session keys from it, two nonces, and their MAC addresses.'
+  related: [wpa2, wpa3, key-reinstallation-attack]
+  topicId: IOT-01
+
+- id: sae
+  term: Simultaneous Authentication of Equals (SAE)
+  aliases: [SAE, Dragonfly]
+  short: 'The password-authenticated key exchange in WPA3-Personal, which lets two devices that share a password agree on a key without giving observers a way to test password guesses offline.'
+  related: [wpa3, four-way-handshake]
+  topicId: IOT-01
+
+- id: protected-management-frames
+  term: Protected Management Frames (PMF)
+  aliases: [PMF, IEEE 802.11w, management frame protection]
+  short: 'A Wi-Fi feature, based on IEEE 802.11w, that integrity-protects management frames such as deauthenticate and disassociate so devices can detect and ignore forged ones.'
+  related: [deauthentication-attack, wpa3]
+  topicId: IOT-01
+
+- id: deauthentication-attack
+  term: Deauthentication attack
+  aliases: [deauth attack, disassociation attack]
+  short: 'Forging Wi-Fi deauthenticate or disassociate frames to disconnect a device, often to force a reconnection that the attacker can record or redirect.'
+  related: [protected-management-frames, evil-twin]
+  topicId: IOT-01
+
+- id: evil-twin
+  term: Evil twin
+  aliases: [evil twin access point, rogue access point]
+  short: 'A rogue wireless access point that copies a legitimate network name so that devices connect to it, letting its operator watch or tamper with their traffic.'
+  related: [deauthentication-attack, wpa3, spoofing]
+  topicId: IOT-01
+
+- id: key-reinstallation-attack
+  term: Key reinstallation attack (KRACK)
+  aliases: [KRACK, key reinstallation]
+  short: 'An attack that replays Wi-Fi handshake messages so a device reinstalls a key it is already using, resetting its nonce and causing keystream reuse.'
+  related: [four-way-handshake, wpa2]
+  topicId: IOT-01
+
+- id: wps
+  term: Wi-Fi Protected Setup (WPS)
+  aliases: [WPS, WPS PIN]
+  short: 'A Wi-Fi onboarding feature whose eight-digit PIN method can be brute-forced in at most about 11,000 guesses, so it should be turned off.'
+  related: [wpa2]
+  topicId: IOT-01
+
+- id: bluetooth-pairing
+  term: Bluetooth pairing
+  aliases: [pairing, bonding]
+  short: 'The process in which two Bluetooth devices agree on shared secret keys; bonding stores those keys so the devices can reconnect securely later without pairing again.'
+  long: >
+    Pairing authenticates the devices only as strongly as its
+    [[bluetooth-association-model]] allows, and it never decides what a paired
+    device may do; that is a separate [[authorization]] decision.
+  related: [ble, bluetooth-association-model, authorization]
+  topicId: IOT-02
+
+- id: ble
+  term: Bluetooth Low Energy (BLE)
+  aliases: [BLE, Bluetooth LE, LE]
+  short: 'The low-power form of Bluetooth, added in version 4.0, used by sensors, wearables, and smart-home accessories.'
+  long: >
+    BLE devices that use legacy pairing are exposed to anyone who records the
+    pairing; LE Secure Connections, added in Bluetooth 4.2, uses an
+    elliptic-curve key exchange to prevent that.
+  related: [bluetooth-pairing, bluetooth-association-model]
+  topicId: IOT-02
+
+- id: bluetooth-association-model
+  term: Bluetooth association model
+  aliases: [Just Works, Numeric Comparison, Passkey Entry, Out of Band pairing]
+  short: 'The method Bluetooth pairing uses to authenticate two devices, chosen from what each can display and accept; every model except Just Works resists an adversary in the middle.'
+  related: [bluetooth-pairing, ble]
+  topicId: IOT-02
+
+- id: relay-attack
+  term: Relay attack
+  aliases: [proximity relay attack]
+  short: 'An attack that forwards messages between two legitimate devices that are far apart, fooling a system that treats a valid response as proof that the other device is nearby.'
+  long: >
+    Because every relayed message is genuine, cryptography alone cannot
+    detect it. Defenses measure presence directly, through a required user
+    action or tight round-trip timing (distance bounding).
+  related: [bluetooth-pairing, spoofing]
+  topicId: IOT-02
+
+- id: app-permission
+  term: App permission
+  aliases: [mobile permission, runtime permission, Android permission]
+  short: 'A named right, declared by a mobile app and granted by the user or the system, to use one protected resource such as the camera, location, or contacts.'
+  long: >
+    A permission is a controlled opening in the [[mobile-sandbox]]. Once
+    granted it is a lasting capability shared with every library in the app,
+    and it controls access to the resource, not what the app later does with
+    the data. Apply [[least-privilege]] when requesting them.
+  related: [mobile-sandbox, least-privilege]
+  topicId: IOT-03
+
+- id: mobile-sandbox
+  term: Mobile app sandbox
+  aliases: [app sandbox, application sandbox]
+  short: 'The isolation a mobile operating system gives each app: its own identity and private storage, and no access to other apps or protected resources unless a permission allows it.'
+  related: [app-permission, sandbox]
+  topicId: IOT-03
+
+- id: keystore
+  term: Keystore
+  aliases: [Android Keystore, iOS Keychain, key store]
+  short: 'A platform service that generates and holds cryptographic keys so that apps can use them without ever seeing the key material, often backed by isolated hardware.'
+  long: >
+    A keystore guarantees that a key cannot be copied off the device, not that
+    it cannot be used: code running as the owning app can still ask for
+    operations. Keys can be bound to a [[trusted-execution-environment]] or a
+    [[secure-element]] and can require recent user authentication.
+  related: [trusted-execution-environment, secure-element]
+  topicId: IOT-04
+
+- id: trusted-execution-environment
+  term: Trusted execution environment (TEE)
+  aliases: [TEE]
+  short: 'An isolated area of a processor that runs security-sensitive code, such as key operations, separately from the main operating system.'
+  related: [keystore, secure-element]
+  topicId: IOT-04
+
+- id: secure-element
+  term: Secure element
+  aliases: [SE, embedded secure element]
+  short: 'A separate tamper-resistant chip with its own processor and storage that holds keys and performs cryptographic operations apart from the main system.'
+  related: [keystore, trusted-execution-environment, hardware-security-module, tamper-resistance]
+  topicId: IOT-08
+
+- id: iot-device
+  term: IoT device
+  aliases: [Internet of Things device, connected device, smart device, IoT product]
+  short: 'A network-connected device with embedded software, such as a thermostat, camera, or sensor, that often runs for years with no screen and little attention from its owner.'
+  long: >
+    An IoT device needs a unique, provable identity, an owner established at
+    [[device-onboarding]], software that stays updated through an
+    [[ota-update|OTA update]] channel, and a safe path through resale and retirement.
+    Shared [[default-credentials]] undo all of these.
+  related: [device-onboarding, default-credentials, ota-update, firmware]
+  topicId: IOT-05
+
+- id: device-onboarding
+  term: Device onboarding
+  aliases: [device provisioning, device enrollment, claiming a device]
+  short: "The setup step that binds a new device to its owner and network, ideally by combining the device's factory credential with the owner's proof of physical possession."
+  long: >
+    Onboarding turns a manufacturer-issued identity ("I am unit 0042") into an
+    owner-bound one ("I am bob's thermostat"), usually by issuing a new
+    operational credential. A short setup window and a claim code that needs
+    physical access stop someone else from claiming the [[iot-device|IoT device]] first.
+    Resale reverses it, much like [[deprovisioning]] an account.
+  related: [iot-device, certificate, deprovisioning]
+  topicId: IOT-05
+
+- id: default-credentials
+  term: Default credentials
+  aliases: [default password, factory-default password, universal default password]
+  short: 'A username and password, or other secret, that a device ships with and that is shared by many units or easy to look up, so anyone who knows it can log in until it is changed.'
+  long: >
+    Shared defaults let one discovery open every unchanged unit of a model, and
+    automated scanners can turn such devices into a [[botnet]]. Secure designs
+    give each [[iot-device|IoT device]] a unique credential or make the user set one
+    during setup.
+  related: [iot-device, botnet, brute-force-attack]
+  topicId: IOT-05
+
+- id: ota-update
+  term: Over-the-air (OTA) update
+  aliases: [OTA update, OTA, remote software update]
+  short: 'A software or firmware update delivered to a device over its network connection rather than installed by hand.'
+  long: >
+    An OTA channel lets a manufacturer fix flaws across a fleet, and it is
+    also a powerful path for attackers, so the device must verify an update's
+    origin and integrity before installing it, usually through
+    [[firmware-signing]].
+  related: [firmware, firmware-signing, iot-device]
+  topicId: IOT-06
+
+- id: firmware
+  term: Firmware
+  aliases: [device firmware, embedded software]
+  short: "The software stored on a device's nonvolatile memory that runs its hardware, from the first boot code to the operating system and applications of an embedded device."
+  long: >
+    Firmware runs below or instead of a general-purpose operating system, so a
+    malicious change can control the device completely and survive resets.
+    Devices protect it with [[firmware-signing]], [[secure-boot]], and a
+    [[root-of-trust]], and replace it through an [[ota-update|OTA update]] channel.
+  related: [firmware-signing, ota-update, secure-boot, root-of-trust]
+  topicId: IOT-06
+
+- id: firmware-signing
+  term: Firmware signing
+  aliases: [signed firmware, code signing for firmware, signed updates]
+  short: "Signing a firmware image or its manifest with the vendor's private key so that a device installs only updates whose signature verifies against a public key it already trusts."
+  long: >
+    Signing proves who released an image and that it was not altered, but not
+    that the image is free of bugs or newer than the installed one. Devices
+    combine [[digital-signature]] checks with version rules, and vendors must
+    guard the signing key, often in a [[hardware-security-module]].
+  related: [digital-signature, firmware, ota-update, hardware-security-module]
+  topicId: IOT-06
+
+- id: hardware-security-module
+  term: Hardware security module (HSM)
+  aliases: [HSM]
+  short: "A dedicated, tamper-resistant hardware device that generates, stores, and uses an organization's most valuable cryptographic keys, such as a firmware-signing key or a certificate authority's root key, without letting them leave in plaintext."
+  long: >
+    An HSM is the server-side counterpart of a [[secure-element]]: keys are
+    used inside it under access controls and audit logging. It stops key
+    theft, not misuse by someone who is authorized to request signatures.
+    Validation programs such as FIPS 140-3 test HSMs against defined security
+    levels, including [[tamper-resistance]] requirements.
+  related: [secure-element, tamper-resistance, firmware-signing]
+  topicId: IOT-08
+
+- id: tamper-resistance
+  term: Tamper resistance
+  aliases: [tamper resistant, tamper evidence, tamper response, anti-tamper]
+  short: 'Physical design that makes it hard to open, probe, or modify hardware without leaving evidence or triggering a response, such as erasing stored keys.'
+  long: >
+    Tamper resistance raises the cost of physical attacks; it does not make
+    them impossible. Designs combine evidence (seals that show opening),
+    resistance (hard enclosures and coatings), and response (sensors that
+    erase keys), as in a [[secure-element]] or [[hardware-security-module]].
+  related: [secure-element, hardware-security-module, side-channel-attack]
+  topicId: IOT-08
+
+- id: rollback-protection
+  term: Rollback protection
+  aliases: [anti-rollback, firmware rollback protection, downgrade protection]
+  short: 'A device check that refuses old but validly signed firmware or manifests, usually by storing the highest sequence number or version counter it has accepted and rejecting anything lower.'
+  long: >
+    A signature alone cannot stop an attacker from reinstalling a genuine old
+    image with a known flaw, the firmware form of a [[downgrade-attack]].
+    Vendors can still roll back on purpose by signing a new manifest for the
+    old image with a higher sequence number. The stored counter must resist
+    tampering.
+  related: [firmware-signing, ota-update, downgrade-attack, replay-attack]
+  topicId: IOT-06
+
+- id: operational-technology
+  term: Operational technology (OT)
+  aliases: [OT, industrial systems, cyber-physical systems]
+  short: 'Programmable systems and devices that interact with the physical environment, or manage devices that do, by monitoring and controlling equipment, processes, and events, such as industrial control and building automation systems.'
+  long: >
+    Because OT failures are physical, OT security treats safety as the
+    overarching priority and typically ranks integrity and availability ahead
+    of confidentiality. Long life cycles, legacy protocols, and formal change
+    control limit which defenses are practical. It includes each [[ics]],
+    [[scada]] system, [[plc]], and [[safety-instrumented-system]].
+  related: [ics, scada, plc, safety-instrumented-system, network-segmentation]
+  topicId: IOT-07
+
+- id: ics
+  term: Industrial control system (ICS)
+  aliases: [ICS, industrial control systems, control system]
+  short: 'The controllers, operator interfaces, supervisory computers, and networks that run an industrial process such as water treatment, power distribution, or manufacturing.'
+  long: >
+    An ICS combines field devices and controllers such as a [[plc]], operator
+    screens (HMIs), an engineering workstation that programs the controllers,
+    and a historian of process data. Wide-area systems are supervised through
+    [[scada]].
+  related: [operational-technology, plc, scada, safety-instrumented-system]
+  topicId: IOT-07
+
+- id: scada
+  term: SCADA
+  aliases: [supervisory control and data acquisition]
+  short: 'Supervisory control and data acquisition: systems that monitor and control equipment spread over a wide area, such as pumping stations, pipelines, or electrical substations, from a central location.'
+  related: [ics, operational-technology, plc]
+  topicId: IOT-07
+
+- id: plc
+  term: Programmable logic controller (PLC)
+  aliases: [PLC, controller]
+  short: 'A rugged industrial computer that reads sensors and drives actuators such as pumps, valves, and motors in a fast, repeating control loop.'
+  long: >
+    Whoever can change a PLC's program or setpoints changes the physical
+    process, so access to the controller and to the engineering workstation
+    that programs it must be tightly controlled, and known-good copies of its
+    logic kept as backups.
+  related: [ics, operational-technology, scada]
+  topicId: IOT-07
+
+- id: safety-instrumented-system
+  term: Safety instrumented system (SIS)
+  aliases: [SIS, safety system, emergency shutdown system]
+  short: 'An independent layer of sensors, logic, and final elements, such as trip valves, that detects a dangerous process condition and forces the process into a safe state regardless of the normal control system.'
+  long: >
+    An SIS is made of one or more safety instrumented functions, each guarding
+    against one hazard. Its value comes from independence, so security must
+    keep it from sharing networks, workstations, or credentials with the
+    [[ics]] it protects, or both can fail to the same attack.
+  related: [ics, operational-technology, plc]
+  topicId: IOT-07
