@@ -15,7 +15,12 @@ export const homographLab: LabDefinition = {
   engine: 'Unicode and IDNA processing built into your browser',
   topicIds: ['WEB-01', 'WEB-02', 'WEB-03'],
   icon: Languages,
-  objectives: [],
+  objectives: [
+    'Explain why a glyph (what you see) is different from a character (its code point).',
+    'Decode an internationalized domain name into its ASCII Punycode form.',
+    'Tell a confusable imitation apart from a legitimate international name.',
+    'Build and evaluate a detection rule using a confusion matrix.',
+  ],
   component: lazy(() => import('./HomographLab')),
   challenges,
 };
