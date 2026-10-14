@@ -3,6 +3,7 @@ import { homographLab } from './homograph';
 import { jwtLab } from './jwt';
 import { passwordCrackingLab } from './password-cracking';
 import { reconAttackSurfaceLab } from './recon-and-attack-surface';
+import { spoofingMitmLab } from './spoofing-and-mitm';
 import { sqlInjectionLab } from './sql-injection';
 import { xssLab } from './xss';
 
@@ -17,6 +18,7 @@ export const LABS: LabDefinition[] = [
   xssLab,
   jwtLab,
   reconAttackSurfaceLab,
+  spoofingMitmLab,
 ];
 
 const labById = new Map(LABS.map((lab) => [lab.id, lab]));
