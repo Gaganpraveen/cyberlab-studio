@@ -15,6 +15,7 @@ import { reconAttackSurfaceLab } from './recon-and-attack-surface';
 import { spoofingMitmLab } from './spoofing-and-mitm';
 import { sqlInjectionLab } from './sql-injection';
 import { ssrfUrlFilterLab } from './ssrf-url-filter';
+import { steganographyStudioLab } from './steganography-studio';
 import { supplyChainProvenanceLab } from './supply-chain-provenance';
 import { tlsHandshakeLab } from './tls-handshake-inspector';
 import { xssLab } from './xss';
@@ -43,6 +44,7 @@ export const LABS: LabDefinition[] = [
   cloudIamPolicyLab,
   supplyChainProvenanceLab,
   emailPhishingInvestigatorLab,
+  steganographyStudioLab,
 ];
 
 const labById = new Map(LABS.map((lab) => [lab.id, lab]));
