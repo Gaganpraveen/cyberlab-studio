@@ -42,7 +42,12 @@ export function useCommandPaletteShortcut(open: () => void): void {
       if ((event.key === 'k' || event.key === 'K') && (event.metaKey || event.ctrlKey)) {
         event.preventDefault();
         open();
-      } else if (event.key === '/' && !event.metaKey && !event.ctrlKey && !isTypingTarget(event.target)) {
+      } else if (
+        event.key === '/' &&
+        !event.metaKey &&
+        !event.ctrlKey &&
+        !isTypingTarget(event.target)
+      ) {
         event.preventDefault();
         open();
       }
@@ -78,7 +83,9 @@ function Item({
 }) {
   return (
     <Command.Item value={value} keywords={keywords} onSelect={onSelect} className={itemClasses}>
-      <span className="text-fg-subtle flex size-4 shrink-0 items-center justify-center">{icon}</span>
+      <span className="text-fg-subtle flex size-4 shrink-0 items-center justify-center">
+        {icon}
+      </span>
       <span className="min-w-0 flex-1 truncate">{children}</span>
       {hint && <span className="text-fg-subtle shrink-0 text-xs">{hint}</span>}
     </Command.Item>
@@ -117,7 +124,6 @@ export function CommandPalette({
           <Command label="Search CyberLab Studio" loop>
             <div className="border-line flex items-center gap-2 border-b px-4">
               <Command.Input
-
                 placeholder="Search topics, labs, challenges, terms, books…"
                 className="text-fg placeholder:text-fg-subtle h-14 w-full bg-transparent text-base outline-none"
               />

@@ -17,7 +17,9 @@ import {
   searchLeakedData,
 } from './engine';
 
-const WASM = fileURLToPath(new URL('../../../node_modules/sql.js/dist/sql-wasm.wasm', import.meta.url));
+const WASM = fileURLToPath(
+  new URL('../../../node_modules/sql.js/dist/sql-wasm.wasm', import.meta.url),
+);
 const UNION = "zzz' UNION SELECT username, recovery_code, role FROM users -- ";
 
 let db: Database;

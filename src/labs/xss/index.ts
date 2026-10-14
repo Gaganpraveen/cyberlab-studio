@@ -7,8 +7,10 @@ import { challenges } from './challenges';
 export const xssLab: LabDefinition = {
   id: 'xss',
   title: 'Cross-Site Scripting Sandbox',
-  tagline: 'Inject script into a toy comment page running in an isolated sandbox, then fix the rendering so the payload stays inert.',
-  description: 'Inject script into a toy comment page running in an isolated sandbox, then fix the rendering so the payload stays inert.',
+  tagline:
+    'Inject script into a toy comment page running in an isolated sandbox, then fix the rendering so the payload stays inert.',
+  description:
+    'Inject script into a toy comment page running in an isolated sandbox, then fix the rendering so the payload stays inert.',
   difficulty: 'intermediate',
   estimatedMinutes: 35,
   mode: 'real',

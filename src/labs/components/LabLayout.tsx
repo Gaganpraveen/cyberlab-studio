@@ -5,7 +5,16 @@ import { Link } from 'react-router';
 
 import { Button } from '@/components/ui/Button';
 import { DifficultyBadge, ExecutionBadge } from '@/components/ui/badges';
-import { Dialog, DialogClose, DialogContent, DialogTrigger, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/radix';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTrigger,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui/radix';
 import { getTopic } from '@/content/catalog';
 import { hasLesson } from '@/content/lessons';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
@@ -27,7 +36,9 @@ function ResizeHandle({ direction }: { direction: 'horizontal' | 'vertical' }) {
       <span
         className={cn(
           'absolute',
-          direction === 'horizontal' ? 'inset-y-0 -right-1.5 -left-1.5' : 'inset-x-0 -top-1.5 -bottom-1.5',
+          direction === 'horizontal'
+            ? 'inset-y-0 -right-1.5 -left-1.5'
+            : 'inset-x-0 -top-1.5 -bottom-1.5',
         )}
       />
     </Separator>
@@ -168,7 +179,11 @@ export function LabLayout({ lab, guide, workspace, evidence, onReset, toolbar }:
         {onReset && (
           <Dialog>
             <DialogTrigger asChild>
-              <Button size="sm" variant="ghost" icon={<RotateCcw className="size-3.5" aria-hidden />}>
+              <Button
+                size="sm"
+                variant="ghost"
+                icon={<RotateCcw className="size-3.5" aria-hidden />}
+              >
                 Reset lab
               </Button>
             </DialogTrigger>
@@ -208,7 +223,13 @@ export function LabLayout({ lab, guide, workspace, evidence, onReset, toolbar }:
     <div className="flex h-[calc(100dvh-3.5rem)] min-h-0 flex-col">
       {header}
       <Group orientation="horizontal" className="min-h-0 flex-1">
-        <Panel id="side" defaultSize="32" minSize="22" maxSize="50" className="bg-surface/40 min-h-0">
+        <Panel
+          id="side"
+          defaultSize="32"
+          minSize="22"
+          maxSize="50"
+          className="bg-surface/40 min-h-0"
+        >
           {sidePanel}
         </Panel>
         <ResizeHandle direction="horizontal" />

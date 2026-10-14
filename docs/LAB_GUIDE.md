@@ -31,14 +31,14 @@ it works by re-running the attack.
 
 Each lab lives in `src/labs/<lab-id>/` and owns everything in that folder:
 
-| File | Purpose |
-| --- | --- |
-| `index.ts` | The `LabDefinition`: metadata, objectives, lazy component, challenges |
-| `challenges.ts` | `ChallengeDefinition[]` for this lab |
-| `engine.ts` | Pure TypeScript logic (no DOM, no React), so it can be unit tested |
-| `engine.test.ts` | Vitest unit tests for the engine and the challenge answers |
-| `<Name>Lab.tsx` | Default-exported React component rendered at `/#/labs/<lab-id>` |
-| other `*.tsx` | Sub-components, visualizations |
+| File             | Purpose                                                               |
+| ---------------- | --------------------------------------------------------------------- |
+| `index.ts`       | The `LabDefinition`: metadata, objectives, lazy component, challenges |
+| `challenges.ts`  | `ChallengeDefinition[]` for this lab                                  |
+| `engine.ts`      | Pure TypeScript logic (no DOM, no React), so it can be unit tested    |
+| `engine.test.ts` | Vitest unit tests for the engine and the challenge answers            |
+| `<Name>Lab.tsx`  | Default-exported React component rendered at `/#/labs/<lab-id>`       |
+| other `*.tsx`    | Sub-components, visualizations                                        |
 
 The lab registry (`src/labs/registry.ts`) imports `index.ts`. The lab
 component is code-split, so heavy engines only load when the lab opens.

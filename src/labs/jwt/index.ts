@@ -7,8 +7,10 @@ import { challenges } from './challenges';
 export const jwtLab: LabDefinition = {
   id: 'jwt',
   title: 'JWT Forgery Workshop',
-  tagline: 'Decode a session token, forge one with alg=none and a weak secret, then harden the verifier.',
-  description: 'Decode a session token, forge one with alg=none and a weak secret, then harden the verifier.',
+  tagline:
+    'Decode a session token, forge one with alg=none and a weak secret, then harden the verifier.',
+  description:
+    'Decode a session token, forge one with alg=none and a weak secret, then harden the verifier.',
   difficulty: 'intermediate',
   estimatedMinutes: 30,
   mode: 'real',

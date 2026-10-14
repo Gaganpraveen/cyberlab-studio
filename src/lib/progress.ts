@@ -217,7 +217,10 @@ export function importProgress(text: string): ImportResult {
   }
   const result = progressSchema.safeParse(envelope.data);
   if (!result.success) {
-    return { ok: false, error: 'The progress data in that file is damaged or from an unknown version.' };
+    return {
+      ok: false,
+      error: 'The progress data in that file is damaged or from an unknown version.',
+    };
   }
   progressStore.set(result.data);
   return { ok: true };

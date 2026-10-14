@@ -32,16 +32,11 @@ export function TopicCard({ topic }: { topic: TopicRecord }) {
         </span>
       </div>
       <h3
-        className={cn(
-          'mt-2 text-sm leading-snug font-medium',
-          ready ? 'text-fg' : 'text-fg-muted',
-        )}
+        className={cn('mt-2 text-sm leading-snug font-medium', ready ? 'text-fg' : 'text-fg-muted')}
       >
         {topic.title}
       </h3>
-      {!ready && (
-        <span className="text-fg-subtle mt-auto pt-2 text-xs">Coming soon</span>
-      )}
+      {!ready && <span className="text-fg-subtle mt-auto pt-2 text-xs">Coming soon</span>}
       {completed && (
         <span className="mt-auto pt-2">
           <Badge tone="success">Completed</Badge>

@@ -88,7 +88,7 @@ function toResult(db: Database, sql: string, params?: Record<string, unknown>): 
  */
 export function vulnerableLoginSql(username: string, password: string): string {
   return (
-    "SELECT id, username, role FROM users " +
+    'SELECT id, username, role FROM users ' +
     `WHERE username = '${username}' AND password = '${password}'`
   );
 }
@@ -123,8 +123,7 @@ export function runSafeLogin(
 
 export function vulnerableSearchSql(term: string): string {
   return (
-    "SELECT name, category, price FROM products " +
-    `WHERE name LIKE '%${term}%' ORDER BY name`
+    'SELECT name, category, price FROM products ' + `WHERE name LIKE '%${term}%' ORDER BY name`
   );
 }
 

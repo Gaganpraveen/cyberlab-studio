@@ -8,7 +8,14 @@ import { xssLab } from './xss';
 import type { ChallengeDefinition, LabDefinition } from './types';
 
 /** Every lab, in the order they appear on the Labs page. */
-export const LABS: LabDefinition[] = [homographLab, sqlInjectionLab, ddosLab, passwordCrackingLab, xssLab, jwtLab];
+export const LABS: LabDefinition[] = [
+  homographLab,
+  sqlInjectionLab,
+  ddosLab,
+  passwordCrackingLab,
+  xssLab,
+  jwtLab,
+];
 
 const labById = new Map(LABS.map((lab) => [lab.id, lab]));
 

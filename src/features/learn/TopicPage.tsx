@@ -50,7 +50,10 @@ function PrereqList({ ids }: { ids: string[] }) {
           return (
             <li key={id}>
               {lesson ? (
-                <Link to={`/learn/${id.toLowerCase()}`} className="text-accent-text hover:underline">
+                <Link
+                  to={`/learn/${id.toLowerCase()}`}
+                  className="text-accent-text hover:underline"
+                >
                   {topic?.title ?? id}
                 </Link>
               ) : (
@@ -109,7 +112,10 @@ export default function TopicPage() {
   if (!lesson) {
     return (
       <PageContainer width="narrow">
-        <Link to="/learn" className="text-fg-subtle hover:text-fg mb-6 inline-flex items-center gap-1.5 text-sm">
+        <Link
+          to="/learn"
+          className="text-fg-subtle hover:text-fg mb-6 inline-flex items-center gap-1.5 text-sm"
+        >
           <ArrowLeft className="size-4" aria-hidden /> Topic map
         </Link>
         <div className="space-y-4">
@@ -181,7 +187,9 @@ export default function TopicPage() {
                 <FlaskConical className="text-accent-text size-5 shrink-0" aria-hidden />
                 <div>
                   <div className="text-fg text-sm font-semibold">Practice this in the lab</div>
-                  <div className="text-fg-muted text-xs">Do the attack, then build the defense.</div>
+                  <div className="text-fg-muted text-xs">
+                    Do the attack, then build the defense.
+                  </div>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -215,7 +223,9 @@ export default function TopicPage() {
                   >
                     {source.title}
                   </a>
-                  {source.publisher && <span className="text-fg-subtle"> · {source.publisher}</span>}
+                  {source.publisher && (
+                    <span className="text-fg-subtle"> · {source.publisher}</span>
+                  )}
                   {source.license && <span className="text-fg-subtle"> · {source.license}</span>}
                 </li>
               ))}

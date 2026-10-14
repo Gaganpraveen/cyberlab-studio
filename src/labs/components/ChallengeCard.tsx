@@ -97,7 +97,10 @@ export function ChallengeCard({
           </span>
         </span>
         <ChevronDown
-          className={cn('text-fg-subtle mt-1 size-4 shrink-0 transition-transform', open && 'rotate-180')}
+          className={cn(
+            'text-fg-subtle mt-1 size-4 shrink-0 transition-transform',
+            open && 'rotate-180',
+          )}
           aria-hidden
         />
       </button>

@@ -7,8 +7,10 @@ import { challenges } from './challenges';
 export const homographLab: LabDefinition = {
   id: 'homograph',
   title: 'Homograph Domain Investigation',
-  tagline: 'Spot look-alike domains by inspecting code points, scripts and Punycode, then build and evaluate a detection rule.',
-  description: 'Spot look-alike domains by inspecting code points, scripts and Punycode, then build and evaluate a detection rule.',
+  tagline:
+    'Spot look-alike domains by inspecting code points, scripts and Punycode, then build and evaluate a detection rule.',
+  description:
+    'Spot look-alike domains by inspecting code points, scripts and Punycode, then build and evaluate a detection rule.',
   difficulty: 'beginner',
   estimatedMinutes: 35,
   mode: 'real',

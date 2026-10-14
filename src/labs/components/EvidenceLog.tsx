@@ -106,8 +106,13 @@ export function EvidenceLog({
                   key={entry.id}
                   className="hover:bg-surface-2 animate-fade-in flex gap-2.5 rounded-md px-2 py-1.5"
                 >
-                  <span className="text-fg-subtle shrink-0 tabular-nums">{formatTime(entry.time)}</span>
-                  <Icon className={cn('mt-0.5 size-3.5 shrink-0', tones[entry.level])} aria-hidden />
+                  <span className="text-fg-subtle shrink-0 tabular-nums">
+                    {formatTime(entry.time)}
+                  </span>
+                  <Icon
+                    className={cn('mt-0.5 size-3.5 shrink-0', tones[entry.level])}
+                    aria-hidden
+                  />
                   <span className="sr-only">{entry.level}:</span>
                   <div className="min-w-0 flex-1">
                     <div className="text-fg font-sans text-[0.8125rem] leading-snug">

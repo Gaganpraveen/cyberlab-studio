@@ -1,4 +1,5 @@
 import { CheckCircle2, Trophy } from 'lucide-react';
+import { useId } from 'react';
 
 import { Badge } from '@/components/ui/primitives';
 import { cn } from '@/lib/cn';
@@ -8,7 +9,8 @@ import { type Evaluation, type RuleConfig, type RuleId } from './engine';
 const RULE_LABELS: Record<RuleId, { title: string; detail: string }> = {
   blockNonAscii: {
     title: 'Block all non-ASCII',
-    detail: 'Flags any name with a character outside basic ASCII. Blunt: punishes every non-English language.',
+    detail:
+      'Flags any name with a character outside basic ASCII. Blunt: punishes every non-English language.',
   },
   mixedScript: {
     title: 'Flag mixed scripts',
@@ -30,19 +32,21 @@ function Toggle({
   onChange: (value: boolean) => void;
 }) {
   const { title, detail } = RULE_LABELS[id];
+  const inputId = useId();
   return (
-    <label className="border-line bg-surface-2 flex cursor-pointer gap-3 rounded-lg border p-3">
+    <div className="border-line bg-surface-2 flex gap-3 rounded-lg border p-3">
       <input
+        id={inputId}
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
         className="accent-accent mt-0.5 size-4 shrink-0"
       />
-      <span className="min-w-0">
+      <label htmlFor={inputId} className="min-w-0 cursor-pointer">
         <span className="text-fg block text-sm font-medium">{title}</span>
         <span className="text-fg-subtle block text-xs leading-relaxed">{detail}</span>
-      </span>
-    </label>
+      </label>
+    </div>
   );
 }
 
@@ -109,7 +113,9 @@ export function RuleBuilder({
         <div className="border-success/40 bg-success-soft flex items-center gap-3 rounded-xl border p-4">
           <Trophy className="text-success size-5 shrink-0" aria-hidden />
           <div>
-            <div className="text-fg text-sm font-semibold">Perfect classification. Here is your flag:</div>
+            <div className="text-fg text-sm font-semibold">
+              Perfect classification. Here is your flag:
+            </div>
             <code className="text-success font-mono text-sm">{flag}</code>
           </div>
         </div>
@@ -127,7 +133,11 @@ export function RuleBuilder({
           <MatrixCell label="Caught (true +)" value={matrix.truePositive} tone="good" />
           <MatrixCell label="Missed (false −)" value={matrix.falseNegative} tone="bad" />
           <MatrixCell label="False alarms (false +)" value={matrix.falsePositive} tone="bad" />
-          <MatrixCell label="Correctly allowed (true −)" value={matrix.trueNegative} tone="neutral" />
+          <MatrixCell
+            label="Correctly allowed (true −)"
+            value={matrix.trueNegative}
+            tone="neutral"
+          />
         </div>
       </div>
 

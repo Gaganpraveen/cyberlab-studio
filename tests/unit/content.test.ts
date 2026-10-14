@@ -22,7 +22,9 @@ function filesIn(dir: string, ext: string): string[] {
 }
 
 const glossaryFiles = filesIn('glossary', '.yaml');
-const glossary = glossaryFiles.flatMap((file) => parseGlossaryFile(file, readFileSync(file, 'utf8')));
+const glossary = glossaryFiles.flatMap((file) =>
+  parseGlossaryFile(file, readFileSync(file, 'utf8')),
+);
 const glossaryIds = new Set(glossary.map((t) => t.id));
 const labIds = new Set(LABS.map((l) => l.id));
 
@@ -72,7 +74,9 @@ describe.each(lessonFiles.map((f) => [f.split('/').pop()!, f]))('lesson %s', (_n
   });
 
   it('links only to glossary terms that exist', () => {
-    const linked = [...lesson.body.matchAll(/\[\[([a-z0-9-]+)(?:\|[^\]]+)?\]\]/g)].map((m) => m[1]!);
+    const linked = [...lesson.body.matchAll(/\[\[([a-z0-9-]+)(?:\|[^\]]+)?\]\]/g)].map(
+      (m) => m[1]!,
+    );
     expect(linked.filter((id) => !glossaryIds.has(id))).toEqual([]);
   });
 
@@ -80,7 +84,9 @@ describe.each(lessonFiles.map((f) => [f.split('/').pop()!, f]))('lesson %s', (_n
     const labLinks = [...lesson.body.matchAll(/\]\(lab:([a-z0-9-]+)\)/g)].map((m) => m[1]!);
     expect(labLinks.filter((id) => !labIds.has(id))).toEqual([]);
     expect(lesson.labs.filter((id) => !labIds.has(id))).toEqual([]);
-    const lessonLinks = [...lesson.body.matchAll(/\]\(lesson:([A-Za-z]{2,3}-\d{2})\)/g)].map((m) => m[1]!);
+    const lessonLinks = [...lesson.body.matchAll(/\]\(lesson:([A-Za-z]{2,3}-\d{2})\)/g)].map(
+      (m) => m[1]!,
+    );
     expect(lessonLinks.filter((id) => !getTopic(id))).toEqual([]);
   });
 
@@ -103,7 +109,24 @@ describe.each(lessonFiles.map((f) => [f.split('/').pop()!, f]))('lesson %s', (_n
 describe('library', () => {
   const files = filesIn('library', '.yaml');
   it('parses and references real topics and domains', () => {
-    const domainIds = new Set(['FND', 'NET', 'CRY', 'IAM', 'WEB', 'APP', 'SYS', 'OPS', 'MAL', 'FOR', 'CLD', 'IOT', 'HUM', 'GRC', 'AI', 'RES']);
+    const domainIds = new Set([
+      'FND',
+      'NET',
+      'CRY',
+      'IAM',
+      'WEB',
+      'APP',
+      'SYS',
+      'OPS',
+      'MAL',
+      'FOR',
+      'CLD',
+      'IOT',
+      'HUM',
+      'GRC',
+      'AI',
+      'RES',
+    ]);
     for (const file of files) {
       const sources = parseLibraryFile(file, readFileSync(file, 'utf8'));
       const ids = new Set<string>();

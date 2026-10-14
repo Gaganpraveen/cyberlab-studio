@@ -66,10 +66,16 @@ export function LessonQuiz({ topicId, quiz }: { topicId: string; quiz: QuizQuest
                         />
                         <span className="text-fg flex-1">{choice}</span>
                         {showState && isCorrect && (
-                          <CheckCircle2 className="text-success size-4 shrink-0" aria-label="Correct answer" />
+                          <CheckCircle2
+                            className="text-success size-4 shrink-0"
+                            aria-label="Correct answer"
+                          />
                         )}
                         {showState && selected && !isCorrect && (
-                          <XCircle className="text-danger size-4 shrink-0" aria-label="Your answer" />
+                          <XCircle
+                            className="text-danger size-4 shrink-0"
+                            aria-label="Your answer"
+                          />
                         )}
                       </label>
                     );

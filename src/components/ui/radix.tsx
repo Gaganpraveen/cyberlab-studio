@@ -1,4 +1,8 @@
-import { Dialog as DialogPrimitive, Tabs as TabsPrimitive, Tooltip as TooltipPrimitive } from 'radix-ui';
+import {
+  Dialog as DialogPrimitive,
+  Tabs as TabsPrimitive,
+  Tooltip as TooltipPrimitive,
+} from 'radix-ui';
 import { X } from 'lucide-react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
@@ -37,7 +41,10 @@ export function Tooltip({
 
 export const Tabs = TabsPrimitive.Root;
 
-export function TabsList({ className, ...props }: ComponentPropsWithoutRef<typeof TabsPrimitive.List>) {
+export function TabsList({
+  className,
+  ...props
+}: ComponentPropsWithoutRef<typeof TabsPrimitive.List>) {
   return (
     <TabsPrimitive.List
       className={cn('border-line flex gap-1 border-b px-1', className)}
@@ -66,7 +73,9 @@ export function TabsContent({
   className,
   ...props
 }: ComponentPropsWithoutRef<typeof TabsPrimitive.Content>) {
-  return <TabsPrimitive.Content className={cn('focus-visible:outline-none', className)} {...props} />;
+  return (
+    <TabsPrimitive.Content className={cn('focus-visible:outline-none', className)} {...props} />
+  );
 }
 
 // Dialog --------------------------------------------------------------------
@@ -97,7 +106,9 @@ export function DialogContent({
           className,
         )}
       >
-        <DialogPrimitive.Title className={cn('text-fg text-lg font-semibold', hideTitle && 'sr-only')}>
+        <DialogPrimitive.Title
+          className={cn('text-fg text-lg font-semibold', hideTitle && 'sr-only')}
+        >
           {title}
         </DialogPrimitive.Title>
         {description ? (

@@ -57,13 +57,16 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           <Logo />
         </NavLink>
       </div>
-      <nav aria-label="Main" className="flex min-h-0 flex-1 flex-col justify-between overflow-y-auto px-3 pb-4">
+      <nav
+        aria-label="Main"
+        className="flex min-h-0 flex-1 flex-col justify-between overflow-y-auto px-3 pb-4"
+      >
         <NavList items={PRIMARY_NAV} onNavigate={onNavigate} />
         <div className="space-y-4 pt-6">
           <NavList items={SECONDARY_NAV} onNavigate={onNavigate} />
           <p className="text-fg-subtle px-3 text-xs leading-relaxed">
-            Labs run only inside your browser. Never use these techniques on systems you do not
-            own or have written permission to test.
+            Labs run only inside your browser. Never use these techniques on systems you do not own
+            or have written permission to test.
           </p>
         </div>
       </nav>
@@ -75,7 +78,13 @@ const themeCycle = { dark: 'light', light: 'system', system: 'dark' } as const;
 const themeIcon = { dark: Moon, light: Sun, system: Monitor } as const;
 const themeLabel = { dark: 'Dark theme', light: 'Light theme', system: 'System theme' } as const;
 
-function TopBar({ onOpenPalette, onOpenMenu }: { onOpenPalette: () => void; onOpenMenu: () => void }) {
+function TopBar({
+  onOpenPalette,
+  onOpenMenu,
+}: {
+  onOpenPalette: () => void;
+  onOpenMenu: () => void;
+}) {
   const settings = useSettings();
   const ThemeIcon = themeIcon[settings.theme];
   const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform);
@@ -109,7 +118,13 @@ function TopBar({ onOpenPalette, onOpenMenu }: { onOpenPalette: () => void; onOp
       </button>
 
       <div className="flex items-center gap-1">
-        <Tooltip content={settings.presenter ? 'Exit presenter mode' : 'Presenter mode (larger text for projectors)'}>
+        <Tooltip
+          content={
+            settings.presenter
+              ? 'Exit presenter mode'
+              : 'Presenter mode (larger text for projectors)'
+          }
+        >
           <button
             type="button"
             onClick={() => updateSettings({ presenter: !settings.presenter })}
@@ -169,7 +184,9 @@ export function AppShell() {
           <DialogPrimitive.Overlay className="animate-fade-in fixed inset-0 z-40 bg-black/50 lg:hidden" />
           <DialogPrimitive.Content className="bg-surface border-line animate-rise-in fixed inset-y-0 left-0 z-50 w-72 border-r lg:hidden">
             <DialogPrimitive.Title className="sr-only">Navigation</DialogPrimitive.Title>
-            <DialogPrimitive.Description className="sr-only">Main navigation links</DialogPrimitive.Description>
+            <DialogPrimitive.Description className="sr-only">
+              Main navigation links
+            </DialogPrimitive.Description>
             <SidebarContent onNavigate={() => setMenuOpen(false)} />
             <DialogPrimitive.Close
               className="text-fg-subtle hover:text-fg absolute top-3.5 right-3 rounded-md p-1.5"

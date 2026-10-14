@@ -20,8 +20,10 @@ export function CharRow({
   const other = compareTo ? inspect(compareTo) : undefined;
   return (
     <div>
-      <div className="text-fg-subtle mb-1.5 text-xs font-semibold tracking-wide uppercase">{label}</div>
-      <div className="flex flex-wrap gap-1" role="list" aria-label={`${label} characters`}>
+      <div className="text-fg-subtle mb-1.5 text-xs font-semibold tracking-wide uppercase">
+        {label}
+      </div>
+      <div className="flex flex-wrap gap-1" role="group" aria-label={`${label} characters`}>
         {cells.map((cell) => {
           const differs = other && other[cell.index]?.codePoint !== cell.codePoint;
           const suspicious = !cell.isAscii;
@@ -29,7 +31,6 @@ export function CharRow({
             <button
               key={cell.index}
               type="button"
-              role="listitem"
               onClick={() => onSelect(cell.index)}
               aria-pressed={selected === cell.index}
               aria-label={`Position ${cell.index}: ${cell.name}${differs ? ', changed' : ''}`}

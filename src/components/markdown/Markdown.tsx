@@ -50,10 +50,13 @@ const languages = {
  * `term:` link that renders as an inline definition popover.
  */
 export function expandWikiLinks(markdown: string): string {
-  return markdown.replace(/\[\[([a-z0-9-]+)(?:\|([^\]]+))?\]\]/g, (_m, id: string, text?: string) => {
-    const label = text ?? id.replace(/-/g, ' ');
-    return `[${label}](term:${id})`;
-  });
+  return markdown.replace(
+    /\[\[([a-z0-9-]+)(?:\|([^\]]+))?\]\]/g,
+    (_m, id: string, text?: string) => {
+      const label = text ?? id.replace(/-/g, ' ');
+      return `[${label}](term:${id})`;
+    },
+  );
 }
 
 /** Allow our internal schemes (term:, lesson:, lab:, glossary:) alongside safe web URLs. */
@@ -170,7 +173,9 @@ export const Markdown = memo(function Markdown({ children, className, compact }:
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[[rehypeHighlight, { languages, detect: false, plainText: ['text', 'plaintext'] }]]}
+        rehypePlugins={[
+          [rehypeHighlight, { languages, detect: false, plainText: ['text', 'plaintext'] }],
+        ]}
         components={components}
         urlTransform={urlTransform}
       >

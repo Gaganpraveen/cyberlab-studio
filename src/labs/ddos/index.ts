@@ -7,8 +7,10 @@ import { challenges } from './challenges';
 export const ddosLab: LabDefinition = {
   id: 'ddos',
   title: 'Botnet and DDoS Simulator',
-  tagline: 'Watch a fictional botnet overwhelm a small service, then tune rate limits and filters until real users get through.',
-  description: 'Watch a fictional botnet overwhelm a small service, then tune rate limits and filters until real users get through.',
+  tagline:
+    'Watch a fictional botnet overwhelm a small service, then tune rate limits and filters until real users get through.',
+  description:
+    'Watch a fictional botnet overwhelm a small service, then tune rate limits and filters until real users get through.',
   difficulty: 'intermediate',
   estimatedMinutes: 35,
   mode: 'simulation',

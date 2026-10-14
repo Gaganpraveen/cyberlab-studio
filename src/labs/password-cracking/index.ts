@@ -7,8 +7,10 @@ import { challenges } from './challenges';
 export const passwordCrackingLab: LabDefinition = {
   id: 'password-cracking',
   title: 'Password Cracking and Hashing',
-  tagline: 'Crack a leaked table of fast, unsalted hashes, then see how salting and slow key derivation change the cost.',
-  description: 'Crack a leaked table of fast, unsalted hashes, then see how salting and slow key derivation change the cost.',
+  tagline:
+    'Crack a leaked table of fast, unsalted hashes, then see how salting and slow key derivation change the cost.',
+  description:
+    'Crack a leaked table of fast, unsalted hashes, then see how salting and slow key derivation change the cost.',
   difficulty: 'beginner',
   estimatedMinutes: 30,
   mode: 'real',

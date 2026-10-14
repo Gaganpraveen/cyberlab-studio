@@ -48,7 +48,9 @@ function ContinueCard() {
         <Sparkles className="size-3.5" aria-hidden /> Continue where you left off
       </div>
       <Link to={`/learn/${lesson.topicId.toLowerCase()}`} className="group block">
-        <h3 className="text-fg group-hover:text-accent-text text-lg font-semibold">{lesson.title}</h3>
+        <h3 className="text-fg group-hover:text-accent-text text-lg font-semibold">
+          {lesson.title}
+        </h3>
         <p className="text-fg-muted mt-1 line-clamp-2 text-sm">{lesson.summary}</p>
         <span className="text-accent-text mt-2 inline-flex items-center gap-1 text-sm font-medium">
           Resume <ArrowRight className="size-4" aria-hidden />
@@ -66,10 +68,30 @@ export default function HomePage() {
 
   const featuredLabs = LABS.slice(0, 3);
   const quickLinks = [
-    { to: '/learn', icon: Map, title: 'Topic map', text: `${CATALOG_SUMMARY.topics} topics, ${CATALOG_SUMMARY.domains} domains` },
-    { to: '/labs', icon: FlaskConical, title: 'Hands-on labs', text: `${LABS.length} labs you run in your browser` },
-    { to: '/challenges', icon: Target, title: 'Challenges', text: `${CHALLENGES.length} graded challenges with hints` },
-    { to: '/library', icon: Library, title: 'Library', text: 'Textbooks, standards and open references' },
+    {
+      to: '/learn',
+      icon: Map,
+      title: 'Topic map',
+      text: `${CATALOG_SUMMARY.topics} topics, ${CATALOG_SUMMARY.domains} domains`,
+    },
+    {
+      to: '/labs',
+      icon: FlaskConical,
+      title: 'Hands-on labs',
+      text: `${LABS.length} labs you run in your browser`,
+    },
+    {
+      to: '/challenges',
+      icon: Target,
+      title: 'Challenges',
+      text: `${CHALLENGES.length} graded challenges with hints`,
+    },
+    {
+      to: '/library',
+      icon: Library,
+      title: 'Library',
+      text: 'Textbooks, standards and open references',
+    },
   ];
 
   return (
@@ -139,10 +161,17 @@ export default function HomePage() {
                     {solvedChallenges} / {CHALLENGES.length}
                   </span>
                 </div>
-                <ProgressBar value={solvedChallenges} max={CHALLENGES.length} label="Challenges solved" />
+                <ProgressBar
+                  value={solvedChallenges}
+                  max={CHALLENGES.length}
+                  label="Challenges solved"
+                />
               </div>
             </div>
-            <Link to="/progress" className="text-accent-text mt-4 inline-flex items-center gap-1 text-sm hover:underline">
+            <Link
+              to="/progress"
+              className="text-accent-text mt-4 inline-flex items-center gap-1 text-sm hover:underline"
+            >
               See all progress <ArrowRight className="size-3.5" aria-hidden />
             </Link>
           </Card>
@@ -183,7 +212,9 @@ export default function HomePage() {
                   </span>
                   <ExecutionBadge mode={lab.mode} />
                 </div>
-                <h3 className="text-fg group-hover:text-accent-text mt-4 font-semibold">{lab.title}</h3>
+                <h3 className="text-fg group-hover:text-accent-text mt-4 font-semibold">
+                  {lab.title}
+                </h3>
                 <p className="text-fg-muted mt-1.5 flex-1 text-sm leading-relaxed">{lab.tagline}</p>
                 <span className="text-fg-subtle mt-4 inline-flex items-center gap-1 text-xs">
                   {lab.estimatedMinutes} min · {lab.challenges.length} challenges
@@ -240,4 +271,3 @@ function HowItWorks({
     </div>
   );
 }
-

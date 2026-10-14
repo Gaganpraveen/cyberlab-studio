@@ -49,6 +49,8 @@ export function getSource(id: string): LibrarySource | undefined {
 export function sourcesForTopic(topicId: string): LibrarySource[] {
   const domain = topicId.split('-')[0] ?? '';
   const exact = LIBRARY.filter((s) => s.topics?.includes(topicId));
-  const byDomain = LIBRARY.filter((s) => !s.topics?.includes(topicId) && s.domains.includes(domain));
+  const byDomain = LIBRARY.filter(
+    (s) => !s.topics?.includes(topicId) && s.domains.includes(domain),
+  );
   return [...exact, ...byDomain];
 }

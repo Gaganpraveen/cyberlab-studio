@@ -10,12 +10,7 @@ import { markChallengeSolved, saveLabState, loadLabState, useProgress } from '@/
 import { LabLayout, LabSteps } from '../components/LabLayout';
 import { CharDetail, CharRow } from './CharInspector';
 import { analyzeHost, type RuleConfig, DEFAULT_RULES, type RuleId, runDataset } from './engine';
-import {
-  DEFAULT_MODIFIED,
-  DEFAULT_ORIGINAL,
-  FIXTURES,
-  PROTECTED_NAME,
-} from './fixtures';
+import { DEFAULT_MODIFIED, DEFAULT_ORIGINAL, FIXTURES, PROTECTED_NAME } from './fixtures';
 import { homographLab } from './index';
 import { RuleBuilder } from './RuleBuilder';
 
@@ -69,7 +64,9 @@ function Row({
   return (
     <div className="flex justify-between gap-4">
       <dt className="text-fg-subtle">{label}</dt>
-      <dd className={cn('text-fg', mono && 'font-mono', highlight && 'text-accent-text')}>{value}</dd>
+      <dd className={cn('text-fg', mono && 'font-mono', highlight && 'text-accent-text')}>
+        {value}
+      </dd>
     </div>
   );
 }
@@ -89,7 +86,9 @@ function Investigation() {
         </p>
         <div className="border-line flex items-center gap-2 border-t pt-3">
           <Link2Off className="text-danger size-4 shrink-0" aria-hidden />
-          <span className="text-fg-subtle text-xs">The link text says campus.test, but it points to:</span>
+          <span className="text-fg-subtle text-xs">
+            The link text says campus.test, but it points to:
+          </span>
         </div>
         <code className="text-danger bg-code-bg block rounded-lg p-2 font-mono text-xs">
           http://xn--cmpus-4ve.test/login
@@ -159,11 +158,23 @@ export default function HomographLab() {
       </p>
       <LabSteps
         steps={[
-          { title: 'Compare', body: 'On the Inspector tab, compare the two names. Find the character that changed.' },
-          { title: 'Inspect', body: 'Click characters to see code point, Unicode name, and script.' },
+          {
+            title: 'Compare',
+            body: 'On the Inspector tab, compare the two names. Find the character that changed.',
+          },
+          {
+            title: 'Inspect',
+            body: 'Click characters to see code point, Unicode name, and script.',
+          },
           { title: 'Decode', body: 'Read the ASCII (Punycode) form in the host analysis panel.' },
-          { title: 'Defend', body: 'On the Rule builder tab, build a rule that catches imitations without false alarms.' },
-          { title: 'Investigate', body: 'Solve the case file and reach 100% precision and recall for the flag.' },
+          {
+            title: 'Defend',
+            body: 'On the Rule builder tab, build a rule that catches imitations without false alarms.',
+          },
+          {
+            title: 'Investigate',
+            body: 'Solve the case file and reach 100% precision and recall for the flag.',
+          },
         ]}
       />
       <Callout tone="info" title="Why this matters">

@@ -18,17 +18,17 @@ example `content/lessons/app-01.md`. The topic id must exist in the catalog
 topicId: APP-01
 title: SQL injection and parameterized queries
 summary: One sentence that says what the learner will understand.
-level: intro            # intro | intermediate | advanced
-status: draft           # draft | reviewed  (only an instructor sets "reviewed")
+level: intro # intro | intermediate | advanced
+status: draft # draft | reviewed  (only an instructor sets "reviewed")
 version: 1
 updated: 2026-10-14
 estimatedMinutes: 20
 objectives:
   - Explain why building SQL with string concatenation is unsafe.
   - Rewrite a vulnerable query using parameters.
-prerequisites: [FND-01]          # topic ids
-concepts: [sql-injection, parameterized-query]   # glossary ids
-labs: [sql-injection]            # lab ids
+prerequisites: [FND-01] # topic ids
+concepts: [sql-injection, parameterized-query] # glossary ids
+labs: [sql-injection] # lab ids
 sources:
   - title: OWASP SQL Injection Prevention Cheat Sheet
     url: https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html
@@ -40,7 +40,7 @@ quiz:
       - They encrypt the input.
       - The database receives the query structure and the data separately.
       - They remove quote characters.
-    answer: 1            # zero-based index of the correct choice
+    answer: 1 # zero-based index of the correct choice
     explanation: The query text is fixed before any input arrives, so input can never change its structure.
 ---
 ```
@@ -85,15 +85,15 @@ Use `##` headings in this order. They build the on-page table of contents.
 
 ### Markdown features
 
-| Write | Renders as |
-| --- | --- |
-| `[[sql-injection]]` | An inline glossary term with a definition popover |
-| `[[parameterized-query\|parameters]]` | The same, with custom link text |
-| `[the lab](lab:sql-injection)` | A link to a lab |
-| `[XSS](lesson:WEB-05)` | A link to another lesson |
-| `> [!NOTE]`, `[!TIP]`, `[!WARNING]`, `[!IMPORTANT]`, `[!CAUTION]`, `[!ETHICS]` | Callout boxes |
-| Fenced code with a language | Syntax-highlighted code |
-| GitHub-style tables | Tables |
+| Write                                                                          | Renders as                                        |
+| ------------------------------------------------------------------------------ | ------------------------------------------------- |
+| `[[sql-injection]]`                                                            | An inline glossary term with a definition popover |
+| `[[parameterized-query\|parameters]]`                                          | The same, with custom link text                   |
+| `[the lab](lab:sql-injection)`                                                 | A link to a lab                                   |
+| `[XSS](lesson:WEB-05)`                                                         | A link to another lesson                          |
+| `> [!NOTE]`, `[!TIP]`, `[!WARNING]`, `[!IMPORTANT]`, `[!CAUTION]`, `[!ETHICS]` | Callout boxes                                     |
+| Fenced code with a language                                                    | Syntax-highlighted code                           |
+| GitHub-style tables                                                            | Tables                                            |
 
 ## Glossary
 

@@ -105,7 +105,8 @@ export function nameOf(codePoint: number): string {
   if (char === '-') return 'HYPHEN-MINUS';
   if (/[a-z]/.test(char)) return `LATIN SMALL LETTER ${char.toUpperCase()}`;
   if (/[A-Z]/.test(char)) return `LATIN CAPITAL LETTER ${char}`;
-  if (/[0-9]/.test(char)) return `DIGIT ${['ZERO', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE'][Number(char)]}`;
+  if (/[0-9]/.test(char))
+    return `DIGIT ${['ZERO', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE'][Number(char)]}`;
   return `U+${codePoint.toString(16).toUpperCase().padStart(4, '0')}`;
 }
 

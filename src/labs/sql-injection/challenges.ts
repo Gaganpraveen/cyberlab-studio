@@ -67,7 +67,7 @@ export const challenges: ChallengeDefinition[] = [
     kind: 'flag',
     topicIds: ['APP-01'],
     prompt:
-      'The product search only ever shows products, but the same database also stores a `users` table with a `recovery_code` column. Using a `UNION SELECT` in the search box (vulnerable mode), surface the admin account\'s recovery code. It has the shape `CTF{...}`. Enter it as the flag.',
+      "The product search only ever shows products, but the same database also stores a `users` table with a `recovery_code` column. Using a `UNION SELECT` in the search box (vulnerable mode), surface the admin account's recovery code. It has the shape `CTF{...}`. Enter it as the flag.",
     hints: [
       'Make the product name match nothing, then UNION in a SELECT from the users table.',
       'Remember the column count from the previous challenge: three columns.',
@@ -92,7 +92,7 @@ export const challenges: ChallengeDefinition[] = [
       'Run the grader in both modes and compare: the vulnerable query fails several tests, the parameterized one passes them all.',
     ],
     solution:
-      'A parameterized statement sends the query structure and the input to the database separately, so the input is always treated as a value and never as SQL. The grader runs the same attack inputs against both versions: the string-built query is bypassed, while the parameterized query treats `\' OR \'1\'=\'1\' --` as a literal username that simply does not exist, so it correctly fails to log in. This is the single most important defense against injection.',
+      "A parameterized statement sends the query structure and the input to the database separately, so the input is always treated as a value and never as SQL. The grader runs the same attack inputs against both versions: the string-built query is bypassed, while the parameterized query treats `' OR '1'='1' --` as a literal username that simply does not exist, so it correctly fails to log in. This is the single most important defense against injection.",
   },
   {
     id: 'sqli-why-params',
