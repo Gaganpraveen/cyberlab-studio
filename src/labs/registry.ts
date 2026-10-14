@@ -1,3 +1,4 @@
+import { accessControlLab } from './access-control-matrix';
 import { classicalCipherLab } from './classical-cipher-breaker';
 import { ddosLab } from './ddos';
 import { homographLab } from './homograph';
@@ -23,6 +24,7 @@ export const LABS: LabDefinition[] = [
   spoofingMitmLab,
   tlsHandshakeLab,
   classicalCipherLab,
+  accessControlLab,
 ];
 
 const labById = new Map(LABS.map((lab) => [lab.id, lab]));
