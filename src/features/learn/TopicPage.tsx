@@ -25,9 +25,9 @@ import { Badge, Callout, EmptyState } from '@/components/ui/primitives';
 import { attacksForTopic } from '@/content/attacks';
 import { getTopic, TOPICS, type TopicRecord } from '@/content/catalog';
 import { getTerm, termsForTopic } from '@/content/glossary';
-import { getLesson, loadLessonBody } from '@/content/lessons';
+import { getLesson, loadLessonDetail } from '@/content/lessons';
 import { readingsForTopic } from '@/content/library';
-import type { GlossaryTerm, LessonHeading, LessonMeta } from '@/content/schema';
+import type { GlossaryTerm, LessonDetail, LessonHeading, LessonMeta } from '@/content/schema';
 import { ReadingList } from '@/features/library/ReadingList';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { labsForTopic } from '@/labs/registry';
@@ -385,19 +385,23 @@ function BodySkeleton() {
   );
 }
 
-type BodyState =
+type DetailState =
   | { status: 'loading' }
-  | { status: 'ready'; topicId: string; text: string }
+  | { status: 'ready'; topicId: string; detail: LessonDetail }
   | { status: 'error'; topicId: string };
 
-function useLessonBody(topicId: string | undefined) {
-  const [state, setState] = useState<BodyState>({ status: 'loading' });
+/** Loads a lesson's body, objectives, quiz and sources, which live in a per-lesson chunk. */
+function useLessonDetail(topicId: string | undefined) {
+  const [state, setState] = useState<DetailState>({ status: 'loading' });
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     if (!topicId) return;
     let cancelled = false;
-    loadLessonBody(topicId).then(
-      (text) => !cancelled && setState({ status: 'ready', topicId, text: text ?? '' }),
+    loadLessonDetail(topicId).then(
+      (detail) => {
+        if (cancelled) return;
+        setState(detail ? { status: 'ready', topicId, detail } : { status: 'error', topicId });
+      },
       () => !cancelled && setState({ status: 'error', topicId }),
     );
     return () => {
@@ -408,10 +412,62 @@ function useLessonBody(topicId: string | undefined) {
   return { body: current, retry: () => setAttempt((n) => n + 1) };
 }
 
+function Objectives({ objectives }: { objectives?: string[] }) {
+  return (
+    <div className="bg-surface border-line rounded-xl border p-4">
+      <div className="text-fg-subtle mb-2 text-xs font-semibold tracking-[0.1em] uppercase">
+        What you will be able to do
+      </div>
+      {objectives ? (
+        <ul className="animate-fade-in space-y-1.5">
+          {objectives.map((objective) => (
+            <li key={objective} className="text-fg-muted flex gap-2 text-sm">
+              <ArrowRight className="text-accent mt-0.5 size-4 shrink-0" aria-hidden />
+              {objective}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="space-y-2.5 py-0.5" aria-hidden>
+          {[78, 64, 70].map((w) => (
+            <div
+              key={w}
+              className="bg-surface-2 h-3.5 animate-pulse rounded"
+              style={{ width: `${w}%` }}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SourceList({ sources }: { sources: LessonDetail['sources'] }) {
+  return (
+    <ol className="list-decimal space-y-2 pl-5 text-sm">
+      {sources.map((source) => (
+        <li key={source.url} className="text-fg-muted pl-1">
+          <a
+            href={source.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent-text hover:underline"
+          >
+            {source.title}
+          </a>
+          {source.publisher && <span className="text-fg-subtle"> · {source.publisher}</span>}
+          {source.license && <span className="text-fg-subtle"> · {source.license}</span>}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 function LessonView({ topic, lesson }: { topic: TopicRecord; lesson: LessonMeta }) {
   const articleRef = useRef<HTMLElement>(null);
-  const { body, retry } = useLessonBody(lesson.topicId);
-  const active = useActiveHeading(lesson.headings, body?.status === 'ready');
+  const { body, retry } = useLessonDetail(lesson.topicId);
+  const detail = body?.status === 'ready' ? body.detail : undefined;
+  const active = useActiveHeading(lesson.headings, !!detail);
   const concepts = lesson.concepts.map((id) => getTerm(id)).filter((t): t is GlossaryTerm => !!t);
 
   useEffect(() => {
@@ -449,19 +505,7 @@ function LessonView({ topic, lesson }: { topic: TopicRecord; lesson: LessonMeta 
             </p>
 
             <div className="mt-6 space-y-4">
-              <div className="bg-surface border-line rounded-xl border p-4">
-                <div className="text-fg-subtle mb-2 text-xs font-semibold tracking-[0.1em] uppercase">
-                  What you will be able to do
-                </div>
-                <ul className="space-y-1.5">
-                  {lesson.objectives.map((objective) => (
-                    <li key={objective} className="text-fg-muted flex gap-2 text-sm">
-                      <ArrowRight className="text-accent mt-0.5 size-4 shrink-0" aria-hidden />
-                      {objective}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {body?.status !== 'error' && <Objectives objectives={detail?.objectives} />}
               <PrereqList ids={lesson.prerequisites} />
             </div>
 
@@ -484,13 +528,15 @@ function LessonView({ topic, lesson }: { topic: TopicRecord; lesson: LessonMeta 
                 </Button>
               </Callout>
             )}
-            {body?.status === 'ready' && (
+            {detail && (
               <div className="animate-fade-in">
-                <Markdown>{body.text}</Markdown>
+                <Markdown>{detail.body}</Markdown>
               </div>
             )}
 
-            {lesson.quiz.length > 0 && <LessonQuiz topicId={lesson.topicId} quiz={lesson.quiz} />}
+            {detail && detail.quiz.length > 0 && (
+              <LessonQuiz topicId={lesson.topicId} quiz={detail.quiz} />
+            )}
 
             {concepts.length > 0 && (
               <Section
@@ -505,24 +551,7 @@ function LessonView({ topic, lesson }: { topic: TopicRecord; lesson: LessonMeta 
             <Readings topicId={lesson.topicId} />
 
             <Section title="Sources" icon={<Link2 className="text-fg-subtle size-4" aria-hidden />}>
-              <ol className="list-decimal space-y-2 pl-5 text-sm">
-                {lesson.sources.map((source) => (
-                  <li key={source.url} className="text-fg-muted pl-1">
-                    <a
-                      href={source.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-accent-text hover:underline"
-                    >
-                      {source.title}
-                    </a>
-                    {source.publisher && (
-                      <span className="text-fg-subtle"> · {source.publisher}</span>
-                    )}
-                    {source.license && <span className="text-fg-subtle"> · {source.license}</span>}
-                  </li>
-                ))}
-              </ol>
+              {detail && <SourceList sources={detail.sources} />}
               <p className="text-fg-subtle mt-4 text-xs leading-relaxed">
                 {lesson.status === 'draft'
                   ? 'This draft was written with AI assistance from the sources above and is waiting for instructor review. '

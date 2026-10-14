@@ -1,6 +1,6 @@
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import { Menu, Monitor, Moon, Presentation, Search, Sun, X } from 'lucide-react';
-import { type ReactNode, useState } from 'react';
+import { lazy, type ReactNode, Suspense, useCallback, useEffect, useState } from 'react';
 import { NavLink, Outlet, ScrollRestoration, useLocation } from 'react-router';
 
 import { Kbd } from '@/components/ui/primitives';
@@ -8,9 +8,11 @@ import { Tooltip } from '@/components/ui/radix';
 import { cn } from '@/lib/cn';
 import { updateSettings, useSettings } from '@/lib/settings';
 
-import { CommandPalette, useCommandPaletteShortcut } from './CommandPalette';
 import { Logo } from './Logo';
 import { type NavItem, PRIMARY_NAV, SECONDARY_NAV } from './navigation';
+import { loadCommandPalette, useCommandPaletteShortcut } from './paletteShortcut';
+
+const CommandPalette = lazy(loadCommandPalette);
 
 function NavList({ items, onNavigate }: { items: NavItem[]; onNavigate?: () => void }) {
   return (
@@ -80,9 +82,11 @@ const themeLabel = { dark: 'Dark theme', light: 'Light theme', system: 'System t
 
 function TopBar({
   onOpenPalette,
+  onPrefetchPalette,
   onOpenMenu,
 }: {
   onOpenPalette: () => void;
+  onPrefetchPalette: () => void;
   onOpenMenu: () => void;
 }) {
   const settings = useSettings();
@@ -106,6 +110,8 @@ function TopBar({
       <button
         type="button"
         onClick={onOpenPalette}
+        onPointerEnter={onPrefetchPalette}
+        onFocus={onPrefetchPalette}
         className="border-line bg-surface hover:border-line-strong text-fg-subtle ml-auto flex h-9 w-full max-w-md items-center gap-2 rounded-lg border px-3 text-sm transition-colors lg:mx-auto lg:ml-0"
         aria-label="Search lessons, labs, and terms"
       >
@@ -159,8 +165,22 @@ function TopBar({
 export function AppShell() {
   const location = useLocation();
   const [paletteOpen, setPaletteOpen] = useState(false);
+  // The palette mounts on first use so its search index stays out of the first load.
+  const [paletteMounted, setPaletteMounted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  useCommandPaletteShortcut(() => setPaletteOpen(true));
+  const openPalette = useCallback(() => {
+    setPaletteMounted(true);
+    setPaletteOpen(true);
+  }, []);
+  const prefetchPalette = useCallback(() => void loadCommandPalette(), []);
+  useCommandPaletteShortcut(openPalette);
+
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1500));
+    const cancel = window.cancelIdleCallback ?? window.clearTimeout;
+    const handle = idle(() => void loadCommandPalette());
+    return () => cancel(handle);
+  }, []);
 
   return (
     <div className="flex min-h-dvh">
@@ -199,7 +219,11 @@ export function AppShell() {
       </DialogPrimitive.Root>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <TopBar onOpenPalette={() => setPaletteOpen(true)} onOpenMenu={() => setMenuOpen(true)} />
+        <TopBar
+          onOpenPalette={openPalette}
+          onPrefetchPalette={prefetchPalette}
+          onOpenMenu={() => setMenuOpen(true)}
+        />
         <main id="main" tabIndex={-1} className="min-w-0 flex-1 focus:outline-none">
           <div key={location.pathname} className="animate-rise-in">
             <Outlet />
@@ -207,7 +231,11 @@ export function AppShell() {
         </main>
       </div>
 
-      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
+      {paletteMounted && (
+        <Suspense fallback={null}>
+          <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
+        </Suspense>
+      )}
       <ScrollRestoration />
     </div>
   );

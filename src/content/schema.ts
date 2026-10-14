@@ -40,7 +40,8 @@ export const quizQuestionSchema = z
   });
 export type QuizQuestion = z.infer<typeof quizQuestionSchema>;
 
-export const lessonFrontmatterSchema = z.object({
+/** Lesson fields the whole app needs (topic map, search, progress): bundled up front. */
+export const lessonIndexSchema = z.object({
   topicId: z.string().regex(TOPIC_ID),
   title: z.string().min(1),
   summary: z.string().min(1),
@@ -49,15 +50,23 @@ export const lessonFrontmatterSchema = z.object({
   version: z.number().int().min(1),
   updated: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   estimatedMinutes: z.number().int().min(1).max(240),
-  objectives: z.array(z.string().min(1)).min(1),
   prerequisites: z.array(z.string().regex(TOPIC_ID)).default([]),
   concepts: z.array(z.string().regex(KEBAB_ID)).default([]),
   labs: z.array(z.string().regex(KEBAB_ID)).default([]),
   /** Extra search words: abbreviations, synonyms, standard ids (e.g. "SQLi", "CWE-89"). */
   keywords: z.array(z.string().min(1)).default([]),
+});
+export type LessonIndex = z.infer<typeof lessonIndexSchema>;
+
+/** Lesson fields only the lesson page needs: loaded with the lesson body. */
+export const lessonDetailSchema = z.object({
+  objectives: z.array(z.string().min(1)).min(1),
   sources: z.array(lessonSourceSchema).min(1),
   quiz: z.array(quizQuestionSchema).default([]),
 });
+
+/** The whole frontmatter block of a lesson file. */
+export const lessonFrontmatterSchema = lessonIndexSchema.extend(lessonDetailSchema.shape);
 export type LessonFrontmatter = z.infer<typeof lessonFrontmatterSchema>;
 
 export interface LessonHeading {
@@ -65,8 +74,8 @@ export interface LessonHeading {
   text: string;
 }
 
-/** Everything about a lesson except its body, available without loading the body. */
-export interface LessonMeta extends LessonFrontmatter {
+/** What the app knows about a lesson before opening it. */
+export interface LessonMeta extends LessonIndex {
   /** Section headings (## level) for the on-page table of contents. */
   headings: LessonHeading[];
   /** Approximate word count of the body. */
@@ -75,10 +84,14 @@ export interface LessonMeta extends LessonFrontmatter {
   file: string;
 }
 
-export interface Lesson extends LessonMeta {
+/** What loads when a lesson is opened. */
+export interface LessonDetail extends z.infer<typeof lessonDetailSchema> {
   /** Markdown body (without frontmatter). */
   body: string;
 }
+
+/** A whole lesson: what parsing a lesson file yields (tests and tooling). */
+export interface Lesson extends LessonMeta, LessonDetail {}
 
 export const glossaryTermSchema = z.object({
   id: z.string().regex(KEBAB_ID),

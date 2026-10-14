@@ -14,10 +14,9 @@ import {
 import { Link } from 'react-router';
 
 import { PageContainer } from '@/components/layout/AppShell';
-import { Markdown } from '@/components/markdown/Markdown';
 import { ButtonLink } from '@/components/ui/Button';
 import { ExecutionBadge } from '@/components/ui/badges';
-import { Badge, Card, ProgressBar } from '@/components/ui/primitives';
+import { Badge, Callout, Card, ProgressBar } from '@/components/ui/primitives';
 import { ATTACKS } from '@/content/attacks';
 import { DOMAINS } from '@/content/catalog';
 import { GLOSSARY } from '@/content/glossary';
@@ -372,13 +371,11 @@ export default function HomePage() {
 
       <ForInstructors />
 
-      <section className="border-line bg-surface mt-6 rounded-2xl border px-5 py-4">
-        <Markdown compact>
-          {
-            '> [!ETHICS] You are learning offensive techniques so you can defend systems. Only ever use them on systems you own or have explicit written permission to test. Everything in these labs is fictional and contained to your browser.'
-          }
-        </Markdown>
-      </section>
+      <Callout tone="warning" title="Ethics and authorization" className="mt-6">
+        You are learning offensive techniques so you can defend systems. Only ever use them on
+        systems you own or have explicit written permission to test. Everything in these labs is
+        fictional and contained to your browser.
+      </Callout>
     </PageContainer>
   );
 }

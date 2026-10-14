@@ -1,10 +1,17 @@
 import { getTopic } from './catalog';
-import { type LessonHeading, type LessonMeta, lessonFrontmatterSchema } from './schema';
+import {
+  type LessonDetail,
+  lessonDetailSchema,
+  type LessonHeading,
+  lessonIndexSchema,
+  type LessonMeta,
+} from './schema';
 
 /**
  * Lesson metadata is bundled with the app (it drives the topic map, search
- * and progress); each lesson's body is a separate chunk, loaded when the
- * lesson is opened. See scripts/vite-plugin-content.ts.
+ * and progress); each lesson's body, objectives, sources and quiz are a
+ * separate chunk, loaded when the lesson is opened. See
+ * scripts/vite-plugin-content.ts.
  */
 
 interface RawLessonMeta {
@@ -19,8 +26,8 @@ const metaModules = import.meta.glob<RawLessonMeta>('/content/lessons/*.md', {
   eager: true,
 });
 
-const bodyModules = import.meta.glob<string>('/content/lessons/*.md', {
-  query: '?body',
+const detailModules = import.meta.glob<unknown>('/content/lessons/*.md', {
+  query: '?detail',
   import: 'default',
 });
 
@@ -29,14 +36,17 @@ export interface ContentIssue {
   message: string;
 }
 
+function describeIssues(issues: Array<{ path: PropertyKey[]; message: string }>): string {
+  return issues.map((issue) => `${issue.path.join('.') || '(root)'}: ${issue.message}`).join('; ');
+}
+
 /** Validate one lesson's metadata. Throws with a readable message when it is invalid. */
 export function toLessonMeta(file: string, raw: RawLessonMeta): LessonMeta {
-  const result = lessonFrontmatterSchema.safeParse(raw.data);
+  const result = lessonIndexSchema.safeParse(raw.data);
   if (!result.success) {
-    const details = result.error.issues
-      .map((issue) => `${issue.path.join('.') || '(root)'}: ${issue.message}`)
-      .join('; ');
-    throw new Error(`Invalid lesson frontmatter in ${file}: ${details}`);
+    throw new Error(
+      `Invalid lesson frontmatter in ${file}: ${describeIssues(result.error.issues)}`,
+    );
   }
   if (!getTopic(result.data.topicId)) {
     throw new Error(`Lesson ${file} refers to unknown topic ${result.data.topicId}`);
@@ -74,11 +84,23 @@ export function hasLesson(topicId: string): boolean {
   return byTopic.has(topicId.toUpperCase());
 }
 
-/** Load a lesson's Markdown body (a separate chunk). */
-export async function loadLessonBody(topicId: string): Promise<string | undefined> {
+/** Validate the part of a lesson that loads when it is opened. Throws when invalid. */
+export function toLessonDetail(file: string, raw: unknown): LessonDetail {
+  const value = (raw ?? {}) as { body?: unknown };
+  const result = lessonDetailSchema.safeParse(raw);
+  if (!result.success) {
+    throw new Error(
+      `Invalid lesson frontmatter in ${file}: ${describeIssues(result.error.issues)}`,
+    );
+  }
+  return { ...result.data, body: typeof value.body === 'string' ? value.body : '' };
+}
+
+/** Load a lesson's body, objectives, sources and quiz (a separate chunk). */
+export async function loadLessonDetail(topicId: string): Promise<LessonDetail | undefined> {
   const lesson = getLesson(topicId);
-  const load = lesson ? bodyModules[lesson.file] : undefined;
-  return load ? load() : undefined;
+  const load = lesson ? detailModules[lesson.file] : undefined;
+  return load ? toLessonDetail(lesson!.file, await load()) : undefined;
 }
 
 /** Lessons that list this lab, in catalog order. */

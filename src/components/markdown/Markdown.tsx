@@ -30,7 +30,6 @@ import {
 } from 'react';
 import ReactMarkdown, { type Components, defaultUrlTransform } from 'react-markdown';
 import { Link } from 'react-router';
-import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 
 import { SequenceDiagram } from '@/components/diagrams/SequenceDiagram';
@@ -38,6 +37,7 @@ import { Callout, type Tone } from '@/components/ui/primitives';
 import { cn } from '@/lib/cn';
 import { slugify } from '@/lib/slug';
 
+import { rehypeCodeHighlight } from './rehypeCodeHighlight';
 import { TermLink } from './TermLink';
 
 const languages = {
@@ -70,6 +70,11 @@ const languages = {
   yaml,
   yml: yaml,
 };
+
+const highlightCode = rehypeCodeHighlight({
+  languages,
+  plainText: ['text', 'plaintext', 'sequence'],
+});
 
 /** How each code language is named in the code block's label. */
 const languageLabels: Record<string, string> = {
@@ -288,12 +293,7 @@ export const Markdown = memo(function Markdown({ children, className, compact }:
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[
-          [
-            rehypeHighlight,
-            { languages, detect: false, plainText: ['text', 'plaintext', 'sequence'] },
-          ],
-        ]}
+        rehypePlugins={[highlightCode]}
         components={components}
         urlTransform={urlTransform}
       >

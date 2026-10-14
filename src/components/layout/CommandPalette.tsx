@@ -14,7 +14,7 @@ import {
   Target,
 } from 'lucide-react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
-import { type ReactNode, useEffect, useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
 import { Kbd } from '@/components/ui/primitives';
@@ -28,35 +28,27 @@ import { updateSettings, useSettings } from '@/lib/settings';
 
 import { PRIMARY_NAV, SECONDARY_NAV } from './navigation';
 
-function isTypingTarget(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) return false;
-  return (
-    target.isContentEditable ||
-    ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) ||
-    Boolean(target.closest('.cm-editor'))
-  );
-}
-
-/** Ctrl/Cmd+K anywhere, or "/" when not typing, opens the palette. */
-export function useCommandPaletteShortcut(open: () => void): void {
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if ((event.key === 'k' || event.key === 'K') && (event.metaKey || event.ctrlKey)) {
-        event.preventDefault();
-        open();
-      } else if (
-        event.key === '/' &&
-        !event.metaKey &&
-        !event.ctrlKey &&
-        !isTypingTarget(event.target)
-      ) {
-        event.preventDefault();
-        open();
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open]);
+/**
+ * Rank by whole words, not loose letter matches: every word typed must appear
+ * in the title or the keywords, and title words that start with it rank first.
+ * (cmdk's default fuzzy score put "Password Cracking and Hashing" above
+ * "Phishing" for "phish".)
+ */
+function rank(value: string, search: string, keywords?: string[]): number {
+  const words = search.toLowerCase().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return 1;
+  const title = value.toLowerCase();
+  const extra = (keywords ?? []).join(' ').toLowerCase();
+  let total = 0;
+  for (const word of words) {
+    const startsWord = new RegExp(`(^|[^a-z0-9])${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`);
+    if (startsWord.test(title)) total += 1;
+    else if (title.includes(word)) total += 0.6;
+    else if (startsWord.test(extra)) total += 0.4;
+    else if (extra.includes(word)) total += 0.2;
+    else return 0;
+  }
+  return total / words.length;
 }
 
 const itemClasses =
@@ -94,7 +86,7 @@ function Item({
   );
 }
 
-export function CommandPalette({
+export default function CommandPalette({
   open,
   onOpenChange,
 }: {
@@ -123,7 +115,7 @@ export function CommandPalette({
           aria-describedby={undefined}
         >
           <DialogPrimitive.Title className="sr-only">Search CyberLab Studio</DialogPrimitive.Title>
-          <Command label="Search CyberLab Studio" loop>
+          <Command label="Search CyberLab Studio" loop filter={rank}>
             <div className="border-line flex items-center gap-2 border-b px-4">
               <Command.Input
                 placeholder="Search topics, attacks, labs, terms, books…"
@@ -156,7 +148,7 @@ export function CommandPalette({
                   <Item
                     key={lab.id}
                     value={`lab ${lab.title}`}
-                    keywords={[lab.tagline, ...lab.topicIds]}
+                    keywords={[lab.id, lab.tagline, ...lab.topicIds]}
                     onSelect={() => go(`/labs/${lab.id}`)}
                     icon={<FlaskConical className="size-4" />}
                     hint={lab.mode === 'real' ? 'Real execution' : 'Simulation'}

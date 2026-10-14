@@ -2,7 +2,7 @@ import { parse as parseYaml } from 'yaml';
 
 import { toAttacks } from './attacks';
 import { toGlossaryTerms } from './glossary';
-import { toLessonMeta } from './lessons';
+import { toLessonDetail, toLessonMeta } from './lessons';
 import { toLibrarySources } from './library';
 import { countWords, extractHeadings, parseFrontmatter } from './markdownMeta';
 import type { Attack, GlossaryTerm, Lesson, LibrarySource } from './schema';
@@ -19,7 +19,8 @@ export function parseLesson(file: string, source: string): Lesson {
     headings: extractHeadings(body),
     words: countWords(body),
   });
-  return { ...meta, body };
+  const detail = toLessonDetail(file, { ...(data as object), body });
+  return { ...meta, ...detail };
 }
 
 export function parseGlossaryFile(file: string, source: string): GlossaryTerm[] {
