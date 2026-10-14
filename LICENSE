@@ -19,11 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-This MIT license covers the SOURCE CODE of CyberLab Studio. The educational
-CONTENT under the `content/` directory (lessons, glossary, and curriculum) is
-licensed separately under Creative Commons Attribution-ShareAlike 4.0
-International (CC BY-SA 4.0); see `content/LICENSE.md`. Third-party components
-and the sources that lessons are written from are credited in `NOTICE`.

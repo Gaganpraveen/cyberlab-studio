@@ -238,25 +238,6 @@ export function Spinner({ label = 'Loading', className }: { label?: string; clas
   );
 }
 
-export function SectionTitle({
-  children,
-  action,
-  id,
-}: {
-  children: ReactNode;
-  action?: ReactNode;
-  id?: string;
-}) {
-  return (
-    <div className="mb-4 flex items-center justify-between gap-4">
-      <h2 id={id} className="text-fg text-lg font-semibold tracking-tight">
-        {children}
-      </h2>
-      {action}
-    </div>
-  );
-}
-
 export const inputClasses =
   'w-full rounded-lg border border-line-strong bg-surface-2 px-3 py-2 text-sm text-fg ' +
   'placeholder:text-fg-subtle transition-colors focus:border-accent focus:outline-none ' +

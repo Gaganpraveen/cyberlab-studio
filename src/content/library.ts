@@ -49,12 +49,6 @@ function loadAll(): LibrarySource[] {
 
 export const LIBRARY: LibrarySource[] = loadAll();
 
-const byId = new Map(LIBRARY.map((s) => [s.id, s]));
-
-export function getSource(id: string): LibrarySource | undefined {
-  return byId.get(id);
-}
-
 export interface TopicReading {
   source: LibrarySource;
   /** Chapters or sections of the source that cover this topic. */
@@ -91,11 +85,6 @@ export function readingsForTopic(topicId: string): TopicReading[] {
       KIND_ORDER[a.source.kind] - KIND_ORDER[b.source.kind] ||
       ACCESS_ORDER[a.source.access] - ACCESS_ORDER[b.source.access],
   );
-}
-
-/** Sources mapped to any topic in a domain, or listing the domain. */
-export function sourcesForDomain(domainId: string): LibrarySource[] {
-  return LIBRARY.filter((s) => s.domains.includes(domainId.toUpperCase()));
 }
 
 export const LIBRARY_KIND_LABELS: Record<LibraryKind, string> = {

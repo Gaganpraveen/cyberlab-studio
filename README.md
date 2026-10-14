@@ -8,6 +8,8 @@ A teaching platform that pairs clear, cited lessons with hands-on labs where
 students run real attack-and-defense exercises against targets that exist only
 inside their own browser tab. Built for undergraduate and graduate courses.
 
+**[Open CyberLab Studio](https://gaganpraveen.github.io/cyberlab-studio/)**
+
 [![CI](https://github.com/Gaganpraveen/cyberlab-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/Gaganpraveen/cyberlab-studio/actions/workflows/ci.yml)
 [![Deploy](https://github.com/Gaganpraveen/cyberlab-studio/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/Gaganpraveen/cyberlab-studio/actions/workflows/deploy-pages.yml)
 [![Code license: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
@@ -20,13 +22,11 @@ inside their own browser tab. Built for undergraduate and graduate courses.
 CyberLab Studio brings four things that normally live in separate tools into one
 place:
 
-- **Lessons** in the spirit of a good textbook or GeeksforGeeks article — the
-  intuition, the mechanism, a worked example, common misconceptions, and
-  sources you can check.
-- **A linked glossary** so every term is one hover away from its definition,
-  Wikipedia-style.
-- **Graded challenges** with hints and automated checks, in the spirit of
-  LeetCode / HackerRank.
+- **Lessons** written like a good textbook chapter: the intuition, the
+  mechanism, a worked example, common misconceptions, and sources you can
+  check.
+- **A linked glossary**, so every term is one hover away from its definition.
+- **Graded challenges** with hints and automated checks.
 - **Hands-on labs** where you carry out an attack end to end, watch what it
   does, build the defense, and re-run the attack to prove the defense holds.
 
@@ -58,6 +58,9 @@ not for attacking anyone.
 - **Lessons** with objectives, worked examples, animated protocol diagrams,
   a self-check quiz and cited sources. Every lesson starts as a draft until an
   instructor reviews it.
+- **22 hands-on labs**, from SQL injection and phishing analysis to cloud IAM
+  and prompt injection, each with a guide, challenges, and a defense to build
+  and verify.
 - **Attacks A to Z**: an index of 147 attack types in 15 categories, each
   linked to its lessons and labs and to its MITRE ATT&CK, CWE, CAPEC and
   OWASP identifiers.
@@ -98,7 +101,7 @@ npm run preview
 | Script                  | What it does                                       |
 | ----------------------- | -------------------------------------------------- |
 | `npm run dev`           | Start the Vite dev server                          |
-| `npm run build`         | Type-check and build to `dist/`                    |
+| `npm run build`         | Build the production bundle to `dist/`             |
 | `npm run preview`       | Serve the production build locally                 |
 | `npm run typecheck`     | `tsc --noEmit`                                     |
 | `npm run lint`          | ESLint                                             |
@@ -116,6 +119,7 @@ npm run preview
 content/          Lessons (Markdown); glossary, library and attack index (YAML) — CC BY-SA 4.0
 docs/             Content- and lab-authoring guides
 public/           Static assets
+scripts/          Build helpers: the content compiler and the icon renderer
 src/
   app/            App shell and router
   components/     Shared UI (design system, markdown renderer)
@@ -142,8 +146,9 @@ reviews it.
 
 ## Deployment
 
-- **Website:** pushed to `main`, the app deploys to GitHub Pages automatically
-  (`.github/workflows/deploy-pages.yml`). Enable Pages once in
+- **Website:** every push to the default branch deploys the app to
+  [GitHub Pages](https://gaganpraveen.github.io/cyberlab-studio/)
+  (`.github/workflows/deploy-pages.yml`). A fork enables Pages once in
   **Settings → Pages → Build and deployment → GitHub Actions**.
 - **Desktop apps:** pushing a version tag (`vX.Y.Z`), or running the
   **Desktop apps** workflow with _release_ ticked, builds Windows, macOS

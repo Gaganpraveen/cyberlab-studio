@@ -28,11 +28,6 @@ function storage(): Storage | null {
   return cached;
 }
 
-/** True when values written now are likely to survive a reload. */
-export function isPersistentStorageAvailable(): boolean {
-  return storage() !== null;
-}
-
 export function readJSON<T>(key: string, fallback: T): T {
   const store = storage();
   if (!store) return fallback;
@@ -56,20 +51,7 @@ export function writeJSON(key: string, value: unknown): boolean {
   }
 }
 
-export function removeKey(key: string): void {
-  try {
-    storage()?.removeItem(PREFIX + key);
-  } catch {
-    // Ignore: nothing else we can do.
-  }
-}
-
 /** The full key as stored, for matching `storage` events from other tabs. */
 export function storageKey(key: string): string {
   return PREFIX + key;
-}
-
-/** Test helper: forget the cached storage handle. */
-export function __resetStorageCacheForTests(): void {
-  cached = undefined;
 }

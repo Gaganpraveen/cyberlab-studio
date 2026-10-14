@@ -337,7 +337,7 @@ export default function HomePage() {
               <ButtonLink to="/attacks" variant="secondary" size="lg">
                 <ShieldAlert className="size-5" aria-hidden /> Attacks A to Z
               </ButtonLink>
-              {!isDesktopApp && (
+              {!isDesktopApp && SITE.desktopReleased && (
                 <a
                   href={SITE.releasesUrl}
                   target="_blank"

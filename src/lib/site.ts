@@ -6,14 +6,11 @@ export const SITE = {
   contentBranch: 'build/v1',
   /** Windows, macOS and Linux installers, attached to each GitHub release. */
   releasesUrl: 'https://github.com/Gaganpraveen/cyberlab-studio/releases/latest',
+  /** Whether a release with installers is out; the download links appear only then. */
+  desktopReleased: false as boolean,
 } as const;
 
 /** GitHub's web editor for a file in the repository, e.g. "content/lessons/app-01.md". */
 export function editOnGitHubUrl(path: string): string {
   return `${SITE.repoUrl}/edit/${SITE.contentBranch}/${path.replace(/^\/+/, '')}`;
-}
-
-/** The file's page on GitHub (history, blame, raw). */
-export function viewOnGitHubUrl(path: string): string {
-  return `${SITE.repoUrl}/blob/${SITE.contentBranch}/${path.replace(/^\/+/, '')}`;
 }

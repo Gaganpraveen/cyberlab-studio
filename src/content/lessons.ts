@@ -102,8 +102,3 @@ export async function loadLessonDetail(topicId: string): Promise<LessonDetail | 
   const load = lesson ? detailModules[lesson.file] : undefined;
   return load ? toLessonDetail(lesson!.file, await load()) : undefined;
 }
-
-/** Lessons that list this lab, in catalog order. */
-export function lessonsForLab(labId: string): LessonMeta[] {
-  return LESSONS.filter((lesson) => lesson.labs.includes(labId));
-}

@@ -66,8 +66,8 @@ export default function AboutPage() {
             every major attack to the lessons that teach it.
           </p>
           <p>
-            The topic list follows Appendix A of the CyberLab Studio Foundation Specification. It is
-            a proposed roadmap that instructors adapt, not an accredited curriculum.
+            The topic list is a proposed roadmap that instructors adapt, not an accredited
+            curriculum.
           </p>
         </Section>
 
@@ -155,7 +155,7 @@ export default function AboutPage() {
             and lab built in, so it works on a projector laptop with no internet connection.{' '}
             {isDesktopApp ? (
               <>You are using it now. </>
-            ) : (
+            ) : SITE.desktopReleased ? (
               <>
                 Download the installer for your computer from the{' '}
                 <a href={SITE.releasesUrl} {...ext}>
@@ -163,14 +163,18 @@ export default function AboutPage() {
                 </a>
                 .{' '}
               </>
+            ) : (
+              <>The installers will be published with the first release. </>
             )}
             Links to readings open in your usual browser.
           </p>
-          <p>
-            The installers are not yet signed with an Apple or Microsoft certificate. On a Mac,
-            right-click the app and choose Open the first time; on Windows, choose More info, then
-            Run anyway.
-          </p>
+          {(isDesktopApp || SITE.desktopReleased) && (
+            <p>
+              The installers are not yet signed with an Apple or Microsoft certificate. On a Mac,
+              right-click the app and choose Open the first time; on Windows, choose More info, then
+              Run anyway.
+            </p>
+          )}
         </Section>
 
         <Section icon={<Lock className="size-4" aria-hidden />} title="Privacy">
