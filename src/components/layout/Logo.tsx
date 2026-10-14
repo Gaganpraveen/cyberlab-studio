@@ -7,7 +7,7 @@ export function LogoMark({ className }: { className?: string }) {
       <path
         d="M32 10 50 17v13c0 11.5-7.6 20.6-18 24-10.4-3.4-18-12.5-18-24V17l18-7Z"
         fill="none"
-        className="stroke-accent"
+        className="stroke-accent-text"
         strokeWidth="4"
         strokeLinejoin="round"
       />

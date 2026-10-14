@@ -66,7 +66,7 @@ function LabNotes({ labId }: { labId: string }) {
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder={'Prediction:\nObservation:\nExplanation:\nWhat would make the defense better?'}
-        className="bg-surface-2 border-line-strong text-fg placeholder:text-fg-subtle focus:border-accent min-h-60 flex-1 resize-none rounded-lg border p-3 font-mono text-sm leading-relaxed focus:outline-none"
+        className="bg-surface-2 border-line-strong text-fg placeholder:text-fg-subtle focus:border-focus min-h-60 flex-1 resize-none rounded-lg border p-3 font-mono text-sm leading-relaxed focus:outline-none"
       />
     </div>
   );

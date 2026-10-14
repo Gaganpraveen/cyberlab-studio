@@ -101,7 +101,7 @@ export function buildSandboxDocument(mode: RenderMode, input: string): string {
     <style>
       body { font: 14px/1.5 system-ui, sans-serif; color: #e8e4da; background: #1b1a18; margin: 0; padding: 12px; }
       .card { border: 1px solid #333028; border-radius: 10px; padding: 10px 12px; background: #222019; }
-      .who { color: #e8a46a; font-weight: 600; }
+      .who { color: #e39573; font-weight: 600; }
     </style>
   </head>
   <body>

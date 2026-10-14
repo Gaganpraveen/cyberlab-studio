@@ -24,7 +24,7 @@ import { xssLab } from './index';
 function ModeToggle({ mode, onChange }: { mode: RenderMode; onChange: (m: RenderMode) => void }) {
   return (
     <div
-      className="border-line bg-surface-2 inline-flex rounded-lg border p-0.5"
+      className="border-line bg-sunken inline-flex rounded-lg border p-0.5"
       role="group"
       aria-label="Comment rendering"
     >
@@ -213,7 +213,7 @@ export default function XssLab() {
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             spellCheck={false}
-            className="bg-surface-2 border-line-strong text-fg focus:border-accent h-24 w-full resize-none rounded-lg border p-3 font-mono text-sm leading-relaxed focus:outline-none"
+            className="bg-surface-2 border-line-strong text-fg focus:border-focus h-24 w-full resize-none rounded-lg border p-3 font-mono text-sm leading-relaxed focus:outline-none"
             aria-label="Comment body"
           />
 

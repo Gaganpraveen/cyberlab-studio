@@ -22,7 +22,7 @@ export function TopicCard({ topic }: { topic: TopicRecord }) {
         <span className="text-fg-subtle font-mono text-xs">{topic.id}</span>
         <span className="flex items-center gap-1">
           {status.hasLab && (
-            <FlaskConical className="text-accent size-3.5" aria-label="Has a lab" />
+            <FlaskConical className="text-accent-text size-3.5" aria-label="Has a lab" />
           )}
           {ready ? (
             <BookOpen className="text-success size-3.5" aria-label="Lesson ready" />

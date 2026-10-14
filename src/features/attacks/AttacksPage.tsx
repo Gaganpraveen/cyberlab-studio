@@ -229,7 +229,10 @@ function AttackRow({ attack }: { attack: Attack }) {
         <span className="flex items-start justify-between gap-3">
           <span className="text-fg group-hover:text-accent-text font-medium">{attack.name}</span>
           {attack.labs.length > 0 && (
-            <FlaskConical className="text-accent mt-0.5 size-4 shrink-0" aria-label="Has a lab" />
+            <FlaskConical
+              className="text-accent-text mt-0.5 size-4 shrink-0"
+              aria-label="Has a lab"
+            />
           )}
         </span>
         <span className="text-fg-muted mt-1.5 line-clamp-3 text-sm leading-relaxed">

@@ -35,7 +35,7 @@ const pct = (v: number) => `${Math.round(v * 100)}%`;
 function DefenseToggle({ value, onChange }: { value: Defense; onChange: (d: Defense) => void }) {
   return (
     <div
-      className="border-line bg-surface-2 inline-flex rounded-lg border p-0.5"
+      className="border-line bg-sunken inline-flex rounded-lg border p-0.5"
       role="group"
       aria-label="Defense"
     >
@@ -118,7 +118,7 @@ function ThroughputChart({ result }: { result: SimResult }) {
       )}
 
       {/* throughput */}
-      <g className="text-accent">
+      <g className="text-accent-text">
         <polygon points={area} fill="currentColor" fillOpacity={0.15} />
         <polyline points={line} fill="none" stroke="currentColor" strokeWidth={2} />
       </g>

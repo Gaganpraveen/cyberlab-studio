@@ -151,7 +151,7 @@ function AreaGrid() {
               >
                 <span className="flex items-center justify-between">
                   <Icon
-                    className="text-fg-subtle group-hover:text-accent size-5 transition-colors"
+                    className="text-fg-subtle group-hover:text-accent-text size-5 transition-colors"
                     aria-hidden
                   />
                   <span className="text-fg-subtle font-mono text-[0.6875rem]">{domain.id}</span>
@@ -250,7 +250,7 @@ function HowItWorks({
 }) {
   return (
     <div className="bg-surface border-line rounded-2xl border p-5">
-      <Icon className="text-accent size-6" aria-hidden />
+      <Icon className="text-accent-text size-6" aria-hidden />
       <h3 className="text-fg mt-3 font-semibold">{title}</h3>
       <p className="text-fg-muted mt-1.5 text-sm leading-relaxed">{text}</p>
     </div>

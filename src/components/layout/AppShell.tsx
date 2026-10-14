@@ -27,8 +27,8 @@ function NavList({ items, onNavigate }: { items: NavItem[]; onNavigate?: () => v
               cn(
                 'group flex h-9 items-center gap-3 rounded-lg px-3 text-sm transition-colors',
                 isActive
-                  ? 'bg-surface-3 text-fg font-medium'
-                  : 'text-fg-muted hover:bg-surface-2 hover:text-fg',
+                  ? 'bg-line text-fg font-medium'
+                  : 'text-fg-muted hover:bg-line/60 hover:text-fg',
               )
             }
           >
@@ -37,7 +37,7 @@ function NavList({ items, onNavigate }: { items: NavItem[]; onNavigate?: () => v
                 <item.icon
                   className={cn(
                     'size-4 shrink-0 transition-colors',
-                    isActive ? 'text-accent' : 'text-fg-subtle group-hover:text-fg-muted',
+                    isActive ? 'text-accent-text' : 'text-fg-subtle group-hover:text-fg-muted',
                   )}
                   aria-hidden
                 />
@@ -195,14 +195,14 @@ export function AppShell() {
         Skip to content
       </a>
 
-      <aside className="border-line bg-surface/50 sticky top-0 hidden h-dvh w-60 shrink-0 border-r lg:block">
+      <aside className="border-line bg-sunken sticky top-0 hidden h-dvh w-60 shrink-0 border-r lg:block">
         <SidebarContent />
       </aside>
 
       <DialogPrimitive.Root open={menuOpen} onOpenChange={setMenuOpen}>
         <DialogPrimitive.Portal>
           <DialogPrimitive.Overlay className="animate-fade-in fixed inset-0 z-40 bg-black/50 lg:hidden" />
-          <DialogPrimitive.Content className="bg-surface border-line animate-rise-in fixed inset-y-0 left-0 z-50 w-72 border-r lg:hidden">
+          <DialogPrimitive.Content className="bg-sunken border-line animate-rise-in fixed inset-y-0 left-0 z-50 w-72 border-r lg:hidden">
             <DialogPrimitive.Title className="sr-only">Navigation</DialogPrimitive.Title>
             <DialogPrimitive.Description className="sr-only">
               Main navigation links

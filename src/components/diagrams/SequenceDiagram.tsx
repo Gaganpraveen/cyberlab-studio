@@ -259,7 +259,7 @@ export function SequenceDiagram({ source }: { source: string }) {
                     <div
                       className={cn(
                         'bg-warning-soft border-warning/30 text-fg relative rounded-lg border px-3 py-1.5 text-center text-[0.8125rem] leading-snug',
-                        current && 'ring-accent ring-2',
+                        current && 'ring-accent-text ring-2',
                       )}
                       style={{
                         marginLeft: `${left}%`,
@@ -297,7 +297,7 @@ export function SequenceDiagram({ source }: { source: string }) {
                       <span
                         className={cn(
                           'text-fg rounded px-1 text-[0.8125rem] leading-snug',
-                          current && 'ring-accent ring-2',
+                          current && 'ring-accent-text ring-2',
                         )}
                       >
                         <StepNumber n={i + 1} />
@@ -321,7 +321,7 @@ export function SequenceDiagram({ source }: { source: string }) {
                       className={cn(
                         'mx-auto w-fit max-w-full rounded px-1 text-center text-[0.8125rem] leading-snug',
                         step.style === 'blocked' ? 'text-danger' : 'text-fg',
-                        current && 'ring-accent ring-2',
+                        current && 'ring-accent-text ring-2',
                       )}
                     >
                       <StepNumber n={i + 1} />
