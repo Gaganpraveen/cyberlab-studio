@@ -5,6 +5,7 @@ import { commandPathInjectionLab } from './command-path-injection';
 import { csrfClickjackingLab } from './csrf-clickjacking';
 import { ddosLab } from './ddos';
 import { detectionRuleBuilderLab } from './detection-rule-builder';
+import { emailPhishingInvestigatorLab } from './email-phishing-investigator';
 import { homographLab } from './homograph';
 import { jwtLab } from './jwt';
 import { loginSecurityLab } from './login-security';
@@ -41,6 +42,7 @@ export const LABS: LabDefinition[] = [
   detectionRuleBuilderLab,
   cloudIamPolicyLab,
   supplyChainProvenanceLab,
+  emailPhishingInvestigatorLab,
 ];
 
 const labById = new Map(LABS.map((lab) => [lab.id, lab]));
