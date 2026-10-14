@@ -1,3 +1,4 @@
+import { classicalCipherLab } from './classical-cipher-breaker';
 import { ddosLab } from './ddos';
 import { homographLab } from './homograph';
 import { jwtLab } from './jwt';
@@ -21,6 +22,7 @@ export const LABS: LabDefinition[] = [
   reconAttackSurfaceLab,
   spoofingMitmLab,
   tlsHandshakeLab,
+  classicalCipherLab,
 ];
 
 const labById = new Map(LABS.map((lab) => [lab.id, lab]));
