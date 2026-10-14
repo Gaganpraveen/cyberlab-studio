@@ -79,18 +79,20 @@ export function CharDetail({ value, index }: { value: string; index: number | nu
     ['Escaped', `\\u${cell.codePoint.toString(16).padStart(4, '0')}`],
   ];
   return (
-    <dl className="divide-line divide-y text-sm">
-      {rows.map(([key, val]) => (
-        <div key={key} className="flex justify-between gap-4 px-1 py-2">
-          <dt className="text-fg-subtle">{key}</dt>
-          <dd className="text-fg font-mono">{val}</dd>
-        </div>
-      ))}
+    <div className="text-sm">
+      <dl className="divide-line divide-y">
+        {rows.map(([key, val]) => (
+          <div key={key} className="flex justify-between gap-4 px-1 py-2">
+            <dt className="text-fg-subtle">{key}</dt>
+            <dd className="text-fg font-mono">{val}</dd>
+          </div>
+        ))}
+      </dl>
       {cell.confusable && (
         <div className="text-warning bg-warning-soft mt-2 rounded-lg px-3 py-2 text-xs">
           Looks like the Latin letter “{cell.confusable}”, but it is not.
         </div>
       )}
-    </dl>
+    </div>
   );
 }

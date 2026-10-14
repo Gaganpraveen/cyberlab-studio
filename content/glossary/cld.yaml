@@ -1,0 +1,475 @@
+# Glossary: cloud, containers, and supply chain (CLD).
+
+- id: shared-responsibility-model
+  term: Shared responsibility model
+  aliases: [shared responsibility, security of the cloud, security in the cloud]
+  short: The division of security duties between a cloud provider, which secures the underlying infrastructure, and its customer, which secures what it deploys, configures, and stores.
+  long: >
+    The dividing line depends on the service model ([[iaas]], [[paas]], or
+    [[saas]]) and on each individual service. AWS phrases it as security "of"
+    the cloud (the provider) versus security "in" the cloud (the customer).
+    Data, accounts, access policies, and endpoints remain the customer's
+    responsibility in every model.
+  related: [cloud-service-provider, iaas, paas, saas]
+  topicId: CLD-01
+
+- id: cloud-service-provider
+  term: Cloud service provider
+  aliases: [CSP, cloud provider]
+  short: An organization that operates cloud infrastructure or services and offers them to customers over a network.
+  related: [shared-responsibility-model, multi-tenancy]
+  topicId: CLD-01
+
+- id: iaas
+  term: Infrastructure as a Service
+  aliases: [IaaS]
+  short: A cloud service model in which the customer rents virtual machines, storage, and networks and manages the operating systems and applications that run on them.
+  long: >
+    Defined in NIST SP 800-145. The provider operates the facilities, hardware,
+    and virtualization layer; the customer controls operating systems,
+    storage, deployed applications, and usually its own virtual network and
+    firewall rules.
+  related: [paas, saas, shared-responsibility-model]
+  topicId: CLD-01
+
+- id: paas
+  term: Platform as a Service
+  aliases: [PaaS]
+  short: A cloud service model in which the customer deploys its own applications onto a platform whose operating systems and runtime the provider manages.
+  long: >
+    Managed application platforms, managed databases, and function-as-a-service
+    (serverless) offerings fall near this model. The customer still owns its
+    code, its configuration of the platform, its data, and its access
+    policies.
+  related: [iaas, saas, shared-responsibility-model]
+  topicId: CLD-01
+
+- id: saas
+  term: Software as a Service
+  aliases: [SaaS]
+  short: A cloud service model in which the customer uses an application that the provider runs, usually through a web browser, and manages only its own users, settings, and data.
+  related: [iaas, paas, shared-responsibility-model]
+  topicId: CLD-01
+
+- id: multi-tenancy
+  term: Multi-tenancy
+  aliases: [multi-tenant, tenant isolation, resource pooling]
+  short: An architecture in which one provider serves many customers (tenants) from shared physical resources while keeping each tenant's data and workloads isolated from the others.
+  related: [cloud-service-provider, shared-responsibility-model]
+  topicId: CLD-01
+
+- id: iam-policy
+  term: IAM policy
+  aliases: [access policy, permissions policy, identity-based policy, resource-based policy]
+  short: A document that states which principals may perform which actions on which resources, and under what conditions, in a cloud identity and access management system.
+  long: >
+    An identity-based policy is attached to a user, group, or role; a
+    resource-based policy is attached to a resource, such as a storage bucket,
+    and names the principals it trusts. Writing policies that grant only what
+    a task needs applies [[least-privilege]].
+  related: [least-privilege, authorization]
+  topicId: CLD-02
+
+- id: object-storage
+  term: Object storage
+  aliases: [bucket, blob storage, storage bucket]
+  short: A cloud storage service that keeps data as objects (bytes plus metadata) in named containers, often called buckets, that clients read and write by key over an HTTPS API.
+  long: >
+    Examples include Amazon S3 buckets, Azure Blob Storage containers, and
+    Google Cloud Storage buckets. Access is decided by [[iam-policy|policies]]
+    attached to identities and to the bucket itself, which is why one
+    misconfigured setting can expose every object in a bucket.
+  related: [iam-policy, authorization]
+  topicId: CLD-03
+
+- id: principal
+  term: Principal
+  aliases: [security principal, caller]
+  short: The identity that makes a request to a system, such as a user, a role session, a group member, or a workload's service account.
+  long: >
+    Authorization engines decide each request from its principal, action,
+    resource, and context. Cloud providers use the term for human users and
+    for workload identities alike, which is why an [[iam-policy]] can name
+    either.
+  related: [iam-policy, authentication, authorization]
+  topicId: CLD-02
+
+- id: implicit-deny
+  term: Implicit deny
+  aliases: [default deny, deny by default]
+  short: The default outcome of an authorization check when no applicable policy allows the request.
+  long: >
+    Cloud IAM systems start every request at deny and allow it only when some
+    policy grants it. An implicit deny can be overridden by a later grant;
+    an [[explicit-deny]] cannot.
+  related: [explicit-deny, iam-policy, least-privilege]
+  topicId: CLD-02
+
+- id: explicit-deny
+  term: Explicit deny
+  aliases: [deny statement, deny assignment]
+  short: A policy statement that refuses a request and overrides any allow that would otherwise apply.
+  long: >
+    Because a deny wins regardless of order or specificity, explicit denies
+    make good guardrails: they keep a later, broader allow from reopening
+    access. Compare [[implicit-deny]].
+  related: [implicit-deny, iam-policy, defense-in-depth]
+  topicId: CLD-02
+
+- id: temporary-credentials
+  term: Temporary credentials
+  aliases: [short-lived credentials, session credentials, role session]
+  short: Credentials issued for a limited time, for example when a user or workload assumes a role, that stop working when they expire.
+  long: >
+    Short lifetimes shrink the window in which stolen credentials are useful,
+    which is why cloud providers recommend them over long-lived access keys
+    for both people and workloads.
+  related: [principal, iam-policy, service-account]
+  topicId: CLD-02
+
+- id: instance-metadata-service
+  term: Instance metadata service
+  aliases: [IMDS, metadata endpoint, metadata server]
+  short: An HTTP endpoint, reachable only from inside a cloud virtual machine, that tells the machine about itself and hands out the temporary credentials of its attached role.
+  long: >
+    Because the service trusts any request from the machine, a
+    server-side request forgery flaw in an application can let an attacker
+    obtain the role's [[temporary-credentials]]. Newer service versions and
+    restricting access to the endpoint reduce that risk.
+  related: [temporary-credentials, iam-policy]
+  topicId: CLD-02
+
+- id: bucket-policy
+  term: Bucket policy
+  aliases: [storage bucket policy, container policy]
+  short: A resource-based policy attached to an object-storage bucket that states which principals, including possibly anonymous ones, may act on the bucket and its objects.
+  long: >
+    A bucket policy that grants access to the wildcard principal `*` makes
+    objects readable by anyone. Grant named principals instead, and use an
+    explicit deny for rules that must always hold, such as refusing requests
+    that do not use TLS.
+  related: [object-storage, iam-policy, block-public-access]
+  topicId: CLD-03
+
+- id: access-control-list
+  term: Access control list
+  aliases: [ACL, object ACL, bucket ACL]
+  short: A list attached to a resource that names who may access it and how, such as an object-storage grant of read access to everyone.
+  long: >
+    In cloud object storage, ACLs are a legacy mechanism that predates
+    [[bucket-policy|bucket policies]]. Because one public-read ACL on a single
+    object can expose it, providers let customers ignore or disable ACLs.
+  related: [bucket-policy, object-storage, authorization]
+  topicId: CLD-03
+
+- id: block-public-access
+  term: Block public access
+  aliases: [S3 Block Public Access, public access prevention, public-access block]
+  short: An account- or bucket-level storage setting that rejects or overrides any policy or ACL that would make data available to anonymous users.
+  long: >
+    Amazon S3 Block Public Access and Google Cloud Storage public access
+    prevention are examples. They override permissive grants without
+    deleting them, so turning the setting off restores any old exposure.
+  related: [object-storage, bucket-policy, access-control-list]
+  topicId: CLD-03
+
+- id: presigned-url
+  term: Pre-signed URL
+  aliases: [signed URL, presigned URL, shared access signature, SAS]
+  short: A URL that embeds a time-limited signature from an authorized principal, letting whoever holds it perform one action on one object until it expires.
+  long: >
+    A pre-signed URL is a bearer token: anyone with the link can use it. Keep
+    lifetimes short and share links only with intended recipients.
+  related: [object-storage, temporary-credentials]
+  topicId: CLD-03
+
+- id: container
+  term: Container
+  aliases: [Linux container, application container, Docker container]
+  short: An application process, packaged with its dependencies, that the host kernel isolates using namespaces, control groups, and related features while sharing the same kernel with other containers.
+  long: >
+    Unlike a virtual machine, a container has no kernel of its own, so a
+    flaw in the shared [[kernel]] or container runtime can cross container
+    boundaries. Containers are started from a [[container-image]].
+  related: [container-image, process-isolation, kernel, linux-namespace, cgroup]
+  topicId: CLD-04
+
+- id: container-image
+  term: Container image
+  aliases: [image, OCI image, Docker image]
+  short: A read-only, layered package of filesystem contents and settings (default user, command, environment) from which containers are started.
+  long: >
+    Images are named by a mutable tag or an immutable [[image-digest]].
+    Every layer is kept, so a file added in one build step and deleted in a
+    later one is still recoverable from the image.
+  related: [container, image-digest]
+  topicId: CLD-04
+
+- id: image-digest
+  term: Image digest
+  aliases: [content digest, sha256 digest, pinned digest]
+  short: A cryptographic hash that identifies one exact container image by its content, so a reference by digest can never silently change.
+  long: >
+    A tag such as `3.12-slim` can be moved to new content; a digest cannot.
+    Pinning by digest makes builds reproducible but does not keep an image
+    patched, so pinned digests must be updated deliberately.
+  related: [container-image, hash-function]
+  topicId: CLD-04
+
+- id: linux-namespace
+  term: Linux namespace
+  aliases: [namespace, namespaces, PID namespace, network namespace, user namespace]
+  short: A Linux kernel feature that gives a process its own view of a global resource, such as process IDs, mount points, network interfaces, or user IDs.
+  long: >
+    Namespaces limit what a [[container]] can see. A user namespace can map
+    root inside the container to an unprivileged user on the host, which
+    rootless container runtimes rely on.
+  related: [container, cgroup, process-isolation]
+  topicId: CLD-04
+
+- id: cgroup
+  term: Control group
+  aliases: [cgroups, cgroup v2]
+  short: A Linux kernel feature that limits and accounts for the resources a group of processes may use, such as memory, CPU time, and the number of processes.
+  related: [container, linux-namespace]
+  topicId: CLD-04
+
+- id: linux-capability
+  term: Linux capability
+  aliases: [capabilities, CAP_SYS_ADMIN, capability dropping]
+  short: One of the separate privileges into which Linux divides the powers of the root user, so that a process can hold only the privileges it needs.
+  long: >
+    Container hardening drops all capabilities and adds back only those a
+    test proves necessary. `CAP_SYS_ADMIN` covers so many operations that it
+    is often treated as nearly equivalent to full root.
+  related: [least-privilege, container, privileged-container]
+  topicId: CLD-04
+
+- id: seccomp
+  term: seccomp
+  aliases: [secure computing mode, seccomp profile, seccomp-bpf]
+  short: A Linux kernel facility that filters which system calls a process may make, used by container runtimes to block calls that applications rarely need.
+  related: [container, linux-capability, sandbox]
+  topicId: CLD-04
+
+- id: privileged-container
+  term: Privileged container
+  aliases: [privileged mode, --privileged]
+  short: A container started with every Linux capability and access to the host's devices, which removes most of the protection that container isolation provides.
+  related: [container, linux-capability, container-escape]
+  topicId: CLD-04
+
+- id: container-escape
+  term: Container escape
+  aliases: [container breakout, escape to host]
+  short: Any path by which a process inside a container gains the ability to act on the host or on other containers outside its intended isolation.
+  long: >
+    Escapes come from kernel or runtime flaws and from risky settings such as
+    a [[privileged-container]], a mounted container-daemon socket, or
+    sensitive host directories mounted into the container.
+  related: [container, privileged-container, privilege-escalation]
+  topicId: CLD-04
+
+- id: kubernetes
+  term: Kubernetes
+  aliases: [K8s, container orchestration, orchestrator]
+  short: An open-source orchestrator that runs containers across a cluster of machines, continuously working to make the cluster match the state declared in its manifests.
+  long: >
+    Workloads run as Pods, managed through an API server whose requests are
+    authenticated, authorized with RBAC, and checked by an
+    [[admission-controller]] before they are stored. Isolation between
+    workloads comes from [[pod-security]], RBAC, [[network-policy|network
+    policies]], and resource limits, most of which must be configured.
+  related: [container, pod-security, network-policy, admission-controller]
+  topicId: CLD-05
+
+- id: pod-security
+  term: Pod Security Standards
+  aliases: [Pod Security Admission, PSA, PSS, pod security]
+  short: Kubernetes' three built-in security profiles for Pods (Privileged, Baseline, and Restricted), enforced per namespace by the Pod Security admission controller.
+  long: >
+    Baseline blocks known privilege escalations such as privileged containers,
+    host namespaces, and hostPath volumes. Restricted also requires non-root
+    users, no privilege escalation, a seccomp profile, and dropping all
+    capabilities. Namespace labels choose enforce, warn, or audit mode.
+  related: [kubernetes, admission-controller, privileged-container, seccomp]
+  topicId: CLD-05
+
+- id: admission-controller
+  term: Admission controller
+  aliases: [admission control, admission webhook, policy engine]
+  short: Code in the Kubernetes API server that inspects requests after authentication and authorization and can reject or modify them before the objects are stored.
+  related: [kubernetes, pod-security]
+  topicId: CLD-05
+
+- id: network-policy
+  term: Network policy
+  aliases: [NetworkPolicy, Kubernetes network policy, default deny]
+  short: A Kubernetes object that selects Pods and allows only specified ingress or egress traffic for them, enforced by the cluster's network plugin.
+  long: >
+    Pods not selected by any policy accept all traffic. Policies only allow,
+    so a common pattern is a default-deny policy plus narrow allow rules.
+    Without a plugin that supports them, policies have no effect.
+  related: [kubernetes, defense-in-depth]
+  topicId: CLD-05
+
+- id: software-supply-chain
+  term: Software supply chain
+  aliases: [supply chain, supply-chain security, software supply chain attack]
+  short: Everything and everyone involved in producing and delivering a piece of software, including its source code, dependencies, build tools and pipelines, and the registries that distribute it.
+  long: >
+    A weakness anywhere in the chain can reach every user of the finished
+    software. Attacks include malicious releases of real projects, look-alike
+    packages, [[dependency-confusion]], and compromised build systems.
+    Defenses include an [[sbom]], pinned dependencies, and verifiable build
+    provenance.
+  related: [sbom, dependency-confusion, transitive-dependency, typosquatting, build-provenance]
+  topicId: CLD-06
+
+- id: sbom
+  term: Software bill of materials
+  aliases: [SBOM, bill of materials]
+  short: A machine-readable inventory of the components in a piece of software, with their suppliers, versions, identifiers, and dependency relationships.
+  long: >
+    The NTIA minimum elements (2021) list supplier name, component name,
+    version, other unique identifiers, dependency relationship, author of
+    SBOM data, and timestamp, and name SPDX, CycloneDX, and SWID tags as
+    formats. An SBOM shows what is inside a build; whether a listed
+    vulnerability matters is a separate question, often answered with
+    [[vex]].
+  related: [software-supply-chain, vex, software-composition-analysis, transitive-dependency]
+  topicId: CLD-06
+
+- id: transitive-dependency
+  term: Transitive dependency
+  aliases: [indirect dependency, transitive dependencies]
+  short: A package your project uses only because one of its dependencies, or one of theirs, requires it.
+  long: >
+    Transitive dependencies can far outnumber direct ones, and they run with
+    the same privileges as your own code. Fixing one often means waiting for
+    the direct dependency to update, or overriding the version yourself.
+  related: [lockfile, sbom, software-supply-chain]
+  topicId: CLD-06
+
+- id: lockfile
+  term: Lockfile
+  aliases: [lock file, package-lock.json, dependency lock file]
+  short: A file generated by a package manager that records the exact resolved version, and often a cryptographic hash, of every direct and transitive dependency, so that later installs reproduce the same set.
+  long: >
+    Installing from a lockfile keeps a new release from slipping into a build
+    unreviewed. It does not judge whether a pinned version is safe, so
+    changes to the lockfile still deserve review.
+  related: [transitive-dependency, software-supply-chain, hash-function]
+  topicId: CLD-06
+
+- id: vex
+  term: VEX
+  aliases: [Vulnerability Exploitability eXchange, VEX statement, VEX document]
+  short: A statement from a software supplier about whether a specific known vulnerability in a component can actually be exploited in a specific product, with the reasoning.
+  long: >
+    VEX complements an [[sbom]]: the SBOM says a vulnerable component is
+    present, and the VEX statement says whether that matters, for example
+    because the vulnerable function is never called. A wrong "not affected"
+    claim is costly, so the justification should be checkable.
+  related: [sbom, software-composition-analysis]
+  topicId: CLD-06
+
+- id: software-composition-analysis
+  term: Software composition analysis
+  aliases: [SCA, dependency scanning, dependency scanner]
+  short: Automated analysis that identifies the third-party components in software and matches them against vulnerability databases.
+  long: >
+    A match means a vulnerable version is present, not that the vulnerable
+    code is reachable, so findings need triage. Scanners also miss components
+    that carry no package metadata, such as source files copied into a
+    project.
+  related: [sbom, vex, transitive-dependency]
+  topicId: CLD-06
+
+- id: dependency-confusion
+  term: Dependency confusion
+  aliases: [dependency confusion attack]
+  short: A supply-chain attack in which a build that can fetch packages from both a private and a public registry installs an attacker's public package that reuses an internal package's name, typically with a higher version number.
+  long: >
+    It needs no bug in anyone's code, only a client configuration that looks
+    up internal names in public sources. Internal packages scoped to resolve
+    only from the private registry, and a single registry proxy for all
+    installs, close the gap. Compare [[typosquatting]], which relies on
+    look-alike names.
+  related: [software-supply-chain, typosquatting, lockfile]
+  topicId: CLD-06
+
+- id: ci-cd-pipeline
+  term: CI/CD pipeline
+  aliases: [CI/CD, continuous integration, continuous delivery, build pipeline, workflow]
+  short: An automated sequence of jobs that builds, tests, and often publishes and deploys software whenever its source changes.
+  long: >
+    Pipelines hold powerful credentials and run code from many parties, so
+    they are attack surface. In poisoned pipeline execution, someone who can
+    change source code or a pull request gets the pipeline to run their
+    commands with its privileges. Least-privilege tokens, short-lived
+    credentials, and separating untrusted tests from privileged releases
+    reduce the risk.
+  related: [build-provenance, artifact-signing, software-supply-chain, least-privilege]
+  topicId: CLD-07
+
+- id: build-provenance
+  term: Build provenance
+  aliases: [provenance, provenance attestation, artifact attestation, SLSA provenance]
+  short: Signed metadata that describes how an artifact was built, including the build platform, the source repository and revision, the build parameters, and the dependencies.
+  long: >
+    Consumers verify provenance to confirm that an artifact came from the
+    expected source and builder before they deploy it. Provenance shows how
+    something was built, not whether its source code is trustworthy. The
+    [[slsa]] specification defines a common format and levels of assurance.
+  related: [slsa, artifact-signing, ci-cd-pipeline, sbom]
+  topicId: CLD-07
+
+- id: slsa
+  term: SLSA
+  aliases: [Supply-chain Levels for Software Artifacts, salsa, SLSA Build levels]
+  short: Supply-chain Levels for Software Artifacts, an Open Source Security Foundation specification that defines levels of build integrity and a format for build provenance.
+  long: >
+    In version 1.2, the Build track runs from L0 (no guarantees) through L1
+    (provenance exists), L2 (a hosted platform signs the provenance), and L3
+    (hardened builds that keep runs isolated and signing secrets away from
+    user-defined build steps). A separate Source track covers source code.
+  related: [build-provenance, artifact-signing, software-supply-chain]
+  topicId: CLD-07
+
+- id: artifact-signing
+  term: Artifact signing
+  aliases: [code signing, keyless signing, image signing]
+  short: Attaching a digital signature to a software artifact's digest so that consumers can check who produced it and that it has not changed since.
+  long: >
+    A signature proves who signed, not that the build was trustworthy, so it
+    is paired with [[build-provenance]]. Keyless signing, as in Sigstore,
+    replaces long-lived keys with short-lived certificates tied to an
+    identity and records each signature in a public transparency log.
+  related: [digital-signature, build-provenance, slsa, certificate]
+  topicId: CLD-07
+
+- id: infrastructure-as-code
+  term: Infrastructure as code
+  aliases: [IaC, Terraform, configuration as code]
+  short: Defining servers, networks, storage, and permissions in version-controlled files that a tool applies automatically, instead of configuring them by hand.
+  long: >
+    IaC lets teams review, repeat, and audit infrastructure changes, and it
+    lets automated checks catch risky settings before they are applied. It
+    also repeats mistakes everywhere the code runs, and its repositories and
+    state files can hold secrets, so they need least-privilege access and
+    [[secret-scanning]].
+  related: [secret-scanning, secrets-management, ci-cd-pipeline]
+  topicId: CLD-08
+
+- id: secret-scanning
+  term: Secret scanning
+  aliases: [secret scanner, secret detection, push protection]
+  short: Automated searching of code, history, and other text for credentials such as API keys, tokens, and passwords, so they can be blocked or revoked.
+  long: >
+    Scanners match known credential formats and suspicious strings. They can
+    run before a commit, when a push reaches the server (push protection),
+    or across a repository's full history. A finding of a real secret means
+    rotating it first; a clean result does not prove that no secrets remain.
+  related: [secrets-management, infrastructure-as-code, ci-cd-pipeline]
+  topicId: CLD-08

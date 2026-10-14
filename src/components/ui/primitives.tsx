@@ -208,18 +208,21 @@ export function ProgressBar({
 export function EmptyState({
   icon: Icon = FlaskConical,
   title,
+  titleAs: Title = 'div',
   children,
   action,
 }: {
   icon?: LucideIcon;
   title: ReactNode;
+  /** Render the title as the page's heading when the empty state is the whole page. */
+  titleAs?: 'div' | 'h1' | 'h2';
   children?: ReactNode;
   action?: ReactNode;
 }) {
   return (
     <div className="border-line flex flex-col items-center gap-3 rounded-2xl border border-dashed px-6 py-12 text-center">
       <Icon className="text-fg-subtle size-8" aria-hidden />
-      <div className="text-fg text-lg font-semibold">{title}</div>
+      <Title className="text-fg text-lg font-semibold">{title}</Title>
       {children && <div className="text-fg-muted max-w-md text-sm leading-relaxed">{children}</div>}
       {action}
     </div>
@@ -232,25 +235,6 @@ export function Spinner({ label = 'Loading', className }: { label?: string; clas
       <span className="border-line-strong border-t-accent size-4 animate-spin rounded-full border-2" />
       <span className="sr-only">{label}</span>
     </span>
-  );
-}
-
-export function SectionTitle({
-  children,
-  action,
-  id,
-}: {
-  children: ReactNode;
-  action?: ReactNode;
-  id?: string;
-}) {
-  return (
-    <div className="mb-4 flex items-center justify-between gap-4">
-      <h2 id={id} className="text-fg text-lg font-semibold tracking-tight">
-        {children}
-      </h2>
-      {action}
-    </div>
   );
 }
 

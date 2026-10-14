@@ -57,6 +57,11 @@ export interface LabDefinition {
   icon: LucideIcon;
   /** Learning objectives (plain text). */
   objectives: string[];
+  /**
+   * Whether learners can use the lab yet. Omitted means available; labs that
+   * are still being built say 'in-development' so the app labels them.
+   */
+  status?: 'available' | 'in-development';
   /** Lazily loaded workspace so each lab is its own code-split chunk. */
   component: LazyExoticComponent<ComponentType>;
   challenges: ChallengeDefinition[];

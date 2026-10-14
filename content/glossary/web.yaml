@@ -1,0 +1,585 @@
+# Glossary: web deception and browser security (WEB-01 to WEB-08).
+# Ids are canonical and must stay stable. Terms already defined in
+# foundations-web.yaml (homograph-attack, punycode, idn, idna, confusable, xss,
+# csrf, same-origin-policy, content-security-policy, cookie, ...) are linked,
+# not redefined.
+
+- id: a-label
+  term: A-label
+  aliases: [ACE label, ASCII-compatible encoding]
+  short: 'The ASCII form of an internationalized domain label: the prefix xn-- followed by the Punycode encoding of the Unicode label.'
+  long: >
+    Defined in IDNA2008 (RFC 5890). The DNS stores and compares only A-labels,
+    so xn--bcher-kva is the name that is actually registered and resolved for
+    the [[u-label]] bücher. Two names that look identical on screen have
+    different A-labels whenever their characters differ.
+  related: [u-label, punycode, idna, idn]
+  topicId: WEB-01
+
+- id: u-label
+  term: U-label
+  aliases: [Unicode label]
+  short: 'The Unicode form of an internationalized domain label, the version people read, such as bücher, which corresponds to exactly one A-label.'
+  long: >
+    IDNA2008 requires a U-label to be in Unicode Normalization Form C and to
+    use only permitted characters. A browser decides whether to display the
+    U-label or fall back to its [[a-label]] using its [[idn-display-policy]].
+  related: [a-label, idn, unicode-normalization]
+  topicId: WEB-01
+
+- id: confusable-skeleton
+  term: Skeleton (confusable detection)
+  aliases: [skeleton, UTS 39 skeleton]
+  short: 'A normalized form of a string, defined in Unicode UTS #39, in which each look-alike character is replaced by a prototype, so two strings are confusable when their skeletons are equal.'
+  long: >
+    The function converts the string to NFD, removes default-ignorable code
+    points, maps each character to its prototype from the confusables.txt
+    data, and applies NFD again. A skeleton is for comparison only, never for
+    display. Comparing the skeleton of a new name with that of a protected name
+    is the core of most [[homograph-attack]] detectors.
+  related: [confusable, homograph-attack, whole-script-confusable]
+  topicId: WEB-01
+
+- id: whole-script-confusable
+  term: Whole-script confusable
+  short: 'A look-alike written entirely in one script that imitates a string written entirely in another, such as an all-Cyrillic label that renders like a Latin word.'
+  long: >
+    UTS #39 defines it as a pair of mixed-script confusables in which each
+    string is single-script. Because neither string mixes scripts, a rule that
+    only flags [[mixed-script]] labels misses it; browsers instead check the
+    label's script against the top-level domain and compare skeletons.
+  related: [confusable, mixed-script, confusable-skeleton, homograph-attack]
+  topicId: WEB-01
+
+- id: restriction-level
+  term: 'Restriction level (UTS #39)'
+  aliases: [Highly Restrictive, identifier restriction level]
+  short: 'One of six Unicode UTS #39 levels, from ASCII-Only to Unrestricted, that describe how freely an identifier may combine scripts.'
+  long: >
+    The levels are ASCII-Only, Single Script, Highly Restrictive, Moderately
+    Restrictive, Minimally Restrictive and Unrestricted. Highly Restrictive
+    allows a single script, or Latin combined with the script sets used for
+    Japanese, Chinese or Korean, and browser display policies build on it.
+  related: [unicode-script, mixed-script, idn-display-policy]
+  topicId: WEB-01
+
+- id: idn-display-policy
+  term: IDN display policy
+  aliases: [IDN display algorithm, Punycode display policy]
+  short: 'The rules a browser uses to decide whether to show an internationalized domain label in Unicode or fall back to its xn-- Punycode form.'
+  long: >
+    Chrome's documented policy checks each label for disallowed characters,
+    script mixing beyond the UTS #39 Highly Restrictive level, mixed-script and
+    whole-script confusables, and skeleton matches against popular domains. It
+    is a heuristic that governs only the address bar, not link text in
+    messages or other applications.
+  related: [a-label, u-label, restriction-level, homograph-attack]
+  topicId: WEB-01
+
+- id: lookalike-domain
+  term: Look-alike domain
+  aliases: [lookalike domain, cousin domain, deceptive domain]
+  short: 'A domain name chosen to be mistaken for a trusted one, through a misspelling, extra words, confusable characters or a misleading structure.'
+  long: >
+    The umbrella term covers [[typosquatting]], [[combosquatting]] and the
+    [[homograph-attack]]. What they share is that the [[registrable-domain]]
+    belongs to someone other than the organization it imitates, so reading the
+    registrable domain from the right is the first check.
+  related: [typosquatting, combosquatting, homograph-attack, registrable-domain]
+  topicId: WEB-02
+
+- id: combosquatting
+  term: Combosquatting
+  aliases: [combosquat]
+  short: 'Registering a domain that keeps a trusted brand name intact and adds words, such as bank-example-login.test, so it looks related without any misspelling.'
+  long: >
+    Unlike [[typosquatting]], a combosquat does not depend on a typing mistake:
+    the familiar name passes a quick glance because it is spelled correctly.
+    Organizations that spread their services across many differently named
+    domains make such names easier to believe.
+  related: [typosquatting, lookalike-domain, phishing]
+  topicId: WEB-02
+
+- id: display-name-spoofing
+  term: Display-name spoofing
+  aliases: [display name impersonation, display-name deception]
+  short: 'Putting a trusted name, such as Campus IT Helpdesk, in the display-name part of an email From field while the address itself belongs to an unrelated domain.'
+  long: >
+    Email authentication checks domains and never display names, so such a
+    message can pass [[spf]], [[dkim]] and [[dmarc]] for the attacker's own
+    domain. The trick works best in mail apps that show only the name until
+    the reader taps it, and it is common in [[business-email-compromise]].
+  related: [spoofing, phishing, dmarc, business-email-compromise]
+  topicId: WEB-03
+
+- id: defanging
+  term: Defanging
+  aliases: [defang, defanged indicator, hxxp]
+  short: 'Rewriting a suspicious URL, domain, email address or IP address so it cannot be clicked or turned into a live link, for example hxxps://login-check[.]test.'
+  long: >
+    Analysts defang [[indicator-of-compromise|indicators]] in tickets, chat and
+    reports so that no one opens them by accident and so that software that
+    turns text into links leaves them alone. The change is reversible, so
+    tools can restore the original value for searches and blocklists.
+  related: [indicator-of-compromise, phishing, url]
+  topicId: WEB-03
+
+- id: origin
+  term: Origin
+  aliases: [web origin, scheme-host-port]
+  short: 'The triple of scheme, host and port that identifies who controls a web page or resource, such as https://shop.example:443; it is the unit the browser isolates.'
+  long: >
+    Two URLs are same-origin only when all three parts match exactly, so
+    https://shop.example and http://shop.example are different origins, as are
+    shop.example and www.shop.example. The [[same-origin-policy]] uses the
+    origin to decide what scripts may read, while cookies and many other
+    features use the broader [[site]].
+  related: [site, same-origin-policy, url, cors]
+  topicId: WEB-04
+
+- id: site
+  term: Site (schemeful site)
+  aliases: [same-site, scheme and registrable domain]
+  short: 'A scheme plus a registrable domain, such as https://shop.example, which groups every origin one owner controls under that domain.'
+  long: >
+    https://shop.example and https://cart.shop.example are different
+    [[origin|origins]] but the same site. Browsers use the site, not the
+    origin, for [[samesite-cookie|SameSite cookies]] and for process
+    separation in [[site-isolation]], so "same-site" is a weaker relationship
+    than "same-origin".
+  related: [origin, registrable-domain, samesite-cookie, site-isolation]
+  topicId: WEB-04
+
+- id: cors
+  term: Cross-Origin Resource Sharing (CORS)
+  aliases: [CORS]
+  short: 'A protocol of HTTP headers, defined in the Fetch Standard, that lets a server tell the browser which other origins may read its responses.'
+  long: >
+    CORS relaxes the [[same-origin-policy]] for reading responses; it does not
+    stop requests from being sent. A response header such as
+    Access-Control-Allow-Origin names the origins allowed to read, and
+    requests that could change state in unusual ways first trigger a
+    [[preflight-request]].
+  related: [origin, same-origin-policy, preflight-request, csrf]
+  topicId: WEB-04
+
+- id: samesite-cookie
+  term: SameSite cookie attribute
+  aliases: [SameSite, SameSite=Lax, SameSite=Strict]
+  short: 'A cookie attribute, Strict, Lax or None, that tells the browser whether to attach the cookie to requests that come from a different site.'
+  long: >
+    Strict withholds the cookie on every cross-site request. Lax also sends it
+    on top-level navigations that use a safe method such as GET. None sends it
+    on all requests and requires the Secure attribute. SameSite limits
+    [[csrf]] but compares [[site|sites]], not origins, so a sibling subdomain
+    still counts as same-site.
+  related: [cookie, csrf, site, csrf-token]
+  topicId: WEB-04
+
+- id: site-isolation
+  term: Site isolation
+  aliases: [process-per-site isolation]
+  short: "A browser architecture that renders pages from different sites in separate operating-system processes, so that one site's process does not hold another site's data."
+  long: >
+    The same-origin policy is enforced by browser code; site isolation adds
+    [[process-isolation]] underneath it, so a renderer bug or a speculative
+    side-channel attack in one site's process cannot simply read memory that
+    belongs to another site. It isolates by [[site]], not by origin.
+  related: [site, process-isolation, sandbox, same-origin-policy]
+  topicId: WEB-04
+
+- id: preflight-request
+  term: Preflight request
+  aliases: [CORS preflight, OPTIONS preflight]
+  short: 'An automatic OPTIONS request that a browser sends before certain cross-origin requests to ask, through CORS headers, whether the real request is allowed.'
+  long: >
+    Requests that a plain HTML form could not have sent, such as a PUT or a
+    POST with a JSON content type or a custom header, are preflighted. Simple
+    requests are not, which is why [[cors]] alone is not a defense against
+    [[csrf]].
+  related: [cors, origin, csrf]
+  topicId: WEB-04
+
+- id: reflected-xss
+  term: Reflected XSS
+  aliases: [reflected cross-site scripting, non-persistent XSS]
+  short: 'Cross-site scripting in which data from the current request, such as a search parameter, is echoed into the response without proper encoding, so a crafted link runs script for whoever opens it.'
+  long: >
+    The payload is not stored: each victim must be sent the crafted link, often
+    by email or chat. The fix is the same as for every [[xss]] variant,
+    [[output-encoding]] for the exact output context, backed by a strict
+    [[content-security-policy]].
+  related: [xss, stored-xss, dom-based-xss, output-encoding]
+  topicId: WEB-05
+
+- id: stored-xss
+  term: Stored XSS
+  aliases: [persistent XSS, stored cross-site scripting]
+  short: 'Cross-site scripting in which attacker-supplied content is saved by the application, for example in a comment or profile, and later served as active content to every user who views it.'
+  long: >
+    Because the payload lives on the server, it needs no crafted link and can
+    reach many users, including administrators who review content. Encoding on
+    output, or [[sanitization]] when rich HTML must be allowed, stops it.
+  related: [xss, reflected-xss, dom-based-xss, sanitization]
+  topicId: WEB-05
+
+- id: dom-based-xss
+  term: DOM-based XSS
+  aliases: [DOM XSS, client-side XSS]
+  short: 'Cross-site scripting introduced in client-side JavaScript, when code takes attacker-controllable data such as the URL fragment and passes it to a dangerous sink such as innerHTML.'
+  long: >
+    The server may never see the payload, so server-side encoding cannot fix
+    it. Safe DOM APIs such as textContent, framework auto-escaping and
+    [[trusted-types]] address it in the browser.
+  related: [xss, trusted-types, reflected-xss, stored-xss, dom-sink]
+  topicId: WEB-05
+
+- id: dom-sink
+  term: DOM sink
+  aliases: [dangerous sink, injection sink]
+  short: 'A place in client-side code where a string is handed to a browser API that treats it as markup or code, such as innerHTML or eval, which turns untrusted data into DOM-based XSS.'
+  long: >
+    Reviewers trace data from a source the attacker can influence, such as the
+    URL fragment or a message from another window, to the sink that consumes
+    it. Swapping a dangerous sink for one that treats input as plain text, such
+    as textContent, fixes the flaw at its root, and [[trusted-types]] lets a
+    site make the browser refuse unsafe assignments.
+  related: [dom-based-xss, xss, trusted-types, output-encoding]
+  topicId: WEB-05
+
+- id: output-context
+  term: Output context
+  aliases: [encoding context, injection context]
+  short: 'The exact place in a document where a value is written, such as HTML text, a quoted attribute, a URL, a JavaScript string or a CSS value, which decides how the value must be encoded or validated.'
+  long: >
+    Each context has its own special characters: a less-than sign matters in
+    HTML text, a quote ends an attribute value, and the scheme matters in a URL
+    attribute, where a [[javascript-url]] needs no special characters at all.
+    [[output-encoding]] is correct only for the context it targets, which is
+    why encoding belongs at output, where the context is known, rather than on
+    input. Contexts can also nest, as when HTML sits inside a JavaScript
+    string.
+  related: [output-encoding, xss, auto-escaping, javascript-url]
+  topicId: WEB-05
+
+- id: auto-escaping
+  term: Auto-escaping
+  aliases: [automatic escaping, template auto-escaping, contextual auto-escaping]
+  short: 'A template-engine or framework feature that output-encodes every inserted value by default, so developers must opt out explicitly to insert raw HTML.'
+  long: >
+    Most modern server-side template engines and client-side frameworks such
+    as React encode values unless told otherwise. The remaining [[xss]] risk
+    concentrates in escape hatches, such as Django's safe filter, React's
+    dangerouslySetInnerHTML and Angular's bypassSecurityTrustAs functions, and
+    in contexts the engine cannot judge, such as a URL attribute that receives
+    a [[javascript-url]].
+  related: [output-encoding, output-context, xss, sanitization]
+  topicId: WEB-05
+
+- id: javascript-url
+  term: javascript URL
+  aliases: ['javascript: scheme', JavaScript protocol URL]
+  short: 'A URL that uses the javascript: scheme, so that following it, for example by clicking a link, runs the rest of the URL as script in the current page.'
+  long: >
+    Such a URL contains none of the characters that HTML encoding changes, so
+    an encoded href attribute can still hold one. URL-valued attributes
+    therefore need validation that parses the value and allows only expected
+    schemes, such as https and http, from an [[allowlist]]. A strict
+    [[content-security-policy]] also stops these URLs from running.
+  related: [xss, output-context, allowlist, content-security-policy]
+  topicId: WEB-05
+
+- id: trusted-types
+  term: Trusted Types
+  aliases: [Trusted Types API, require-trusted-types-for]
+  short: 'A browser API, switched on through Content Security Policy, that makes dangerous DOM sinks such as innerHTML reject plain strings and accept only typed values created by reviewed policy code.'
+  long: >
+    With the CSP directive require-trusted-types-for 'script', assigning an
+    ordinary string to a script-capable sink throws an error, so every route
+    to [[dom-based-xss]] must pass through a small number of named policies
+    that can be audited. It complements, rather than replaces,
+    [[output-encoding]].
+  related: [dom-based-xss, content-security-policy, xss, sanitization]
+  topicId: WEB-07
+
+- id: csrf-token
+  term: CSRF token
+  aliases: [anti-CSRF token, synchronizer token, request verification token]
+  short: "A secret, unpredictable value that the server ties to a user's session and requires in every state-changing request, which a cross-site attacker can neither read nor guess."
+  long: >
+    The token travels in a form field or request header, not only in a
+    [[cookie]], so a forged request that relies on the browser attaching
+    cookies automatically arrives without it and is rejected. It defends
+    against [[csrf]] but not against [[xss]], because script running on the
+    site itself can read the token.
+  related: [csrf, samesite-cookie, session, cookie]
+  topicId: WEB-06
+
+- id: double-submit-cookie
+  term: Double-submit cookie
+  aliases: [double submit cookie pattern, signed double-submit cookie]
+  short: 'A CSRF defense for servers that keep no session state: the token travels both in a cookie and in a form field or request header, and the server accepts a request only if the two copies match.'
+  long: >
+    OWASP recommends the signed form, in which the token is an [[hmac]]
+    computed with a server-side secret over the session ID and a random value,
+    so the server can verify it without storing it. The unsigned form is
+    discouraged, because anyone who can write cookies for the domain, for
+    example from a compromised [[subdomain]], can plant a matching cookie and
+    field.
+  related: [csrf-token, csrf, cookie, hmac]
+  topicId: WEB-06
+
+- id: safe-method
+  term: Safe HTTP method
+  aliases: [safe method, read-only method]
+  short: 'An HTTP method, such as GET, HEAD or OPTIONS, whose meaning is read-only, so a request that uses it should never change state on the server.'
+  long: >
+    Browsers send safe requests freely: links, images and top-level
+    navigations all use GET, and SameSite=Lax still attaches cookies to
+    cross-site top-level GET navigations. An application that lets GET change
+    state therefore exposes that change to [[csrf]]. The web server software
+    cannot enforce the rule; the application must.
+  related: [csrf, samesite-cookie, csrf-token]
+  topicId: WEB-06
+
+- id: origin-header
+  term: Origin request header
+  aliases: [Origin header]
+  short: 'A request header in which the browser names the origin (scheme, host and port) of the page that started a request, so a server can compare it with its own.'
+  long: >
+    Servers use it for [[cors]] decisions and as a [[csrf]] check. OWASP
+    advises verifying that a present Origin header matches the target origin,
+    falling back to the host in the Referer header when it is absent, and never
+    treating a missing header or the value null as evidence of a same-origin
+    request.
+  related: [origin, cors, csrf, fetch-metadata]
+  topicId: WEB-06
+
+- id: fetch-metadata
+  term: Fetch Metadata request headers
+  aliases: [Fetch Metadata, Sec-Fetch-Site, Sec-Fetch-Mode, Sec-Fetch-Dest, Sec-Fetch-User]
+  short: 'Request headers such as Sec-Fetch-Site that the browser adds to describe where a request came from and how it will be used, so a server can refuse cross-site requests to sensitive endpoints.'
+  long: >
+    Sec-Fetch-Site is same-origin, same-site, cross-site, or none for a
+    navigation the user started directly, such as typing an address. Page
+    scripts cannot set these headers, and browsers send them only to
+    potentially trustworthy URLs, such as HTTPS ones. Older browsers and
+    non-browser clients omit them, so a server also needs a fallback, such as
+    checking the [[origin-header]].
+  related: [csrf, origin-header, site, origin]
+  topicId: WEB-06
+
+- id: csp-nonce
+  term: CSP nonce
+  aliases: [nonce-source, script nonce, nonce attribute]
+  short: 'A fresh, unpredictable random value that a server places both in its Content Security Policy and in the nonce attribute of each script it wrote, so the browser runs only scripts that carry the matching value.'
+  long: >
+    MDN requires the value to differ for every HTTP response and to be
+    unpredictable. Injected markup was written before the value existed, so it
+    cannot carry it. Unlike many cryptographic uses of a [[nonce]], where the
+    value need not be secret, a CSP nonce is worthless once an attacker can
+    learn it, so it must never be hard-coded, reused or frozen into a cached
+    page, and it belongs only on script tags the template author wrote.
+  related: [content-security-policy, strict-dynamic, nonce, xss]
+  topicId: WEB-07
+
+- id: strict-dynamic
+  term: "'strict-dynamic'"
+  aliases: [strict-dynamic, strict dynamic]
+  short: 'A Content Security Policy keyword that passes the trust given to a nonced or hashed script on to the scripts it loads, while the browser ignores host allowlists and unsafe-inline in the same directive.'
+  long: >
+    It makes nonce- and hash-based policies practical for pages whose scripts
+    load other scripts, such as widget loaders, without listing hosts. Script
+    elements in parsed markup still need their own nonce or hash. The cost is
+    that trust follows whatever trusted code loads, so a trusted script that
+    builds a script URL from attacker-controlled data is not stopped;
+    [[trusted-types]] close that gap.
+  related: [content-security-policy, csp-nonce, trusted-types]
+  topicId: WEB-07
+
+- id: csp-report-only
+  term: Report-only policy
+  aliases: [Content-Security-Policy-Report-Only, CSP report-only mode, report-only mode]
+  short: 'A Content Security Policy sent in the Content-Security-Policy-Report-Only header, which the browser evaluates without enforcing, reporting each violation instead of blocking it.'
+  long: >
+    Teams use it to measure what a new or stricter policy would break before
+    enforcing it, often beside an enforced policy, since a response can carry
+    both headers and both are honored. Reports go to an endpoint named by the
+    report-to directive. It cannot be delivered in a meta element, and because
+    it blocks nothing, it protects no one on its own.
+  related: [content-security-policy, csp-nonce, trusted-types]
+  topicId: WEB-07
+
+- id: hsts
+  term: HTTP Strict Transport Security (HSTS)
+  aliases: [HSTS, Strict-Transport-Security, HSTS preload]
+  short: 'A response header, Strict-Transport-Security, that tells the browser to reach a site only over HTTPS for a set period, upgrading http requests automatically and refusing to let users click through certificate errors.'
+  long: >
+    Defined in RFC 6797. Browsers ignore the header when it arrives over plain
+    HTTP, and it takes effect only after one secure visit, so a first request
+    over HTTP can still be intercepted by an [[adversary-in-the-middle]] unless
+    the site is on the browsers' preload list. The includeSubDomains option
+    extends it to every subdomain, which breaks any subdomain that lacks
+    HTTPS.
+  related: [tls, adversary-in-the-middle, downgrade-attack, certificate]
+  topicId: WEB-07
+
+- id: mime-sniffing
+  term: MIME sniffing
+  aliases: [content sniffing, MIME type sniffing, X-Content-Type-Options, nosniff]
+  short: 'A browser guessing a resource type from its contents instead of trusting the Content-Type header, which can let a file that was not meant to be code load as a script or stylesheet.'
+  long: >
+    The response header X-Content-Type-Options with the value nosniff turns
+    this off for scripts and styles: the browser blocks a script whose MIME
+    type is not a JavaScript type and a stylesheet that is not text/css. MDN
+    says all sites must send nosniff along with correct Content-Type headers.
+    Without it, a file an attacker managed to place on a site could be loaded
+    through a script element as part of an [[xss]] attack.
+  related: [xss, content-security-policy]
+  topicId: WEB-07
+
+- id: subresource-integrity
+  term: Subresource Integrity (SRI)
+  aliases: [SRI, integrity attribute]
+  short: 'A browser check, requested with the integrity attribute on a script or link element, that refuses to use a fetched file unless its cryptographic hash matches the value the page expects.'
+  long: >
+    It locks a third-party file, such as a library on a content delivery
+    network, to the version the site reviewed, so a copy modified on that
+    server fails to load instead of running with the site's authority. The
+    page gives a base64 [[hash-function|hash]] such as sha384-…, the host must
+    allow [[cors]], and the value must be updated whenever the file
+    legitimately changes. It addresses one part of
+    [[software-supply-chain]] risk.
+  related: [hash-function, software-supply-chain, cors, content-security-policy]
+  topicId: WEB-07
+
+- id: clickjacking
+  term: Clickjacking
+  aliases: [UI redressing, UI redress attack]
+  short: 'Tricking a user into clicking something on a disguised page, usually a legitimate site loaded in a transparent frame over a decoy, so the click performs an action the user never intended.'
+  long: >
+    The victim is signed in to the framed site, so the click carries their
+    authority. The standard defense is to forbid framing with the
+    frame-ancestors directive of [[content-security-policy]], with the older
+    X-Frame-Options header as a fallback.
+  related: [content-security-policy, same-origin-policy, csrf]
+  topicId: WEB-08
+
+- id: frame-ancestors
+  term: frame-ancestors directive
+  aliases: [CSP frame-ancestors]
+  short: "A Content Security Policy directive, sent by the page that might be embedded, that lists which pages may show it in a frame, iframe, object or embed element; 'none' forbids all embedding."
+  long: >
+    It is the standard defense against [[clickjacking]] and the replacement
+    for [[x-frame-options]]: when a response carries both, browsers that
+    support frame-ancestors ignore X-Frame-Options, unless the policy is
+    report-only. Its values are 'none', 'self' (the page's own [[origin]]) or
+    a list of allowed embedders. It does not fall back to default-src, so a
+    policy of default-src 'none' still lets any site frame the page, and
+    browsers ignore it in a meta element, so it must be sent as a response
+    header.
+  related: [content-security-policy, clickjacking, x-frame-options]
+  topicId: WEB-08
+
+- id: x-frame-options
+  term: X-Frame-Options
+  aliases: [XFO, X-Frame-Options header]
+  short: "An older response header that tells the browser whether a page may be shown in a frame: DENY forbids all framing, and SAMEORIGIN allows it only when every ancestor has the page's origin."
+  long: >
+    RFC 7034 (2013) documented it, and the HTML Standard now defines how
+    browsers process it. The ALLOW-FROM value is obsolete: modern
+    browsers ignore the whole header when they see it, which leaves the page
+    open to framing. Browsers also ignore the header in a meta element, block
+    the frame when it carries conflicting values, and ignore it entirely when
+    the response has an enforced [[frame-ancestors]] directive. Sites keep it
+    as a fallback for browsers without frame-ancestors.
+  related: [frame-ancestors, clickjacking, content-security-policy]
+  topicId: WEB-08
+
+- id: frame-busting
+  term: Frame-busting script
+  aliases: [framebusting, frame busting, frame breaking, frame-breaker script]
+  short: 'JavaScript that a page runs to detect that it is inside a frame and to escape or hide itself, an early clickjacking defense now kept, if at all, as a fallback for legacy browsers.'
+  long: >
+    The script runs inside a page that the attacker's page embeds and
+    controls. OWASP warns that multiple ways of defeating such scripts have
+    been made public, and CWE-1021 notes that they have been bypassed,
+    especially with nested frames. Huang and colleagues add that frame
+    busting is incompatible with widgets meant to be embedded by any site,
+    such as Like buttons. Response headers such as [[frame-ancestors]] are the
+    reliable defense against [[clickjacking]].
+  related: [clickjacking, frame-ancestors, x-frame-options]
+  topicId: WEB-08
+
+- id: tabnabbing
+  term: Reverse tabnabbing
+  aliases: [tabnabbing]
+  short: 'An attack in which a page opened from a link uses its window.opener reference to navigate the original tab to a look-alike page, such as a fake sign-in page, while the user is looking elsewhere.'
+  long: >
+    The same-origin policy stops the new page from reading the opener but
+    not from changing its location. Links whose target is _blank get
+    [[noopener]] behavior by default in current browsers, but rel="opener",
+    named targets and window.open() without the noopener feature still
+    create the reference. [[cross-origin-opener-policy]] can sever it from
+    the opener's side.
+  related: [noopener, cross-origin-opener-policy, phishing, browsing-context]
+  topicId: WEB-08
+
+- id: noopener
+  term: noopener
+  aliases: [rel=noopener, noopener window feature]
+  short: 'A link type and window.open() feature that opens a page without giving it a window.opener reference back to the page that opened it.'
+  long: >
+    The HTML Standard applies it automatically to links whose target is
+    _blank unless their rel includes opener, and the noreferrer link type
+    implies it while also withholding the Referer header. A script must pass
+    the noopener feature to window.open(), which then returns null instead of
+    a reference to the new window. It is the main defense against
+    [[tabnabbing|reverse tabnabbing]].
+  related: [tabnabbing, cross-origin-opener-policy, browsing-context]
+  topicId: WEB-08
+
+- id: cross-origin-opener-policy
+  term: Cross-Origin-Opener-Policy (COOP)
+  aliases: [COOP]
+  short: 'A response header that controls whether a page shares a browsing context group with the windows it opens or that open it; the value same-origin severs the references between it and cross-origin pages.'
+  long: >
+    The default, unsafe-none, leaves opener references in place, so a page
+    the site opens can still navigate it, as in
+    [[tabnabbing|reverse tabnabbing]], unless [[noopener]] applies. With
+    same-origin, a cross-origin page that the site opens, or that opens it,
+    goes into a separate group, and any references between the two are cut.
+    The value same-origin-allow-popups keeps references to popups the page
+    opens, for services such as OAuth or payments. MDN notes that COOP also
+    helps prevent cross-site leaks (XS-Leaks).
+  related: [noopener, tabnabbing, browsing-context, site-isolation]
+  topicId: WEB-08
+
+- id: browsing-context
+  term: Browsing context
+  aliases: [auxiliary browsing context, top-level browsing context]
+  short: 'The HTML Standard''s term for "a programmatic representation of a series of documents", roughly what stands behind a tab, a window or a frame.'
+  long: >
+    A page opened by a link or by window.open() can get an auxiliary
+    browsing context, which is always top-level and records the browsing
+    context that opened it; scripts see that record as window.opener. The
+    current standard calls the thing that presents documents a navigable: a
+    tab or window is a top-level traversable, and a frame is a child
+    navigable.
+  related: [origin, noopener, same-origin-policy]
+  topicId: WEB-08
+
+- id: browser-in-the-browser
+  term: Browser-in-the-browser attack
+  aliases: [browser-in-browser attack, picture-in-picture attack, BitB, fake browser window]
+  short: 'A phishing technique in which a page draws a fake browser window, with an address bar showing a trusted URL, inside its own content area, so that it appears to show the real site.'
+  long: >
+    Everything in a page's content area is under the page's control, so a
+    drawn address bar or padlock proves nothing. In a small study by Jackson
+    and colleagues, who called it a picture-in-picture attack, it was as
+    effective as a [[homograph-attack]]. A drawn window cannot be dragged
+    outside the real browser window, and a [[password-manager]] or
+    [[passkey]] offers nothing to its form, because the form belongs to the
+    attacker's page.
+  related: [phishing, spoofing, homograph-attack, password-manager, passkey]
+  topicId: WEB-08

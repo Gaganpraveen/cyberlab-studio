@@ -1,0 +1,424 @@
+# Glossary: AI and LLM application security (AI-01 to AI-08).
+# Ids are canonical and must stay stable. Search content/glossary/ for an id
+# before adding it, and link to an existing term instead of redefining it.
+
+- id: large-language-model
+  term: Large language model
+  aliases: [LLM, language model]
+  short: 'A neural network trained on very large amounts of text to predict the next token, which lets it generate text and follow instructions written in natural language.'
+  long: >
+    An LLM reads a sequence of tokens (word fragments) and repeatedly predicts
+    a likely next token. Applications build on it by assembling instructions,
+    user input, and retrieved data into one [[context-window]]. The model has
+    no built-in way to tell which parts are trusted, which is the root of
+    [[prompt-injection]].
+  related: [context-window, system-prompt, prompt-injection]
+  topicId: AI-01
+
+- id: prompt-injection
+  term: Prompt injection
+  aliases: [LLM prompt injection, direct prompt injection]
+  short: "An attack in which text that reaches a language model, typed by the user or carried in content the model reads, changes the model's behavior in ways its developers did not intend."
+  long: >
+    It works because a model receives instructions and data in one stream of
+    tokens with no enforced boundary between them. In direct injection the
+    person typing is the attacker; in [[indirect-prompt-injection]] the
+    instructions arrive inside content the model retrieves. A [[jailbreak]] is
+    the form aimed at the model's safety rules. OWASP ranks prompt injection
+    first (LLM01) in its 2025 and 2026 lists, and MITRE ATLAS catalogs it as
+    AML.T0051. Unlike [[sql-injection]], it has no equivalent of a
+    [[parameterized-query]], so defenses focus on limiting what a successful
+    injection can do.
+  related: [indirect-prompt-injection, jailbreak, system-prompt, guardrail, injection]
+  topicId: AI-01
+
+- id: indirect-prompt-injection
+  term: Indirect prompt injection
+  aliases: [remote prompt injection]
+  short: 'Prompt injection in which the attacker plants instructions in content a model will later read, such as a web page, email, document, or tool result, instead of typing them into the model.'
+  long: >
+    The person using the application is usually the victim rather than the
+    attacker, and may never see the planted text, which can be hidden with
+    styling or invisible characters. Greshake et al. (2023) demonstrated such
+    attacks against real LLM-integrated applications. Because the model cannot
+    reliably tell retrieved data from instructions, defenses focus on
+    [[least-privilege]] tool access, authorization in code, and treating model
+    output as untrusted.
+  related: [prompt-injection, large-language-model, context-window]
+  topicId: AI-01
+
+- id: jailbreak
+  term: Jailbreak
+  aliases: [LLM jailbreak, jailbreaking]
+  short: 'A form of direct prompt injection whose goal is to make a model ignore its safety training or usage policies.'
+  long: >
+    OWASP describes jailbreaking as the subset of [[prompt-injection]] aimed at
+    a model's safety protocols. Application controls can contain the damage,
+    but lowering jailbreak success also depends on the model's own training.
+    MITRE ATLAS catalogs it as AML.T0054.
+  related: [prompt-injection, guardrail]
+  topicId: AI-01
+
+- id: system-prompt
+  term: System prompt
+  aliases: [system message, system instructions]
+  short: "Instructions an application's developer places at the start of a model's context to set its role, rules, and output format."
+  long: >
+    The system prompt shares the [[context-window]] with user input and
+    retrieved data, so it guides the model but cannot enforce anything. Assume
+    users can extract it: never place credentials, secrets, or access-control
+    rules in it.
+  related: [context-window, prompt-injection, large-language-model]
+  topicId: AI-01
+
+- id: context-window
+  term: Context window
+  aliases: [context, context length]
+  short: 'The full sequence of tokens a language model reads at once, including instructions, conversation, retrieved documents, and tool results.'
+  long: >
+    Everything in the context window influences what the model writes next,
+    whatever its source. Because trusted instructions and untrusted data share
+    this one sequence, it is where [[prompt-injection]] takes effect. Its size
+    is limited and measured in tokens.
+  related: [system-prompt, large-language-model, prompt-injection]
+  topicId: AI-01
+
+- id: guardrail
+  term: Guardrail
+  aliases: [AI guardrail, LLM guardrail, safety filter]
+  short: 'A control that checks or constrains what goes into or comes out of an AI model, such as an input classifier, an output filter, or a policy check on proposed actions.'
+  long: >
+    Guardrails are one layer of [[defense-in-depth]], not a boundary.
+    Classifier-based guardrails are themselves models, so they can miss novel
+    attacks or be manipulated. Pair them with controls in ordinary code, such
+    as [[least-privilege]] tool permissions and output encoding.
+  related: [prompt-injection, jailbreak, least-privilege, defense-in-depth]
+  topicId: AI-01
+
+- id: retrieval-augmented-generation
+  term: Retrieval-augmented generation
+  aliases: [RAG, retrieval augmentation]
+  short: "A design in which a search step finds relevant passages and places them in a language model's context before it answers, so answers can draw on documents outside the model's training data."
+  long: >
+    The name comes from Lewis et al. (2020). Documents are split into chunks,
+    turned into [[embedding|embeddings]], and stored in a
+    [[vector-database]]; at question time the nearest chunks are retrieved.
+    Retrieval moves the access-control problem into the search step: unless
+    the query enforces the asking user's permissions, the assistant can act
+    as a [[confused-deputy]] and disclose documents the user could not open.
+    Retrieved text is also untrusted input that can carry
+    [[indirect-prompt-injection]].
+  related: [embedding, vector-database, confused-deputy, indirect-prompt-injection]
+  topicId: AI-02
+
+- id: embedding
+  term: Embedding
+  aliases: [vector embedding, text embedding]
+  short: 'A list of numbers that represents a piece of text, an image, or other data so that items with similar meaning end up close together.'
+  long: >
+    Embeddings power semantic search in [[retrieval-augmented-generation]]:
+    a question is embedded and the nearest stored vectors are retrieved.
+    They are not anonymized; inversion techniques can reconstruct much of
+    the original text, so stored or exported embeddings deserve the same
+    protection as the documents they came from.
+  related: [vector-database, retrieval-augmented-generation]
+  topicId: AI-02
+
+- id: vector-database
+  term: Vector database
+  aliases: [vector store, vector index]
+  short: 'A data store that holds embeddings with their metadata and finds the vectors nearest to a query vector.'
+  long: >
+    Similarity search ranks results by closeness of meaning, not by who is
+    allowed to read them, so access control must be enforced through
+    metadata filters inside the query, separate indexes per tenant, or both.
+    See [[retrieval-augmented-generation]].
+  related: [embedding, retrieval-augmented-generation, multi-tenancy]
+  topicId: AI-02
+
+- id: confused-deputy
+  term: Confused deputy
+  aliases: [confused deputy problem]
+  short: 'A program that holds more authority than the party it is acting for, and is tricked or allowed into using that authority on their behalf.'
+  long: >
+    The classic fix is to make the deputy act with the caller's authority,
+    not its own. AI assistants and agents are natural confused deputies: a
+    retrieval service that searches with a broad [[service-account]], or an
+    agent whose tools hold powerful credentials, can be steered by a user or
+    by [[prompt-injection]] into reaching data or actions the requester could
+    never reach directly. Pass the end user's identity through to every
+    access check and apply [[least-privilege]].
+  related: [least-privilege, service-account, prompt-injection, authorization]
+  topicId: AI-04
+
+- id: hallucination
+  term: Hallucination
+  aliases: [confabulation, AI hallucination, fabrication]
+  short: 'Fluent, confident model output that is false or unsupported by any source, such as an invented fact, citation, link, or software package.'
+  long: >
+    NIST AI 600-1 calls the risk confabulation and describes it as a natural
+    result of how generative models are designed: they produce statistically
+    likely text, not verified text. Retrieval reduces it but does not remove
+    it, so check claims against their cited evidence (see [[grounding]]).
+    It becomes a security problem when people or agents act on the output,
+    for example by installing a hallucinated package that an attacker has
+    registered.
+  related: [grounding, overreliance, large-language-model]
+  topicId: AI-03
+
+- id: grounding
+  term: Grounding
+  aliases: [groundedness, source grounding, attribution, evidence support]
+  short: 'Tying each claim in a model answer to evidence the reader can check, and verifying that the cited evidence actually supports the claim.'
+  long: >
+    A grounded answer is judged claim by claim: each atomic claim is
+    supported, contradicted, or not addressed by its cited passage. Grounding
+    depends on authoritative, current sources, which is why
+    [[retrieval-augmented-generation]] alone is not enough; the model can
+    still cite a passage that says something else. Measure it on a reviewed
+    question set that includes unanswerable and false-premise questions.
+  related: [hallucination, retrieval-augmented-generation, overreliance]
+  topicId: AI-03
+
+- id: overreliance
+  term: Overreliance
+  aliases: [over-trust, automation bias]
+  short: 'Trusting or acting on AI output without the checks its reliability warrants, often because the output sounds fluent and confident.'
+  long: >
+    OWASP's 2026 list notes that people and systems tend to treat fluent,
+    confident, or well-structured output as authoritative. Overreliance turns
+    a [[hallucination]] into harm. Counter it with visible sources, clear
+    separation of verified facts from assumptions, and code that verifies
+    claims before they gate actions.
+  related: [hallucination, grounding]
+  topicId: AI-03
+
+- id: ai-agent
+  term: AI agent
+  aliases: [LLM agent, agentic AI, autonomous agent]
+  short: 'A language-model application that plans steps and calls tools, such as search, email, file edits, or code execution, to carry out a task rather than only producing text.'
+  long: >
+    The model proposes actions and the application executes them through
+    [[tool-calling]], so the agent's real authority lives in its tools and
+    their credentials. Because any text the agent reads may carry
+    [[prompt-injection]], every tool call needs checks in code that the model
+    cannot override; see [[excessive-agency]].
+  related: [tool-calling, excessive-agency, confused-deputy, prompt-injection]
+  topicId: AI-04
+
+- id: tool-calling
+  term: Tool calling
+  aliases: [function calling, tool use]
+  short: "The mechanism by which a language model asks its application to run a named tool with specific arguments, and then receives the tool's result in its context."
+  long: >
+    The application describes the available tools to the model and executes
+    the calls it proposes. Authority enters the system at the moment of
+    execution, which is where allowlists, argument validation, rate limits,
+    and confirmation belong. Protocols such as the Model Context Protocol
+    (MCP) standardize how tools are described and connected.
+  related: [ai-agent, excessive-agency]
+  topicId: AI-04
+
+- id: excessive-agency
+  term: Excessive agency
+  aliases: [over-privileged agent]
+  short: 'Giving an AI system more functionality, permissions, or autonomy than its task requires, so that a manipulated or mistaken model can cause real damage.'
+  long: >
+    OWASP ranks it third in its 2026 Top 10 for LLM applications
+    (LLM03:2026). Reduce it with narrow tools, the requesting user's scoped
+    credentials, policy checks on every call, and human confirmation for
+    consequential actions, applying [[least-privilege]] and avoiding a
+    [[confused-deputy]].
+  related: [ai-agent, tool-calling, confused-deputy, least-privilege]
+  topicId: AI-04
+
+- id: model-provenance
+  term: Model provenance
+  aliases: [data provenance, AI supply chain provenance, lineage]
+  short: 'The documented history of a model and its training data: who produced each artifact, from what sources, by what process, when, and whether it has changed since.'
+  long: >
+    Provenance lets a reviewer verify that the files being loaded are the
+    ones that were reviewed (with a [[hash-function]] digest or a
+    [[digital-signature]]) and record the licensing and data assumptions a
+    deployment depends on. It shows whom you are trusting, not that the
+    source deserved trust: a [[model-backdoor]] or [[data-poisoning]] can
+    pass every integrity check.
+  related: [model-card, data-poisoning, model-backdoor, hash-function]
+  topicId: AI-05
+
+- id: data-poisoning
+  term: Data poisoning
+  aliases: [training data poisoning, poisoning attack]
+  short: 'Manipulating the data a model learns from so that the trained model behaves as the attacker wants.'
+  long: >
+    NIST AI 100-2 distinguishes availability poisoning, which degrades a
+    model broadly; targeted poisoning, which changes predictions on chosen
+    inputs; backdoor poisoning, which plants a trigger (see
+    [[model-backdoor]]); and model poisoning, which modifies the model
+    itself. Web-scale datasets are exposed because content can change after
+    it is collected. Retrieval corpora can be poisoned the same way at
+    inference time.
+  related: [model-backdoor, model-provenance, adversarial-example]
+  topicId: AI-05
+
+- id: model-backdoor
+  term: Model backdoor
+  aliases: [backdoor attack, trojaned model, neural trojan]
+  short: 'Hidden behavior planted in a model that produces an attacker-chosen output when an input contains a secret trigger, while the model behaves normally otherwise.'
+  long: >
+    Backdoors can be planted through [[data-poisoning]], by editing a
+    model's weights directly, or through other components such as a chat
+    template. Because the model behaves normally on inputs without the
+    trigger, ordinary evaluation rarely finds one. Rely on
+    [[model-provenance]] controls and limit what an unverified model can do.
+  related: [data-poisoning, model-provenance]
+  topicId: AI-05
+
+- id: model-card
+  term: Model card
+  aliases: [model documentation]
+  short: 'A short document that accompanies a trained model and reports its intended uses, evaluation procedure, performance across relevant conditions and groups, and known limitations.'
+  long: >
+    Proposed by Mitchell et al. (2019). Model cards are self-reported, so
+    they record the producer's claims rather than independently verified
+    facts, but missing answers are useful findings in a provenance review.
+    Datasets deserve similar documentation of sources, collection,
+    consent, and licenses.
+  related: [model-provenance]
+  topicId: AI-05
+
+- id: adversarial-example
+  term: Adversarial example
+  aliases: [adversarial input, adversarial perturbation, adversarial data]
+  short: 'An input deliberately modified, often by a change too small for a person to notice, so that a machine learning model produces an output the attacker chooses.'
+  long: >
+    In a roughly linear model, a change of at most ε per feature can move
+    the score by ε times the sum of the absolute weights, so many tiny
+    changes add up in high dimensions. Adversarial examples are the tool of
+    an [[evasion-attack]] at deployment time, unlike [[data-poisoning]],
+    which corrupts training. Whether an input counts as adversarial depends
+    on the [[threat-model]]: which changes are allowed and how large they
+    may be. MITRE ATLAS catalogs crafting them as AML.T0043.
+  related: [evasion-attack, adversarial-robustness, adversarial-training, data-poisoning]
+  topicId: AI-06
+
+- id: evasion-attack
+  term: Evasion attack
+  aliases: [evasion, model evasion]
+  short: 'An attack at deployment time in which the adversary modifies inputs so that a trained model misclassifies them, without changing the model itself.'
+  long: >
+    NIST AI 100-2 E2025 treats evasion as one of the main classes of attacks
+    on predictive AI, alongside poisoning and privacy attacks. Attackers can
+    compute an [[adversarial-example]] with full access to the model
+    (white-box), search by querying it (black-box), craft examples on a
+    substitute model and rely on transfer, or edit inputs by trial and
+    error. MITRE ATLAS lists it as AML.T0015.
+  related: [adversarial-example, adversarial-robustness, data-poisoning]
+  topicId: AI-06
+
+- id: adversarial-robustness
+  term: Adversarial robustness
+  aliases: [robustness, robust accuracy, certified robustness]
+  short: "A model's ability to keep its decisions unchanged under every input perturbation that a stated threat model allows."
+  long: >
+    A model is robust at an input if no allowed perturbation changes its
+    output, and robust accuracy is the share of test inputs classified
+    correctly under the worst allowed perturbation. Measurements made with
+    attacks give an upper bound, because a stronger attack might do better;
+    certification methods such as randomized smoothing and
+    [[formal-verification]] give a lower bound. A robustness claim means
+    little without its [[threat-model]], budget, and evaluation method.
+  related: [adversarial-example, adversarial-training, threat-model, formal-verification]
+  topicId: AI-06
+
+- id: adversarial-training
+  term: Adversarial training
+  aliases: [adversarially robust training]
+  short: 'A defense that adds adversarial examples, with their correct labels, to the training data so the model learns to resist them.'
+  long: >
+    NIST AI 100-2 E2025 describes it as augmenting training data with
+    adversarial examples generated iteratively during training. Goodfellow
+    et al. (2015) reported that it cut a maxout network's error on
+    fast-gradient-sign adversarial examples from 89.4% to 17.9% on MNIST.
+    It protects best against the attacks used in training, is costly to
+    compute, and usually lowers accuracy on clean data.
+  related: [adversarial-example, adversarial-robustness]
+  topicId: AI-06
+
+- id: membership-inference
+  term: Membership inference
+  aliases: [membership inference attack, MIA]
+  short: 'An attack that determines whether a particular record was part of the data used to train a model, usually by observing how the model responds to that record.'
+  long: >
+    Models often fit their training examples better than unseen ones, for
+    example by giving them higher confidence, and that gap is the signal.
+    Shokri et al. (2017) trained an inference model to recognize it in
+    commercial machine-learning-as-a-service models. Membership alone can
+    be sensitive, as when a training set holds only one clinic's patients.
+    Mitigations include [[differential-privacy]], withholding confidence
+    scores, and limiting queries. MITRE ATLAS lists it as AML.T0024.000.
+  related: [differential-privacy, training-data-extraction, model-extraction]
+  topicId: AI-07
+
+- id: training-data-extraction
+  term: Training-data extraction
+  aliases: [training data extraction, training data leakage, memorization attack]
+  short: 'Recovering verbatim or near-verbatim training examples, such as personal details, from a trained model by querying it or inspecting its weights.'
+  long: >
+    It works because models can memorize rare sequences. Carlini et al.
+    (2021) extracted hundreds of verbatim sequences from GPT-2, including
+    names, phone numbers, and email addresses that each appeared in only one
+    training document, and found larger models more vulnerable. Data that
+    shaped a model's weights can remain extractable after the source record
+    is deleted. Compare [[membership-inference]], which reveals only whether
+    a record was used.
+  related: [membership-inference, differential-privacy, large-language-model]
+  topicId: AI-07
+
+- id: model-extraction
+  term: Model extraction
+  aliases: [model stealing, model theft, distillation attack]
+  short: "An attack that recovers a model's parameters, architecture, or a working copy of its behavior, typically by querying it many times and training a substitute on the answers."
+  long: >
+    NIST AI 100-2 E2025 describes it as extracting information about a
+    model, such as its architecture or parameters, and MITRE ATLAS
+    (AML.T0024.002) describes collecting a model's outputs as labels to
+    train a mimic offline. Besides intellectual-property theft, a copy lets
+    an attacker prepare an [[adversarial-example]] or other attacks offline,
+    where they are hard to detect. Query limits slow extraction through an
+    API but do not apply to models shipped to devices or released as open
+    weights.
+  related: [membership-inference, adversarial-example, evasion-attack]
+  topicId: AI-07
+
+- id: differential-privacy
+  term: Differential privacy
+  aliases: [DP, epsilon-differential privacy, DP training]
+  short: "A mathematical privacy guarantee: a computation or training process is differentially private if its output distribution changes very little whether or not any one person's record is included."
+  long: >
+    The privacy-loss parameter ε bounds that change: for any two datasets
+    that differ in one person's record, the probability of any output
+    differs by at most a factor of e^ε, and practical variants allow a small
+    extra probability δ. Smaller ε means stronger privacy and more noise.
+    Training with differential privacy, for example by clipping each
+    example's gradient and adding noise, limits [[membership-inference]]
+    and [[training-data-extraction]] at a cost in accuracy. It protects
+    individuals in the training data, not documents a system retrieves or
+    logs it keeps.
+  related: [membership-inference, training-data-extraction, de-identification]
+  topicId: AI-07
+
+- id: safetensors
+  term: Safetensors
+  aliases: [safetensors format, .safetensors]
+  short: 'A file format from Hugging Face that stores model weights as plain tensors and metadata, so loading a file reads data instead of running code.'
+  long: >
+    Its documentation describes it as storing tensors safely, as opposed to
+    pickle, while staying fast. Pickle-based checkpoints, including common
+    PyTorch .pt, .pth, and .bin files, can run code chosen by their author
+    when loaded, a case of [[insecure-deserialization]]. A safe format
+    removes that risk but not others: weights can still be poisoned, and
+    companion files such as chat templates can still carry instructions, so
+    verify [[model-provenance]] and digests as well.
+  related: [insecure-deserialization, model-provenance, model-backdoor]
+  topicId: AI-08

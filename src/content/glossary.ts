@@ -1,19 +1,20 @@
-import { parse as parseYaml } from 'yaml';
 import { z } from 'zod';
 
 import { type GlossaryTerm, glossaryTermSchema } from './schema';
 
-const files = import.meta.glob<string>('/content/glossary/*.yaml', {
-  query: '?raw',
+/** Glossary YAML files, parsed to JSON at build time (scripts/vite-plugin-content.ts). */
+const files = import.meta.glob<unknown>('/content/glossary/*.yaml', {
+  query: '?data',
   import: 'default',
   eager: true,
 });
 
-/** Parse one glossary file (a YAML list of terms). Throws when invalid. */
-export function parseGlossaryFile(file: string, source: string): GlossaryTerm[] {
-  const result = z.array(glossaryTermSchema).safeParse(parseYaml(source) ?? []);
+/** Validate one glossary file (a list of terms). Throws when invalid. */
+export function toGlossaryTerms(file: string, data: unknown): GlossaryTerm[] {
+  const result = z.array(glossaryTermSchema).safeParse(data ?? []);
   if (!result.success) {
     const details = result.error.issues
+      .slice(0, 5)
       .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
       .join('; ');
     throw new Error(`Invalid glossary file ${file}: ${details}`);
@@ -23,9 +24,9 @@ export function parseGlossaryFile(file: string, source: string): GlossaryTerm[] 
 
 function loadAll(): GlossaryTerm[] {
   const terms = new Map<string, GlossaryTerm>();
-  for (const [file, source] of Object.entries(files)) {
+  for (const [file, data] of Object.entries(files)) {
     try {
-      for (const term of parseGlossaryFile(file, source)) {
+      for (const term of toGlossaryTerms(file, data)) {
         if (terms.has(term.id)) {
           console.error(`Duplicate glossary id "${term.id}" in ${file}; keeping the first.`);
           continue;
@@ -45,4 +46,13 @@ const byId = new Map(GLOSSARY.map((term) => [term.id, term]));
 
 export function getTerm(id: string): GlossaryTerm | undefined {
   return byId.get(id);
+}
+
+/** Terms that point at this one through `related`, for "see also" lists. */
+export function termsRelatedTo(id: string): GlossaryTerm[] {
+  return GLOSSARY.filter((term) => term.id !== id && term.related.includes(id));
+}
+
+export function termsForTopic(topicId: string): GlossaryTerm[] {
+  return GLOSSARY.filter((term) => term.topicId === topicId);
 }

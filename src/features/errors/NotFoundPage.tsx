@@ -12,6 +12,7 @@ export default function NotFoundPage() {
       <EmptyState
         icon={Compass}
         title="We couldn’t find that page"
+        titleAs="h1"
         action={
           <ButtonLink to="/" variant="primary">
             Back to home

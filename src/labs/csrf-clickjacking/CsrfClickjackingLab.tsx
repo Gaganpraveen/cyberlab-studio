@@ -75,7 +75,7 @@ export default function CsrfClickjackingLab() {
         steps={[
           {
             title: 'Forge a request',
-            body: 'Make the victim&rsquo;s browser POST a transfer to the bank.',
+            body: 'Make the victim’s browser POST a transfer to the bank.',
           },
           {
             title: 'Withhold the cookie',

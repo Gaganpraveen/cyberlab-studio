@@ -173,13 +173,6 @@ export function loadLabState<T>(labId: string): T | undefined {
   return progressStore.get().labs[labId]?.state as T | undefined;
 }
 
-export function clearLabState(labId: string): void {
-  update((d) => {
-    const current = d.labs[labId];
-    if (current) d.labs[labId] = { openedAt: current.openedAt };
-  });
-}
-
 // Notes --------------------------------------------------------------------
 
 export function saveNote(key: string, text: string): void {

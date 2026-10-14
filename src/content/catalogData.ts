@@ -1,9 +1,8 @@
 /**
  * The CyberLab Studio curriculum catalog: 16 domains x 8 topics.
  *
- * Derived from Appendix A of the CyberLab Studio Foundation Specification v1.0
- * (a proposed roadmap, not an accredited curriculum). Each topic's `activity`
- * is the example learning activity proposed for it.
+ * A proposed roadmap that instructors adapt, not an accredited curriculum.
+ * Each topic's `activity` is the example learning activity proposed for it.
  */
 
 export interface DomainRecord {
@@ -211,7 +210,7 @@ export const DOMAINS: DomainRecord[] = [
       {
         id: 'WEB-01',
         title: 'Homograph attacks and Unicode confusables',
-        activity: 'Use the first complete reference lab.',
+        activity: 'Investigate look-alike domains in the Homograph Domain Investigation lab.',
       },
       {
         id: 'WEB-02',
@@ -419,7 +418,7 @@ export const DOMAINS: DomainRecord[] = [
       {
         id: 'MAL-05',
         title: 'Botnets and coordinated demand',
-        activity: 'Use the bounded availability reference laboratory.',
+        activity: 'Simulate a botnet flood and its defenses in the Botnet and DDoS Simulator lab.',
       },
       {
         id: 'MAL-06',

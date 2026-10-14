@@ -1,0 +1,3085 @@
+# Attacks A to Z: attack types students should know, each mapped to the
+# topics that teach it, the labs that practice it, and standard identifiers
+# (MITRE ATT&CK, CWE, CAPEC, OWASP). See docs/CONTENT_GUIDE.md.
+#
+# Summaries stay conceptual: what the attack is and why it works, never how
+# to carry it out.
+
+- id: sql-injection
+  name: SQL injection
+  aliases: [SQLi, blind SQL injection, second-order SQL injection]
+  category: injection
+  summary: >-
+    Input is pasted into the text of a SQL query, so characters that mean
+    something in SQL change the query's structure instead of staying data. The
+    database cannot tell which parts the developer wrote, so the input can read
+    or change data and bypass checks.
+  defenses:
+    - Parameterized queries
+    - Safe query builders and ORM APIs
+    - Allowlists for identifiers such as sort columns
+    - Least-privilege database accounts
+  topics: [APP-01, APP-02]
+  labs: [sql-injection]
+  attack: [T1190]
+  cwe: [CWE-89]
+  capec: [CAPEC-66, CAPEC-7]
+  owasp: ['A05:2025']
+
+- id: cross-site-scripting
+  name: Cross-site scripting
+  aliases: [XSS, reflected XSS, stored XSS, DOM-based XSS]
+  category: injection
+  summary: >-
+    Attacker-controlled text reaches a page without encoding for its context,
+    so the victim's browser runs it as script with the trusted site's
+    privileges. The browser cannot tell the site's own code from injected code,
+    so the script can read the page and act as the user.
+  defenses:
+    - Context-aware output encoding
+    - Framework auto-escaping and safe DOM APIs
+    - HTML sanitization for rich text
+    - Content Security Policy and Trusted Types
+    - HttpOnly session cookies
+  topics: [WEB-05, WEB-07, IAM-04]
+  labs: [xss]
+  attack: [T1189]
+  cwe: [CWE-79]
+  capec: [CAPEC-63, CAPEC-591, CAPEC-592, CAPEC-588]
+  owasp: ['A05:2025']
+
+- id: cross-site-request-forgery
+  name: Cross-site request forgery
+  aliases: [CSRF, XSRF, session riding]
+  category: web
+  summary: >-
+    A page on another site makes the victim's browser send a state-changing
+    request to a site where the victim is signed in. It works because the
+    browser attaches the victim's cookies automatically and the target never
+    checks that the user meant to send the request.
+  defenses:
+    - Anti-CSRF tokens
+    - SameSite cookies
+    - Origin and Fetch Metadata checks
+    - Reauthentication for sensitive actions
+  topics: [WEB-06, WEB-04, IAM-04, IAM-05]
+  labs: [csrf-clickjacking]
+  attack: []
+  cwe: [CWE-352, CWE-1275]
+  capec: [CAPEC-62]
+  owasp: ['A01:2025']
+
+- id: server-side-request-forgery
+  name: Server-side request forgery
+  aliases: [SSRF, blind SSRF]
+  category: web
+  summary: >-
+    A feature that fetches URLs is steered into sending requests to
+    destinations the attacker picks, such as internal services or a cloud
+    metadata endpoint. It works because the request leaves from the server's
+    trusted network position, which outsiders cannot reach directly.
+  defenses:
+    - Destination allowlists enforced at connection time
+    - Egress filtering
+    - Hardened metadata services such as IMDSv2
+    - No redirects or rebinding to internal addresses
+  topics: [APP-05, CLD-02]
+  labs: [ssrf-url-filter]
+  attack: [T1190, T1552.005]
+  cwe: [CWE-918]
+  capec: [CAPEC-664]
+  owasp: ['A01:2025', 'API7:2023']
+
+- id: path-traversal
+  name: Path traversal
+  aliases: [directory traversal, dot-dot-slash, Zip Slip]
+  category: web
+  summary: >-
+    A file name taken from a request leads the program outside its intended
+    folder through dot-dot segments, absolute paths or symbolic links. It works
+    because the code checks the string it received rather than the resolved
+    path the operating system will actually open.
+  defenses:
+    - Resolve the real path, then check containment
+    - Server-generated names or indirect references
+    - Least-privilege file permissions
+    - Checked archive extraction
+  topics: [APP-04, APP-02]
+  labs: [command-path-injection]
+  attack: [T1190]
+  cwe: [CWE-22, CWE-23, CWE-36]
+  capec: [CAPEC-126]
+  owasp: ['A01:2025']
+
+- id: phishing
+  name: Phishing
+  aliases: [credential phishing, phishing email]
+  category: social-engineering
+  summary: >-
+    A message poses as a trusted party to trick the recipient into revealing
+    credentials, opening a malicious link or file, or making a payment. It
+    borrows trust in a familiar brand or sender and adds urgency, so people act
+    before they check who really sent it and where its links lead.
+  defenses:
+    - Phishing-resistant MFA such as passkeys
+    - SPF, DKIM and DMARC enforcement
+    - Link and attachment filtering
+    - Easy reporting of suspicious messages
+  topics: [WEB-03, HUM-01, HUM-02, FOR-06]
+  labs: [homograph, email-phishing-investigator]
+  attack: [T1566, T1598]
+  cwe: [CWE-451]
+  capec: [CAPEC-98]
+  owasp: []
+
+- id: spear-phishing
+  name: Spear phishing
+  aliases: [targeted phishing, whaling]
+  category: social-engineering
+  summary: >-
+    Phishing aimed at one person or a small group, using researched details
+    such as names, roles and current projects to make the message believable;
+    whaling aims it at senior executives. The personal context hides the
+    generic warning signs that people are trained to notice.
+  defenses:
+    - Out-of-band verification of unusual requests
+    - Phishing-resistant MFA
+    - Attachment and link scanning
+    - Prompt reporting and response
+  topics: [HUM-01, WEB-03, HUM-02]
+  labs: []
+  attack: [T1566.001, T1566.002, T1566.003, T1598.003]
+  cwe: []
+  capec: [CAPEC-163]
+  owasp: []
+
+- id: smishing
+  name: Smishing
+  aliases: [SMS phishing, text-message phishing]
+  category: social-engineering
+  summary: >-
+    Phishing delivered by SMS or another text-messaging service, usually urging
+    the recipient to tap a link or call a number. Short messages on a small
+    screen show little of the sender or link, and people tend to trust texts
+    more than email.
+  defenses:
+    - Carrier and device message filtering
+    - Using the official app or a known number instead of the link
+    - Phishing-resistant MFA
+    - Reporting texts to the carrier and security team
+  topics: [HUM-01]
+  labs: []
+  attack: [T1660]
+  cwe: [CWE-451]
+  capec: [CAPEC-164]
+  owasp: []
+
+- id: vishing
+  name: Vishing
+  aliases: [voice phishing, callback phishing, help-desk impersonation call]
+  category: social-engineering
+  summary: >-
+    A caller poses as a trusted party, such as a help desk, a bank or a
+    colleague, to talk the victim into giving up credentials, one-time codes or
+    remote access. A live voice adds pressure and lets the caller adapt the
+    story to every objection in real time.
+  defenses:
+    - Call back on a number from the directory
+    - Identity checks before help-desk resets
+    - Never sharing one-time codes
+    - Phishing-resistant MFA
+  topics: [HUM-01]
+  labs: []
+  attack: [T1566.004, T1598.004]
+  cwe: []
+  capec: [CAPEC-656]
+  owasp: []
+
+- id: typosquatting
+  name: Typosquatting
+  aliases: [domain typosquatting, URL hijacking, look-alike domain, combosquatting, soundsquatting]
+  category: social-engineering
+  summary: >-
+    An attacker registers a misspelling or near-variant of a trusted domain, or
+    one that keeps the brand and adds words, to catch mistyped visits and make
+    phishing links look familiar. It works because people glance at familiar
+    parts of a URL instead of reading its registrable domain.
+  defenses:
+    - Defensive registration of common variants
+    - Monitoring new look-alike registrations
+    - Reading the registrable domain right to left
+    - Password managers that match exact domains
+  topics: [WEB-02, WEB-03]
+  labs: [homograph]
+  attack: [T1583.001]
+  cwe: []
+  capec: [CAPEC-630, CAPEC-631]
+  owasp: []
+
+- id: homograph-attack
+  name: Homograph attack
+  aliases: [IDN homograph attack, homoglyph attack, confusable domain]
+  category: social-engineering
+  summary: >-
+    A look-alike name is built from characters, often from another script,
+    that render almost exactly like the letters of a trusted name, so a fake
+    domain reads the same as the real one. People compare shapes by eye, while
+    computers compare code points, which differ.
+  defenses:
+    - Browser IDN display policies that fall back to Punycode
+    - Confusable-skeleton checks for protected names
+    - Mixed-script restrictions at registries
+    - Password managers and passkeys bound to the exact domain
+  topics: [WEB-01, WEB-02]
+  labs: [homograph]
+  attack: [T1583.001]
+  cwe: [CWE-1007]
+  capec: [CAPEC-632]
+  owasp: []
+
+- id: pretexting
+  name: Pretexting
+  aliases: [impersonation, pretext call]
+  category: social-engineering
+  summary: >-
+    The attacker invents a scenario and a false role, such as a help-desk
+    technician, an auditor or a new colleague, that makes an unusual request
+    seem routine. The story supplies authority and context, so the target
+    shares information or takes an action without the checks they would
+    normally apply.
+  defenses:
+    - Verification through a separate trusted channel
+    - Written procedures for resets and payments
+    - Least privilege for staff who handle requests
+    - A culture where saying no is safe
+  topics: [HUM-01]
+  labs: []
+  attack: [T1684.001]
+  cwe: []
+  capec: [CAPEC-407]
+  owasp: []
+
+- id: business-email-compromise
+  name: Business email compromise
+  aliases: [BEC, CEO fraud, invoice fraud, email account compromise]
+  category: social-engineering
+  summary: >-
+    A criminal impersonates, or takes over the mailbox of, an executive,
+    employee or supplier to redirect payments or obtain sensitive data. The
+    request arrives through a channel the victim already trusts, often inside a
+    real conversation, so it shows few of the usual signs of phishing.
+  defenses:
+    - Out-of-band verification of payment changes
+    - Dual approval for transfers
+    - MFA on every mailbox
+    - Alerts on new forwarding rules and look-alike domains
+  topics: [HUM-01, FOR-06, WEB-03]
+  labs: []
+  attack: [T1684.001, T1657, T1586.002]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: email-spoofing
+  name: Email spoofing
+  aliases: [sender spoofing, display-name spoofing, forged From address]
+  category: social-engineering
+  summary: >-
+    The attacker forges the sender shown on an email, either the From address
+    itself or only the display name, so the message appears to come from
+    someone the recipient trusts. Mail delivery does not check the visible From
+    on its own, so spoofing works wherever the sender's domain lacks an
+    enforced DMARC policy or people judge a message by its display name.
+  defenses:
+    - SPF, DKIM and an enforcing DMARC policy
+    - Showing the full sender address
+    - External-sender warnings
+    - Checking Authentication-Results during investigations
+  topics: [WEB-03, FOR-06, HUM-01]
+  labs: [email-phishing-investigator]
+  attack: [T1684.002]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: baiting
+  name: Baiting
+  aliases: [USB drop attack, malicious free download]
+  category: social-engineering
+  summary: >-
+    The attacker leaves or offers something enticing, such as a labeled USB
+    drive or a free download, so that curiosity or greed leads the target to
+    plug it in or run it. Because the victim starts the action, it slips past
+    defenses aimed at unsolicited messages.
+  defenses:
+    - Blocking autorun and unknown USB devices
+    - Application allowlisting
+    - Software only from trusted sources
+    - Handing found media to IT unopened
+  topics: [HUM-01]
+  labs: []
+  attack: [T1091, T1204.002]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: sim-swapping
+  name: SIM swapping
+  aliases: [SIM swap, SIM hijacking, port-out fraud]
+  category: social-engineering
+  summary: >-
+    The attacker deceives a mobile carrier into moving the victim's phone
+    number to a SIM card the attacker controls, so calls and text messages,
+    including one-time codes, go to the attacker. It works because many
+    services treat control of a phone number as proof of identity for sign-in
+    and recovery.
+  defenses:
+    - Carrier account PINs and port-out locks
+    - Phishing-resistant MFA instead of SMS codes
+    - Recovery that does not rest on the phone number alone
+    - Alerts on SIM and number changes
+  topics: [IAM-03, HUM-01]
+  labs: []
+  attack: [T1451, T1111]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: credential-stuffing
+  name: Credential stuffing
+  aliases: [password reuse attack, account takeover with breached passwords]
+  category: identity
+  summary: >-
+    Automated sign-in attempts replay username and password pairs leaked from
+    other sites, succeeding wherever people reused a password. Each pair is
+    tried only once and is often correct, so per-account lockouts rarely
+    notice it.
+  defenses:
+    - MFA, ideally phishing-resistant
+    - Screening passwords against breach corpuses
+    - Bot detection and rate limits across accounts
+    - Encouraging password managers and unique passwords
+  topics: [IAM-02, IAM-03, HUM-04]
+  labs: []
+  attack: [T1110.004]
+  cwe: [CWE-307]
+  capec: [CAPEC-600]
+  owasp: ['A07:2025', 'API2:2023']
+
+- id: password-spraying
+  name: Password spraying
+  aliases: [low-and-slow password guessing, reverse brute force]
+  category: identity
+  summary: >-
+    The attacker tries a few very common passwords against many different
+    accounts, so no single account sees enough failures to trigger a lockout.
+    It works because in any large organization some people still choose the
+    most popular passwords.
+  defenses:
+    - Blocklists of common and breached passwords
+    - Monitoring failed sign-ins across accounts
+    - MFA for every account
+    - Retiring legacy protocols that skip MFA
+  topics: [IAM-02, CLD-02, OPS-03]
+  labs: []
+  attack: [T1110.003]
+  cwe: [CWE-307, CWE-521]
+  capec: [CAPEC-565]
+  owasp: ['A07:2025']
+
+- id: password-guessing
+  name: Online password guessing
+  aliases: [online brute force, dictionary attack on a login]
+  category: identity
+  summary: >-
+    The attacker submits many candidate passwords for one account through the
+    real sign-in service, starting with the most likely choices. It works when
+    the service allows unlimited fast attempts and the user picked a
+    predictable password.
+  defenses:
+    - Throttling with growing delays
+    - Blocklists of common passwords
+    - A second factor
+    - Alerting on repeated failures
+  topics: [IAM-02, HUM-04]
+  labs: [login-security]
+  attack: [T1110.001]
+  cwe: [CWE-307, CWE-521]
+  capec: [CAPEC-49, CAPEC-16]
+  owasp: ['A07:2025', 'API2:2023']
+
+- id: session-hijacking
+  name: Session hijacking
+  aliases: [cookie hijacking, session token theft, sidejacking]
+  category: identity
+  summary: >-
+    The attacker steals or copies a signed-in user's session cookie or token
+    and presents it as their own, taking over the session without the password
+    or second factor. The server cannot tell a copy from the original, so
+    anything that leaks the token, such as script injection, unencrypted
+    traffic or malware, hands over the account.
+  defenses:
+    - Secure, HttpOnly and SameSite cookie attributes
+    - Short idle and absolute lifetimes
+    - Reauthentication before sensitive actions
+    - Revoking sessions on sign-out and anomalies
+  topics: [IAM-04]
+  labs: []
+  attack: [T1539, T1550.004]
+  cwe: [CWE-613, CWE-614, CWE-1004]
+  capec: [CAPEC-593, CAPEC-102]
+  owasp: ['A07:2025']
+
+- id: session-fixation
+  name: Session fixation
+  aliases: [fixed session identifier]
+  category: identity
+  summary: >-
+    The victim is made to sign in with a session identifier the attacker
+    already knows, so the attacker can use that identifier once it becomes
+    authenticated. It works when the server keeps the same identifier across
+    sign-in instead of issuing a fresh one.
+  defenses:
+    - New session identifier on every privilege change
+    - Accepting only server-issued identifiers
+    - Identifiers in cookies, never in URLs
+  topics: [IAM-04]
+  labs: []
+  attack: []
+  cwe: [CWE-384]
+  capec: [CAPEC-61]
+  owasp: ['A07:2025']
+
+- id: mfa-fatigue
+  name: MFA fatigue
+  aliases: [push bombing, MFA bombing, MFA prompt spamming]
+  category: identity
+  summary: >-
+    With a stolen password in hand, the attacker triggers sign-in prompts again
+    and again, often alongside a call claiming to be IT support, until the user
+    approves one just to make them stop. Push approvals that need only a tap
+    let a tired or confused user approve a sign-in they did not start.
+  defenses:
+    - Number matching or phishing-resistant MFA
+    - Limits on repeated push prompts
+    - Location and application shown in each prompt
+    - Easy reporting of unexpected prompts
+  topics: [IAM-03, HUM-01]
+  labs: []
+  attack: [T1621]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: aitm-phishing
+  name: Adversary-in-the-middle phishing
+  aliases: [AiTM phishing, reverse-proxy phishing, real-time phishing relay]
+  category: identity
+  summary: >-
+    A look-alike site sits between the victim and the real service, relaying
+    the password and the one-time code or push approval as they are entered and
+    keeping the session cookie that comes back. Because the victim completes a
+    real sign-in, any MFA method that is not bound to the site's origin is
+    bypassed.
+  defenses:
+    - Passkeys or security keys bound to the origin
+    - Short-lived, device-bound sessions
+    - Conditional access on managed devices
+    - Alerts on sign-ins from new devices and networks
+  topics: [IAM-03, HUM-01, WEB-03]
+  labs: []
+  attack: [T1557, T1539, T1111]
+  cwe: [CWE-294]
+  capec: [CAPEC-94, CAPEC-701]
+  owasp: ['A07:2025']
+
+- id: account-recovery-abuse
+  name: Account recovery abuse
+  aliases: [password reset attack, help-desk reset fraud, security question guessing]
+  category: identity
+  summary: >-
+    The attacker takes over an account through its recovery path instead of
+    its sign-in, using guessable security answers, a reset link or code sent to
+    a channel they control, or a help desk persuaded to reset the password or
+    MFA. Recovery is a second front door that is often weaker than sign-in.
+  defenses:
+    - Recovery at least as strong as sign-in
+    - Single-use, short-lived reset tokens
+    - Identity checks before help-desk resets
+    - Notifying the owner of every recovery
+  topics: [IAM-02, HUM-01]
+  labs: []
+  attack: []
+  cwe: [CWE-640]
+  capec: [CAPEC-50]
+  owasp: ['A07:2025']
+
+- id: jwt-forgery
+  name: JWT forgery
+  aliases: [token forgery, alg none attack, algorithm confusion, JWT key confusion]
+  category: identity
+  summary: >-
+    The attacker mints or alters a JSON Web Token that the verifier still
+    accepts, for example because it honors an algorithm of none, lets the
+    token's own header choose how to verify it, or uses a signing secret weak
+    enough to guess offline. Services that trust the token's claims then treat
+    the attacker as whichever user the claims name.
+  defenses:
+    - Algorithms and keys pinned in configuration
+    - Rejecting unsigned tokens
+    - High-entropy secrets or asymmetric keys
+    - Checking issuer, audience and expiry
+  topics: [IAM-04, CRY-04]
+  labs: [jwt]
+  attack: [T1606]
+  cwe: [CWE-347]
+  capec: [CAPEC-196]
+  owasp: ['A04:2025', 'API2:2023']
+
+- id: saml-token-forgery
+  name: SAML token forgery
+  aliases: [Golden SAML, forged SAML assertion, XML signature wrapping]
+  category: identity
+  summary: >-
+    The attacker produces a SAML assertion that service providers accept for
+    any user, either by signing it with a stolen identity-provider key or by
+    exploiting a verifier that checks the signature on one element but reads
+    the user from another. Service providers trust whatever the identity
+    provider's key signs, so a forged assertion can impersonate anyone and may
+    skip MFA.
+  defenses:
+    - IdP signing keys kept in an HSM
+    - Complete assertion validation with a maintained library
+    - Correlating service sign-ins with IdP sign-in logs
+    - Monitoring changes to federation trust
+  topics: [IAM-08]
+  labs: []
+  attack: [T1606.002]
+  cwe: [CWE-347]
+  capec: []
+  owasp: []
+
+- id: oauth-token-theft
+  name: OAuth token theft
+  aliases:
+    [
+      authorization code interception,
+      redirect URI manipulation,
+      consent phishing,
+      illicit consent grant,
+    ]
+  category: identity
+  summary: >-
+    The attacker obtains OAuth authorization codes or tokens meant for a
+    legitimate client, for example through a loosely matched redirect URI, a
+    token exposed in a URL, or a malicious app that the user is tricked into
+    approving. Bearer tokens work for whoever holds them, so the attacker gets
+    the user's delegated access without ever learning the password.
+  defenses:
+    - Exact redirect URI matching
+    - Authorization code flow with PKCE
+    - Sender-constrained or rotated tokens
+    - Admin control over which apps users may approve
+  topics: [IAM-05, IAM-04]
+  labs: []
+  attack: [T1528, T1550.001]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: os-command-injection
+  name: OS command injection
+  aliases: [command injection, shell injection]
+  category: injection
+  summary: >-
+    Input is pasted into a command line that a shell parses, so shell syntax in
+    the input can chain extra commands that run with the application's
+    privileges. The shell cannot tell the developer's text from the user's, in
+    the same way a database cannot in SQL injection.
+  defenses:
+    - Platform APIs instead of shell commands
+    - Argument lists without a shell
+    - Allowlist validation of values
+    - Least-privilege service accounts
+  topics: [APP-03]
+  labs: [command-path-injection]
+  attack: [T1190]
+  cwe: [CWE-78, CWE-77]
+  capec: [CAPEC-88]
+  owasp: ['A05:2025']
+
+- id: argument-injection
+  name: Argument injection
+  aliases: [option injection, flag injection]
+  category: injection
+  summary: >-
+    A value passed to a program as an argument is read as an option, for
+    example because it begins with a dash, so it changes what the program does
+    even though no shell is involved. Some options write files or start other
+    programs, which can make this as serious as shell injection.
+  defenses:
+    - An end-of-options marker before user values
+    - Allowlist validation of values
+    - Never letting input choose the program
+    - Treating interpreter programs as shells
+  topics: [APP-03]
+  labs: []
+  attack: [T1190]
+  cwe: [CWE-88]
+  capec: [CAPEC-6]
+  owasp: ['A05:2025']
+
+- id: code-injection
+  name: Code injection
+  aliases: [eval injection, dynamic code evaluation]
+  category: injection
+  summary: >-
+    Input is spliced into code that the application's own language runtime
+    evaluates, such as a string handed to eval or a script assembled at run
+    time, so the input runs as program logic with the application's
+    privileges. The runtime cannot separate the developer's code from data
+    mixed into it.
+  defenses:
+    - No eval or run-time code generation from input
+    - Passing data as values, never as code
+    - Strict allowlists where dynamic behavior is unavoidable
+    - Sandboxed, least-privilege runtimes
+  topics: [APP-03, WEB-05]
+  labs: []
+  attack: [T1190]
+  cwe: [CWE-94, CWE-95]
+  capec: [CAPEC-242]
+  owasp: ['A05:2025']
+
+- id: xml-external-entity
+  name: XML external entity injection
+  aliases: [XXE, XML external entity attack]
+  category: injection
+  summary: >-
+    An XML parser that resolves external entities declared in untrusted input
+    can be steered into reading local files or making network requests for the
+    attacker. It works because entity resolution is a parser feature that some
+    libraries still enable by default.
+  defenses:
+    - Disabling DTDs and external entities
+    - Hardened parsers such as defusedxml
+    - Simpler formats such as JSON
+    - Egress filtering
+  topics: [APP-07]
+  labs: []
+  attack: [T1190]
+  cwe: [CWE-611]
+  capec: [CAPEC-221]
+  owasp: ['A02:2025']
+
+- id: insecure-deserialization
+  name: Insecure deserialization
+  aliases: [object injection, unsafe unpickling, deserialization of untrusted data]
+  category: injection
+  summary: >-
+    Untrusted bytes are rebuilt into objects with a format that lets the data
+    choose which types are created, so loading hooks and gadget chains already
+    in the application run code the attacker selects. The damage happens while
+    parsing, before the application can check the result.
+  defenses:
+    - Data-only formats such as JSON
+    - Type allowlists in the parser
+    - Integrity checks on serialized data
+    - Isolated, low-privilege parsing
+  topics: [APP-07, AI-08]
+  labs: []
+  attack: [T1190]
+  cwe: [CWE-502]
+  capec: [CAPEC-586]
+  owasp: ['A08:2025']
+
+- id: log-injection
+  name: Log injection
+  aliases: [log forging, log tampering]
+  category: injection
+  summary: >-
+    Untrusted input is written into a log without neutralizing line breaks or
+    delimiters, so the attacker can forge entries that look like real records
+    or garble the trail investigators rely on. A plain text log has no
+    boundary between its record structure and the data inside it.
+  defenses:
+    - Structured log formats with proper encoding
+    - Encoding or stripping line breaks
+    - Append-only, access-controlled log storage
+    - Integrity protection in the log pipeline
+  topics: [OPS-01]
+  labs: []
+  attack: []
+  cwe: [CWE-117]
+  capec: [CAPEC-93]
+  owasp: ['A09:2025']
+
+- id: open-redirect
+  name: Open redirect
+  aliases: [unvalidated redirect, URL redirection to an untrusted site]
+  category: web
+  summary: >-
+    A page sends the visitor on to whatever URL a request parameter names, so
+    a link that starts with a trusted address can end anywhere. Attackers use
+    it to make phishing links look legitimate and to steer OAuth codes or
+    server-side requests to places they control.
+  defenses:
+    - Fixed redirect targets or an allowlist
+    - Indirect references instead of raw URLs
+    - Interstitial warnings for external destinations
+    - Exact redirect URI matching in OAuth
+  topics: [WEB-02, APP-05, IAM-05]
+  labs: []
+  attack: []
+  cwe: [CWE-601]
+  capec: []
+  owasp: ['A01:2025']
+
+- id: insecure-direct-object-reference
+  name: Insecure direct object reference
+  aliases: [IDOR, BOLA, broken object level authorization, horizontal privilege escalation]
+  category: web
+  summary: >-
+    An API or page acts on an object named in the request, such as an order or
+    file number, without checking that the caller may access that particular
+    object. Changing the identifier is enough to reach other users' data,
+    because being signed in says nothing about who owns what.
+  defenses:
+    - Per-object authorization on every request
+    - Deny by default
+    - Queries scoped to the caller
+    - Tests derived from an access-control matrix
+  topics: [APP-06, IAM-01, IAM-06]
+  labs: [access-control-matrix]
+  attack: []
+  cwe: [CWE-639]
+  capec: []
+  owasp: ['A01:2025', 'API1:2023']
+
+- id: broken-function-level-authorization
+  name: Broken function level authorization
+  aliases: [BFLA, vertical privilege escalation]
+  category: web
+  summary: >-
+    A caller can use a function meant for another role, such as an
+    administrative endpoint, because the server checks who the caller is but
+    not whether their role may call that function. Hiding a button in the
+    interface does not stop anyone who sends the request directly.
+  defenses:
+    - Server-side role checks for every function
+    - Deny by default
+    - Separate administrative interfaces
+    - Tests derived from a role and function matrix
+  topics: [APP-06, IAM-01, IAM-06]
+  labs: [access-control-matrix]
+  attack: []
+  cwe: [CWE-285, CWE-862, CWE-425]
+  capec: [CAPEC-1, CAPEC-87]
+  owasp: ['A01:2025', 'API5:2023']
+
+- id: mass-assignment
+  name: Mass assignment
+  aliases: [overposting, autobinding, broken object property level authorization]
+  category: web
+  summary: >-
+    The application copies every property in a request into a stored object,
+    so a caller can set fields they should never control, such as a role, a
+    price or a balance. Frameworks that bind request data to objects
+    automatically make the flaw easy to introduce.
+  defenses:
+    - Allowlists of writable fields
+    - Input models separate from stored objects
+    - Server-side checks on sensitive fields
+    - Tests that send unexpected properties
+  topics: [APP-06, APP-07]
+  labs: []
+  attack: []
+  cwe: [CWE-915]
+  capec: []
+  owasp: ['A08:2025', 'API3:2023']
+
+- id: cors-misconfiguration
+  name: CORS misconfiguration
+  aliases: [permissive CORS, Origin reflection]
+  category: web
+  summary: >-
+    A server's Cross-Origin Resource Sharing policy lets untrusted origins read
+    its responses, for example by echoing any Origin header while allowing
+    credentials. Any site the victim visits can then read data that the
+    same-origin policy would otherwise keep private.
+  defenses:
+    - An explicit allowlist of trusted origins
+    - No credentials with wildcard or reflected origins
+    - SameSite cookies
+    - Reviewing CORS headers in testing
+  topics: [WEB-04]
+  labs: []
+  attack: []
+  cwe: [CWE-942, CWE-346]
+  capec: []
+  owasp: ['A02:2025']
+
+- id: business-logic-abuse
+  name: Business logic abuse
+  aliases: [business logic flaw, workflow bypass, limit overrun]
+  category: web
+  summary: >-
+    The attacker sends requests that each look legitimate but break the
+    application's own rules, such as skipping a payment step, ordering a
+    negative quantity or redeeming one coupon many times at once. Nothing is
+    malformed, so input checks pass; the flaw is in what the server allows.
+  defenses:
+    - Server-enforced workflow state
+    - Atomic check-and-update transactions
+    - Validation of business values and limits
+    - Abuse cases in design reviews and tests
+  topics: [APP-08, APP-02]
+  labs: []
+  attack: []
+  cwe: [CWE-841, CWE-362]
+  capec: []
+  owasp: ['A06:2025', 'API6:2023']
+
+- id: unrestricted-file-upload
+  name: Unrestricted file upload
+  aliases: [malicious file upload, web shell upload]
+  category: web
+  summary: >-
+    An application accepts uploaded files without checking what they are or
+    where they go, so an attacker can place content that the server later runs
+    or serves, such as a web shell. File names, extensions and declared content
+    types all come from the attacker and prove nothing.
+  defenses:
+    - Server-generated file names
+    - Storage outside the web root, with no execute permission
+    - Allowlisted types checked by content
+    - Size limits and malware scanning
+  topics: [APP-04]
+  labs: []
+  attack: [T1190, T1505.003]
+  cwe: [CWE-434]
+  capec: [CAPEC-650]
+  owasp: ['A06:2025']
+
+- id: clickjacking
+  name: Clickjacking
+  aliases: [UI redressing, frame overlay attack, tapjacking]
+  category: web
+  summary: >-
+    A legitimate page is loaded in a transparent or disguised frame over a
+    decoy, so the user's click lands on a control they cannot see and performs
+    an action on the framed site. It works because any site can embed a
+    signed-in page unless that page forbids framing.
+  defenses:
+    - CSP frame-ancestors
+    - X-Frame-Options
+    - SameSite cookies
+    - Confirmation steps for sensitive actions
+  topics: [WEB-08, WEB-04, IOT-03]
+  labs: [csrf-clickjacking]
+  attack: []
+  cwe: [CWE-1021]
+  capec: [CAPEC-103, CAPEC-222, CAPEC-506]
+  owasp: ['A06:2025']
+
+- id: password-cracking
+  name: Password cracking
+  aliases: [offline password cracking, hash cracking, offline dictionary attack]
+  category: cryptographic
+  summary: >-
+    After stealing a table of password hashes, the attacker hashes guess after
+    guess offline until one matches, with no sign-in page to slow them down. It
+    succeeds when the hash function is fast and unsalted and the passwords are
+    predictable.
+  defenses:
+    - Slow salted hashing such as Argon2id, scrypt or bcrypt
+    - A pepper kept outside the database
+    - Long, unique passwords and blocklists
+    - Detecting and responding to database theft
+  topics: [CRY-05, CRY-01, IAM-02]
+  labs: [password-cracking]
+  attack: [T1110.002]
+  cwe: [CWE-916, CWE-759]
+  capec: []
+  owasp: ['A04:2025']
+
+- id: rainbow-table-attack
+  name: Rainbow table attack
+  aliases: [precomputed hash lookup, rainbow tables]
+  category: cryptographic
+  summary: >-
+    The attacker looks up stolen password hashes in a precomputed table that
+    maps the hashes of likely passwords back to the passwords, trading storage
+    for cracking time. It only works against hashes without a unique salt,
+    because a salt makes any precomputed table useless.
+  defenses:
+    - A unique random salt for every password
+    - Slow password hashing functions
+    - A pepper kept outside the database
+  topics: [CRY-05, CRY-01]
+  labs: []
+  attack: [T1110.002]
+  cwe: [CWE-759, CWE-760]
+  capec: [CAPEC-55]
+  owasp: ['A04:2025']
+
+- id: replay-attack
+  name: Replay attack
+  aliases: [message replay, capture-replay]
+  category: cryptographic
+  summary: >-
+    The attacker captures a valid message, such as a signed request or an
+    authentication exchange, and sends it again so the receiver acts on it a
+    second time. Encryption and signatures prove who made a message, not that
+    it is fresh, so a protocol without nonces, timestamps or sequence numbers
+    accepts the copy.
+  defenses:
+    - Nonces or challenge-response for freshness
+    - Timestamps with short validity windows
+    - Sequence numbers and replay caches
+    - Binding messages to their session and context
+  topics: [CRY-07, IAM-04]
+  labs: []
+  attack: []
+  cwe: [CWE-294]
+  capec: [CAPEC-60]
+  owasp: ['A07:2025']
+
+- id: downgrade-attack
+  name: Downgrade attack
+  aliases: [version rollback attack, cipher suite downgrade, algorithm downgrade]
+  category: cryptographic
+  summary: >-
+    An attacker in the middle tampers with a protocol's negotiation so that two
+    parties settle on an older version or weaker algorithm than both support,
+    then attacks that weaker choice. It works when the negotiation itself is not
+    authenticated or when insecure fallbacks remain enabled.
+  defenses:
+    - Removing obsolete versions and algorithms
+    - Authenticating the whole handshake transcript
+    - Downgrade signals such as TLS_FALLBACK_SCSV
+    - No automatic fallback to weaker settings
+  topics: [CRY-07, NET-05]
+  labs: []
+  attack: [T1689]
+  cwe: [CWE-757]
+  capec: [CAPEC-620, CAPEC-220]
+  owasp: ['A04:2025']
+
+- id: harvest-now-decrypt-later
+  name: Harvest now, decrypt later
+  aliases: [HNDL, store now, decrypt later]
+  category: cryptographic
+  summary: >-
+    An attacker records encrypted traffic or data today and stores it until a
+    future capability, such as a large quantum computer that breaks RSA and
+    elliptic-curve key exchange, can decrypt it. Data that must stay secret for
+    years is therefore already at risk from algorithms that are safe today.
+  defenses:
+    - Hybrid post-quantum key exchange such as ML-KEM
+    - A cryptographic inventory and crypto agility
+    - Prioritizing long-lived secrets for migration
+    - Collecting and keeping less sensitive data
+  topics: [CRY-08]
+  labs: []
+  attack: []
+  cwe: [CWE-326]
+  capec: []
+  owasp: ['A04:2025']
+
+- id: hash-collision-attack
+  name: Hash collision attack
+  aliases: [collision attack, birthday attack, chosen-prefix collision]
+  category: cryptographic
+  summary: >-
+    The attacker finds two different inputs with the same digest under a weak
+    hash such as MD5 or SHA-1, so a signature or integrity check made over one
+    input also validates the other. Signatures sign a digest, so they are only
+    as strong as the hash's collision resistance, which is broken for these
+    functions.
+  defenses:
+    - SHA-256 or SHA-3 instead of MD5 or SHA-1
+    - Retiring weak hashes from signatures and certificates
+    - Crypto agility to replace algorithms quickly
+  topics: [CRY-01, CRY-04]
+  labs: []
+  attack: []
+  cwe: [CWE-328, CWE-327]
+  capec: [CAPEC-459]
+  owasp: ['A04:2025']
+
+- id: bit-flipping-attack
+  name: Bit-flipping attack
+  aliases: [ciphertext malleability attack, ciphertext tampering]
+  category: cryptographic
+  summary: >-
+    With an unauthenticated stream or CTR-mode cipher, flipping a bit of the
+    ciphertext flips the same bit of the decrypted plaintext, so an attacker
+    can change a message they cannot read, such as an amount or a role.
+    Encryption on its own provides confidentiality, not integrity, so nothing
+    notices the change.
+  defenses:
+    - Authenticated encryption such as AES-GCM or ChaCha20-Poly1305
+    - Encrypt-then-MAC when combining primitives
+    - Rejecting any message that fails authentication
+  topics: [CRY-02, CRY-07]
+  labs: []
+  attack: []
+  cwe: [CWE-649, CWE-353]
+  capec: []
+  owasp: ['A04:2025']
+
+- id: nonce-reuse
+  name: Nonce reuse
+  aliases: [IV reuse, keystream reuse, two-time pad]
+  category: cryptographic
+  summary: >-
+    Encrypting two messages with the same key and nonce makes stream and
+    CTR-based modes reuse their keystream, which leaks the relationship between
+    the plaintexts, and with AES-GCM a repeat can also enable forgeries. These
+    modes require only that a nonce never repeat, a rule that counters reset
+    by restarts or too-small random values can quietly break.
+  defenses:
+    - Counter-based or large random nonces
+    - Misuse-resistant modes such as AES-GCM-SIV
+    - Rotating keys before nonce limits
+    - Libraries that generate nonces themselves
+  topics: [CRY-06, CRY-02]
+  labs: []
+  attack: []
+  cwe: [CWE-323]
+  capec: []
+  owasp: ['A04:2025']
+
+- id: predictable-randomness
+  name: Predictable randomness
+  aliases: [weak random number generator, insecure PRNG, predictable tokens]
+  category: cryptographic
+  summary: >-
+    Security values such as session tokens, reset codes, keys or nonces come
+    from a generator the attacker can predict, such as a general-purpose PRNG
+    or one seeded with the time, so the attacker can reproduce them. These
+    generators are built for statistics, not secrecy, and a few observed
+    outputs can reveal the rest.
+  defenses:
+    - The operating system CSPRNG or a secrets API
+    - Enough entropy in every token
+    - No time-based or fixed seeds
+    - Code review for general-purpose PRNGs in security code
+  topics: [CRY-06]
+  labs: []
+  attack: []
+  cwe: [CWE-330, CWE-338]
+  capec: [CAPEC-59, CAPEC-485]
+  owasp: ['A04:2025']
+
+- id: padding-oracle-attack
+  name: Padding oracle attack
+  aliases: [CBC padding oracle, POODLE, Lucky Thirteen]
+  category: cryptographic
+  summary: >-
+    A system that decrypts attacker-supplied ciphertext reveals, through
+    different errors or timing, whether the padding was valid, and repeated
+    queries to that oracle let the attacker decrypt data or build valid
+    ciphertexts without the key. It works because the ciphertext is processed
+    before its integrity is checked.
+  defenses:
+    - Authenticated encryption or encrypt-then-MAC
+    - Uniform errors and constant-time checks
+    - Retiring CBC-mode cipher suites
+    - TLS 1.3
+  topics: [CRY-07, CRY-02]
+  labs: []
+  attack: []
+  cwe: [CWE-209, CWE-649]
+  capec: [CAPEC-463]
+  owasp: ['A04:2025']
+
+- id: adversary-in-the-middle
+  name: Adversary-in-the-middle
+  aliases: [AiTM, MITM, Man-in-the-middle, Machine-in-the-middle, On-path attack]
+  category: network
+  summary: An attacker places themselves between two parties so they can read, relay or alter the traffic while each side believes it is talking directly to the other. It works whenever the endpoints do not authenticate each other, for example when certificate validation is missing or switched off.
+  defenses:
+    [
+      Authenticated encryption such as TLS,
+      Strict certificate validation,
+      HTTP Strict Transport Security,
+      Mutual authentication for key exchanges,
+    ]
+  topics: [NET-05, NET-03, CRY-03]
+  labs: [spoofing-and-mitm, tls-handshake-inspector]
+  attack: [T1557, T1638, T0830]
+  cwe: [CWE-300, CWE-295]
+  capec: [CAPEC-94]
+  owasp: ['A07:2025']
+
+- id: arp-spoofing
+  name: ARP spoofing
+  aliases: [ARP cache poisoning, ARP poisoning]
+  category: network
+  summary: A device on a local network sends forged ARP replies that tie another host's IP address to its own hardware address, so frames meant for that host are delivered to the attacker, who becomes an adversary in the middle. It works because ARP has no authentication and hosts update their caches from any reply.
+  defenses:
+    [
+      Dynamic ARP inspection with DHCP snooping,
+      Network access control on switch ports,
+      Smaller network segments and client isolation,
+      End-to-end encryption,
+    ]
+  topics: [NET-03]
+  labs: [spoofing-and-mitm]
+  attack: [T1557.002]
+  cwe: [CWE-923]
+  capec: [CAPEC-94]
+  owasp: []
+
+- id: dhcp-spoofing
+  name: DHCP spoofing
+  aliases: [Rogue DHCP server, DHCP poisoning]
+  category: network
+  summary: A rogue DHCP server on a local network answers devices as they join and hands them settings of its choosing, such as a gateway or DNS server it controls, which puts it in the path of their traffic. It works because clients accept an offer without authenticating the server that sent it.
+  defenses:
+    [
+      DHCP snooping on managed switches,
+      Network access control,
+      Monitoring for unexpected DHCP servers,
+      End-to-end encryption,
+    ]
+  topics: [NET-03]
+  labs: []
+  attack: [T1557.003]
+  cwe: [CWE-923]
+  capec: [CAPEC-697]
+  owasp: []
+
+- id: dns-cache-poisoning
+  name: DNS cache poisoning
+  aliases: [DNS spoofing, Kaminsky attack, Resolver cache poisoning]
+  category: network
+  summary: An attacker gets a recursive resolver to accept and cache a forged answer, so every client that relies on that resolver is sent to the wrong address until the record expires. It works because plain DNS responses are not authenticated, so a resolver trusts any reply that matches its outstanding query.
+  defenses:
+    [
+      DNSSEC signing and validation,
+      Source port and query ID randomization,
+      Bailiwick checks on extra records,
+      Closed resolvers that serve only their own clients,
+    ]
+  topics: [NET-02]
+  labs: [spoofing-and-mitm]
+  attack: []
+  cwe: [CWE-345, CWE-349]
+  capec: [CAPEC-142]
+  owasp: []
+
+- id: bgp-hijacking
+  name: BGP hijacking
+  aliases: [Prefix hijacking, Route hijacking, IP hijacking]
+  category: network
+  summary: A network announces blocks of IP addresses it does not hold, by mistake or on purpose, and routers that believe the announcement send that traffic to it, causing an outage, interception or impersonation. It works because base BGP does not check whether the network announcing addresses is entitled to them.
+  defenses:
+    [
+      Prefix filtering of customer announcements,
+      RPKI route origin validation,
+      Route monitoring and alerting,
+      Authenticated BGP sessions,
+    ]
+  topics: [NET-06]
+  labs: []
+  attack: []
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: ip-spoofing
+  name: IP address spoofing
+  aliases: [IP spoofing, Source address spoofing]
+  category: network
+  summary: Packets are sent with a forged source IP address, hiding who sent them or making replies go to someone else. It works because nothing in IP verifies the source field, which is why it underlies reflection floods and attacks on systems that trust an address.
+  defenses:
+    [
+      Ingress and egress filtering (BCP 38),
+      No address-based authentication,
+      Cryptographic authentication of peers,
+    ]
+  topics: [NET-01, NET-07]
+  labs: []
+  attack: []
+  cwe: [CWE-290]
+  capec: []
+  owasp: ['A07:2025']
+
+- id: tcp-session-hijacking
+  name: TCP session hijacking
+  aliases: [TCP hijacking, TCP reset injection, TCP sequence prediction, Blind in-window attack]
+  category: network
+  summary: An attacker forges TCP segments carrying sequence numbers the receiver will accept, injecting data into an established connection or tearing it down with a reset. On-path attackers can see the numbers they need, while off-path attackers must guess them, which unpredictable initial sequence numbers make hard.
+  defenses:
+    [
+      Unpredictable initial sequence numbers,
+      Stricter segment checks (RFC 5961),
+      IPsec or the TCP Authentication Option,
+      TLS for application data,
+    ]
+  topics: [NET-04, NET-01]
+  labs: []
+  attack: []
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: network-sniffing
+  name: Network sniffing
+  aliases: [Packet sniffing, Eavesdropping, Traffic interception]
+  category: network
+  summary: An attacker who can observe a network path or shared medium captures the traffic passing by and reads credentials and data sent without encryption. It works because unencrypted protocols expose their contents to anyone who can see the packets, and even encrypted traffic still reveals its endpoints, timing and size.
+  defenses:
+    [
+      Encrypt traffic in transit,
+      Switched and segmented networks,
+      Control physical and wireless access,
+      Avoid cleartext protocols,
+    ]
+  topics: [NET-08, NET-05, FOR-03]
+  labs: []
+  attack: [T1040, T0842]
+  cwe: [CWE-319, CWE-311]
+  capec: [CAPEC-158, CAPEC-157]
+  owasp: ['A04:2025']
+
+- id: port-scanning
+  name: Port scanning
+  aliases: [Network service discovery, Network scanning, Service scanning]
+  category: network
+  summary: Probing a range of addresses and ports to learn which hosts are up and which services answer, mapping the attack surface before an intrusion. It works because a reachable service reveals itself by how it responds to a connection attempt.
+  defenses:
+    [
+      Close unneeded ports and services,
+      Default-deny firewall rules,
+      Network segmentation,
+      Detect and alert on scans,
+    ]
+  topics: [NET-07]
+  labs: []
+  attack: [T1046, T1595.001]
+  cwe: []
+  capec: [CAPEC-300]
+  owasp: []
+
+- id: dns-tunneling
+  name: DNS tunneling
+  aliases: [DNS tunnelling, DNS covert channel, DNS exfiltration]
+  category: network
+  summary: Data or commands are carried inside DNS queries and responses, so traffic that looks like ordinary name lookups becomes a covert channel for command and control or data theft. It works because nearly every network lets its hosts resolve names, and few inspect what the lookups contain.
+  defenses:
+    [
+      Route all lookups through monitored resolvers,
+      Alert on unusual query volume and names,
+      Egress filtering,
+      Protective DNS and sinkholes,
+    ]
+  topics: [MAL-04, NET-07]
+  labs: []
+  attack: [T1071.004, T1572, T1048]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: ssl-stripping
+  name: SSL stripping
+  aliases: [HTTPS stripping, HTTPS downgrade, SSL strip]
+  category: network
+  summary: An adversary in the middle keeps a victim's browser on plain HTTP by intercepting the redirect or link to HTTPS, then relays the traffic to the real site, reading everything the victim sends. It works because the first request to a site often travels unencrypted and users rarely notice that HTTPS is missing.
+  defenses:
+    [
+      HTTP Strict Transport Security,
+      HSTS preload lists,
+      HTTPS-only browser modes,
+      Secure cookie attributes,
+    ]
+  topics: [NET-05]
+  labs: [tls-handshake-inspector]
+  attack: [T1689, T1557]
+  cwe: [CWE-319]
+  capec: []
+  owasp: ['A04:2025']
+
+- id: ddos-attack
+  name: Distributed denial of service
+  aliases: [DDoS, DDoS attack, Distributed DoS]
+  category: availability
+  summary: Many machines, often a botnet, send traffic or requests to one target at the same time, exhausting its bandwidth, connections or processing so legitimate users cannot be served. Because the load comes from many sources at once, blocking any single sender does little.
+  defenses:
+    [
+      Upstream filtering and scrubbing services,
+      Rate limiting,
+      Spare capacity and content delivery networks,
+      A rehearsed response plan,
+    ]
+  topics: [MAL-06, MAL-05, APP-08]
+  labs: [ddos]
+  attack: [T1498, T1499, T1464, T0814]
+  cwe: [CWE-400, CWE-770]
+  capec: [CAPEC-125]
+  owasp: []
+
+- id: syn-flood
+  name: SYN flood
+  aliases: [SYN flooding, TCP SYN flood, Half-open connection attack]
+  category: availability
+  summary: A stream of TCP connection requests that are never completed fills a server's table of half-open connections, so genuine clients cannot connect. It works because the server sets aside state for each connection before the client has shown that it can receive replies.
+  defenses: [SYN cookies, Backlog and timeout tuning, Upstream filtering]
+  topics: [NET-04, MAL-06]
+  labs: []
+  attack: [T1499.001]
+  cwe: [CWE-770]
+  capec: [CAPEC-482]
+  owasp: []
+
+- id: amplification-attack
+  name: Reflection amplification attack
+  aliases: [Amplification attack, Reflection attack, Reflected DDoS]
+  category: availability
+  summary: Small requests that carry the victim's address as their source are sent to third-party servers, which send much larger replies to the victim. Spoofing hides the real sender, and the difference in size multiplies the traffic that reaches the target.
+  defenses:
+    [
+      Source address validation (BCP 38),
+      Restrict UDP services to intended clients,
+      Response rate limiting,
+      Upstream scrubbing,
+    ]
+  topics: [NET-01, MAL-06]
+  labs: []
+  attack: [T1498.002]
+  cwe: [CWE-406, CWE-770]
+  capec: [CAPEC-490]
+  owasp: []
+
+- id: http-flood
+  name: HTTP flood
+  aliases: [Application-layer DDoS, Layer 7 DDoS, Request flood]
+  category: availability
+  summary: A flood of legitimate-looking web requests, often from a botnet, exhausts an application's processing, database or connection capacity. Because each request is valid on its own, the attack is hard to separate from real users.
+  defenses:
+    [
+      Per-client and per-endpoint rate limits,
+      Caching,
+      Bot detection and challenges,
+      Web application firewalls,
+    ]
+  topics: [MAL-06, APP-08, MAL-05]
+  labs: [ddos]
+  attack: [T1499.002, T1499.003]
+  cwe: [CWE-770]
+  capec: [CAPEC-488]
+  owasp: []
+
+- id: slow-rate-dos
+  name: Slow-rate denial of service
+  aliases: [Slowloris, Low-and-slow attack, Slow HTTP attack]
+  category: availability
+  summary: An attacker opens many connections to a web server and keeps each one alive by sending data very slowly, tying up the server's limited connection slots with little bandwidth. It works because the server must hold resources for each open connection while it waits for the request to finish.
+  defenses: [Request and header timeouts, Per-client connection limits, Buffering reverse proxies]
+  topics: [MAL-06]
+  labs: []
+  attack: [T1499.002]
+  cwe: [CWE-770, CWE-772]
+  capec: [CAPEC-469]
+  owasp: []
+
+- id: redos
+  name: Regular expression denial of service
+  aliases: [ReDoS, Catastrophic backtracking]
+  category: availability
+  summary: A regular expression whose matching time grows exponentially on certain inputs lets one short, nearly matching string tie up a processor for seconds or longer. It works because backtracking regex engines try every way a pattern with nested or overlapping repetition could match before giving up.
+  defenses:
+    [
+      Limit input length before matching,
+      Avoid nested and ambiguous repetition,
+      Non-backtracking regex engines,
+      Matching timeouts,
+    ]
+  topics: [APP-02]
+  labs: []
+  attack: []
+  cwe: [CWE-1333, CWE-400]
+  capec: [CAPEC-492]
+  owasp: []
+
+- id: xml-entity-expansion
+  name: XML entity expansion
+  aliases: [Billion laughs attack, XML bomb, XEE]
+  category: availability
+  summary: A small XML document defines entities that refer to one another many times over, so a parser that expands them builds gigabytes of text and exhausts memory and processor time. Blocking external entities alone does not stop it, because nothing outside the document is fetched.
+  defenses: [Disable DTD processing, Parser limits on entity expansion, Size limits before parsing]
+  topics: [APP-07]
+  labs: []
+  attack: []
+  cwe: [CWE-776]
+  capec: [CAPEC-197]
+  owasp: ['A02:2025']
+
+- id: unrestricted-resource-consumption
+  name: Unrestricted resource consumption
+  aliases: [API resource exhaustion, Resource exhaustion]
+  category: availability
+  summary: An API that does not limit how often, how much or how expensively a client may call it lets one client exhaust its processing, memory or budget, for example by triggering thousands of paid text messages. Each request may be valid on its own; the harm comes from the missing limits.
+  defenses:
+    [
+      Rate limits per account and operation,
+      Size and page limits on requests,
+      Spending limits on paid services,
+      Timeouts and quotas,
+    ]
+  topics: [APP-08]
+  labs: []
+  attack: [T1499.003, T1496.003]
+  cwe: [CWE-770, CWE-400, CWE-799]
+  capec: [CAPEC-130]
+  owasp: ['API4:2023']
+
+- id: account-lockout-attack
+  name: Account lockout attack
+  aliases: [Lockout denial of service, Inducing account lockout]
+  category: availability
+  summary: An attacker deliberately fails sign-ins to a victim's account to trigger the lockout meant to stop password guessing, so the real user is shut out. It works because a strict per-account lockout lets anyone who knows a username lock that user out.
+  defenses:
+    [
+      Throttling with growing delays instead of hard lockouts,
+      Monitoring failures across accounts,
+      Self-service unlock with a second factor,
+    ]
+  topics: [IAM-02, HUM-04]
+  labs: [login-security]
+  attack: [T1531]
+  cwe: [CWE-645]
+  capec: [CAPEC-2]
+  owasp: []
+
+- id: virus
+  name: Computer virus
+  aliases: [Virus, File infector, Macro virus]
+  category: malware
+  summary: Malicious code that inserts copies of itself into other programs, documents or boot records and spreads when someone runs or opens an infected file. Besides spreading, it can carry any payload, from corrupting files to installing other malware.
+  defenses:
+    [
+      Endpoint protection,
+      Application allowlisting,
+      Disable document macros by default,
+      Least privilege for users,
+    ]
+  topics: [MAL-01]
+  labs: []
+  attack: [T1080, T1091]
+  cwe: [CWE-509]
+  capec: []
+  owasp: []
+
+- id: worm
+  name: Worm
+  aliases: [Computer worm, Network worm]
+  category: malware
+  summary: Self-contained malware that copies itself to other computers without anyone opening a file, so one infection can grow into a fast-moving outbreak across vulnerable systems. Its growth is fastest early on, which is when patching and blocking its traffic help most.
+  defenses:
+    [
+      Prompt patching of network services,
+      Network segmentation,
+      Disable unneeded services,
+      Rapid isolation of infected hosts,
+    ]
+  topics: [MAL-01]
+  labs: []
+  attack: [T1210, T1091, T0866]
+  cwe: [CWE-509]
+  capec: []
+  owasp: []
+
+- id: trojan
+  name: Trojan horse
+  aliases: [Trojan]
+  category: malware
+  summary: Malware that poses as something useful, such as a utility, game or invoice, so that the victim installs or runs it. It does not replicate, relies on deception rather than a software flaw, and often installs other malware once it runs.
+  defenses:
+    [
+      Install software only from trusted sources,
+      Application allowlisting,
+      Endpoint protection,
+      Security awareness training,
+    ]
+  topics: [MAL-01]
+  labs: []
+  attack: [T1204.002, T1036]
+  cwe: [CWE-507]
+  capec: [CAPEC-185]
+  owasp: []
+
+- id: ransomware
+  name: Ransomware
+  aliases: [Crypto-ransomware]
+  category: malware
+  summary: Malware that encrypts an organization's data, and often steals a copy first, then demands payment for the key or for keeping the data private, so files and systems stay unavailable until they are restored. Many attacks also delete backups and recovery options to raise the pressure to pay.
+  defenses:
+    [
+      Offline or immutable backups with tested restores,
+      Network segmentation,
+      Least privilege and strong admin authentication,
+      Prompt patching,
+      An incident response plan,
+    ]
+  topics: [MAL-07, MAL-01, GRC-05, OPS-06]
+  labs: []
+  attack: [T1486, T1490, T1471]
+  cwe: []
+  capec: [CAPEC-549]
+  owasp: []
+
+- id: wiper
+  name: Wiper malware
+  aliases: [Wiper, Disk wiper]
+  category: malware
+  summary: Malware that overwrites or deletes data, disks or boot records so they cannot be recovered, sometimes posing as ransomware even though no key exists. Its goal is destruction and disruption rather than payment.
+  defenses:
+    [
+      Offline or immutable backups,
+      Tested recovery plans,
+      Network segmentation,
+      Least privilege for administrative accounts,
+    ]
+  topics: [MAL-01]
+  labs: []
+  attack: [T1485, T1561]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: spyware
+  name: Spyware
+  aliases: [Keylogger, Keystroke logger, Stalkerware]
+  category: malware
+  summary: Software that covertly collects information from a device, such as keystrokes, screenshots, files, location or browsing activity, and sends it to someone else. Keyloggers, a common form, record what the user types in order to capture passwords.
+  defenses:
+    [
+      Endpoint protection,
+      Phishing-resistant multi-factor authentication,
+      Least privilege and app permission reviews,
+      Keep devices updated,
+    ]
+  topics: [MAL-01]
+  labs: []
+  attack: [T1056.001, T1113, T1417.001]
+  cwe: [CWE-512]
+  capec: [CAPEC-568]
+  owasp: []
+
+- id: cryptojacking
+  name: Cryptojacking
+  aliases: [Cryptomining malware, Coin miner, Malicious cryptomining]
+  category: malware
+  summary: Malware or a hijacked account secretly spends a victim's processors, cloud resources or electricity on cryptocurrency mining for the attacker. The victim pays through slower systems, higher bills and hardware wear.
+  defenses:
+    [
+      Monitor CPU and cloud spending for anomalies,
+      Protect cloud credentials,
+      Endpoint protection,
+      Block known mining pools at the network edge,
+    ]
+  topics: [MAL-01]
+  labs: []
+  attack: [T1496.001]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: rootkit
+  name: Rootkit
+  aliases: [Kernel rootkit, User-mode rootkit]
+  category: malware
+  summary: Malware that conceals an intruder's files, processes and connections by subverting the operating system functions that report them, so tools running on the infected host can no longer be trusted. Reliable evidence then has to come from outside the running system.
+  defenses:
+    [
+      Secure and measured boot,
+      Driver and kernel module signing,
+      Offline and memory forensics,
+      Rebuild compromised hosts from known-good media,
+    ]
+  topics: [MAL-01, FOR-04, SYS-07]
+  labs: []
+  attack: [T1014, T0851]
+  cwe: []
+  capec: [CAPEC-552]
+  owasp: []
+
+- id: backdoor
+  name: Backdoor
+  aliases: [Remote access trojan, RAT, Trapdoor]
+  category: malware
+  summary: A hidden way into a system that bypasses its normal authentication, such as malware, a modified program or a remote-access tool installed by an intruder, giving a remote operator ongoing control. The same remote administration that IT staff use legitimately becomes a backdoor when someone installs it without the owner's consent.
+  defenses:
+    [
+      Application allowlisting,
+      Inventory of approved remote-access tools,
+      Egress filtering and connection monitoring,
+      File integrity monitoring,
+    ]
+  topics: [MAL-01, MAL-04]
+  labs: []
+  attack: [T1219, T1554]
+  cwe: [CWE-510]
+  capec: []
+  owasp: []
+
+- id: botnet
+  name: Botnet
+  aliases: [Bot network, Zombie network]
+  category: malware
+  summary: A collection of compromised computers and devices, called bots, that one operator controls remotely and directs together, for floods, spam, password guessing or other large-scale abuse. Poorly secured connected devices make up a large share of many botnets.
+  defenses:
+    [
+      Unique credentials on every device,
+      Prompt firmware and software updates,
+      Monitor for command-and-control traffic,
+      Sinkholing and coordinated takedowns,
+    ]
+  topics: [MAL-05, MAL-04, IOT-05]
+  labs: [ddos]
+  attack: [T1583.005, T1584.005]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: command-and-control
+  name: Command and control
+  aliases: [C2, C&C, C2 channel]
+  category: malware
+  summary: The channel through which compromised systems receive instructions from, and send data to, their operator, usually as regular check-ins over common protocols such as HTTPS or DNS. Because malware that needs instructions must keep talking across the network, this traffic is often the most visible part of an intrusion.
+  defenses:
+    [
+      Egress filtering and web proxies,
+      Monitor DNS and connection logs for beaconing,
+      Block and sinkhole known malicious domains,
+      Network intrusion detection,
+    ]
+  topics: [MAL-04, MAL-01, NET-07]
+  labs: []
+  attack: [T1071, T1568.002, T1573, T1102]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: buffer-overflow
+  name: Buffer overflow
+  aliases: [Buffer overrun, Stack smashing, Heap overflow, Out-of-bounds write]
+  category: system
+  summary: A program writes past the end of a fixed-size buffer and overwrites neighboring memory, such as other variables or control data like return addresses. Depending on what is overwritten, it can crash the program, corrupt data or let an attacker take over its control flow.
+  defenses:
+    [
+      Memory-safe languages,
+      Bounds-checked library functions,
+      Stack canaries,
+      Non-executable memory and ASLR,
+      Sanitizers and fuzzing in testing,
+    ]
+  topics: [SYS-02, SYS-01]
+  labs: []
+  attack: [T1190, T1068]
+  cwe: [CWE-787, CWE-120, CWE-121, CWE-122]
+  capec: [CAPEC-100]
+  owasp: []
+
+- id: buffer-over-read
+  name: Buffer over-read
+  aliases: [Out-of-bounds read, Buffer overread, Over-read]
+  category: system
+  summary: A program reads past the end of a buffer and returns or uses whatever lies beyond it, which can leak keys, passwords or memory addresses without crashing anything, as Heartbleed did. It usually comes from trusting a length supplied by the input.
+  defenses:
+    [
+      Check lengths against the bytes actually received,
+      Memory-safe languages,
+      Sanitizers and fuzzing in testing,
+    ]
+  topics: [SYS-02, SYS-01]
+  labs: []
+  attack: []
+  cwe: [CWE-125]
+  capec: [CAPEC-540]
+  owasp: []
+
+- id: use-after-free
+  name: Use-after-free
+  aliases: [UAF, Dangling pointer dereference]
+  category: system
+  summary: A program keeps using a pointer after the memory it refers to has been freed, so the reused memory may now hold another object that an attacker can influence. The result can be leaked data, corrupted state or code execution.
+  defenses:
+    [
+      Memory-safe languages,
+      Clear ownership rules and smart pointers,
+      Sanitizers and fuzzing in testing,
+      Hardened memory allocators,
+    ]
+  topics: [SYS-03, SYS-01]
+  labs: []
+  attack: []
+  cwe: [CWE-416]
+  capec: []
+  owasp: []
+
+- id: integer-overflow
+  name: Integer overflow
+  aliases: [Integer wraparound, Integer conversion error, Signedness error]
+  category: system
+  summary: An arithmetic result or a conversion falls outside the range of its integer type and wraps around, so a size or index becomes far smaller or larger than intended. When that value then sizes a buffer or bounds a copy, the mistake becomes a buffer overflow.
+  defenses:
+    [
+      Check arithmetic before allocating or copying,
+      Consistent unsigned size types,
+      Compiler warnings and sanitizers,
+      Checked arithmetic helpers,
+    ]
+  topics: [SYS-02]
+  labs: []
+  attack: []
+  cwe: [CWE-190, CWE-680]
+  capec: [CAPEC-92]
+  owasp: []
+
+- id: race-condition
+  name: Race condition
+  aliases: [TOCTOU, Time-of-check to time-of-use, TOCTTOU, Check-then-act race]
+  category: system
+  summary: Code that checks a condition and then acts on it in a separate step leaves a window in which an attacker can change the shared resource, so the action runs on a file, balance or permission that no longer matches what was checked. Time-of-check to time-of-use flaws in file handling are the classic case.
+  defenses:
+    [
+      Atomic operations and single-step system calls,
+      Locks and database transactions,
+      Operate on file handles rather than names,
+      Thread sanitizers in testing,
+    ]
+  topics: [SYS-06, APP-04, APP-08]
+  labs: []
+  attack: []
+  cwe: [CWE-362, CWE-367]
+  capec: [CAPEC-26, CAPEC-29]
+  owasp: ['A06:2025']
+
+- id: symlink-attack
+  name: Symlink attack
+  aliases: [Symbolic link attack, Link following, Symlink race]
+  category: system
+  summary: An attacker places a symbolic link where a more privileged program expects to create or open a file, so the program reads, overwrites or changes the permissions of the link's target instead. It exploits privileged programs that follow links in directories other users can write to.
+  defenses:
+    [
+      Open files without following links,
+      Private per-user temporary directories,
+      Create files atomically and exclusively,
+      Drop privileges before touching user-writable paths,
+    ]
+  topics: [SYS-06, SYS-04, APP-04]
+  labs: []
+  attack: []
+  cwe: [CWE-59, CWE-61, CWE-377]
+  capec: [CAPEC-132, CAPEC-27]
+  owasp: ['A01:2025']
+
+- id: privilege-escalation
+  name: Privilege escalation
+  aliases: [Elevation of privilege, Local privilege escalation, LPE]
+  category: system
+  summary: An attacker who already runs code with limited rights gains higher ones, such as administrator or root, by exploiting a flaw in privileged code or a misconfigured permission. It turns a small foothold into full control of a system.
+  defenses:
+    [
+      Least privilege for users and services,
+      Prompt kernel and OS patching,
+      Minimize set-user-ID programs and capabilities,
+      Protect files that privileged code reads or runs,
+    ]
+  topics: [SYS-04, SYS-05]
+  labs: [os-permissions]
+  attack: [T1068, T1548, T1548.001, T1404, T0890]
+  cwe: [CWE-269, CWE-250, CWE-732]
+  capec: [CAPEC-233, CAPEC-69]
+  owasp: ['A01:2025']
+
+- id: sandbox-escape
+  name: Sandbox escape
+  aliases: [Sandbox breakout, VM escape, Virtual machine escape]
+  category: system
+  summary: Code confined to a sandbox or virtual machine breaks out and acts on the surrounding system with the rights the boundary was meant to deny. It usually exploits a flaw in the kernel, broker or hypervisor that enforces the boundary, which is why that mediator is the most security-critical code.
+  defenses:
+    [
+      Layered sandboxes with minimal privileges,
+      Prompt patching of kernels and hypervisors,
+      Limit the system calls exposed to confined code,
+      Separate virtual machines for untrusted workloads,
+    ]
+  topics: [SYS-05]
+  labs: []
+  attack: [T1611]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: transient-execution-attack
+  name: Transient execution attack
+  aliases: [Spectre, Meltdown, Speculative execution attack]
+  category: system
+  summary: Attacks such as Spectre and Meltdown make a processor speculatively run instructions that touch secret data, then recover that data from traces the cancelled work leaves in shared hardware such as caches. They can cross process, kernel and browser-site boundaries even when the software itself has no bug.
+  defenses:
+    [
+      Microcode and operating system updates,
+      Kernel and compiler mitigations,
+      Browser site isolation,
+      Keep untrusted code in separate processes or VMs,
+    ]
+  topics: [SYS-08, WEB-04, SYS-05]
+  labs: []
+  attack: []
+  cwe: [CWE-1420, CWE-1303]
+  capec: [CAPEC-663]
+  owasp: []
+
+- id: side-channel-attack
+  name: Side-channel attack
+  aliases: [timing attack, cache timing attack, power analysis]
+  category: system
+  summary: >-
+    An attacker learns a secret, such as a key or a password, from how a
+    computation behaves rather than from what it returns: how long it takes,
+    which cache lines it touches, or how much power it draws. It works because
+    code that gives correct answers can still do different work for different
+    secret values, such as a comparison that stops at the first wrong byte, so
+    measurements reveal what the output hides.
+  defenses:
+    - Constant-time code for operations on secrets
+    - Vetted cryptographic libraries instead of hand-written primitives
+    - No shared hardware with untrusted code for sensitive work
+    - Keys in hardware with side-channel countermeasures
+  topics: [SYS-08, CRY-02, IOT-08]
+  labs: []
+  attack: []
+  cwe: [CWE-208, CWE-203, CWE-1300]
+  capec: []
+  owasp: []
+
+- id: bootkit
+  name: Bootkit
+  aliases: [Boot-level rootkit, UEFI bootkit, Firmware rootkit]
+  category: system
+  summary: Malware that starts before the operating system by modifying the boot loader, boot records or system firmware, so it can tamper with the kernel and security software before they load. Because it runs first, it survives reinstalling applications, and firmware implants can survive reinstalling the operating system.
+  defenses:
+    [
+      Secure boot with current revocation lists,
+      Measured boot and remote attestation,
+      Signed firmware updates with rollback protection,
+      Restrict changes to firmware settings,
+    ]
+  topics: [SYS-07]
+  labs: []
+  attack: [T1542.003, T1542.001]
+  cwe: []
+  capec: [CAPEC-552]
+  owasp: []
+
+- id: confused-deputy
+  name: Confused deputy
+  aliases: [Confused deputy problem, Confused deputy attack]
+  category: system
+  summary: A privileged program is tricked into using its own authority on behalf of a less privileged caller, for example writing a file or fetching a resource the caller could not reach itself. It works when the program checks its own rights instead of the caller's.
+  defenses:
+    [
+      Check the caller's authority on every request,
+      Pass capabilities or handles instead of names,
+      Least privilege for brokers and services,
+    ]
+  topics: [SYS-05, APP-05]
+  labs: []
+  attack: []
+  cwe: [CWE-441]
+  capec: []
+  owasp: ['A01:2025']
+
+- id: dependency-confusion
+  name: Dependency confusion
+  aliases: [Namespace confusion, Package substitution attack]
+  category: supply-chain
+  summary: An attacker publishes a package to a public registry under the same name as an organization's internal package, and a build that resolves names from both registries installs the attacker's copy instead of the internal one. It needs no bug in anyone's code, only ambiguous package resolution.
+  defenses:
+    [
+      Scoped or reserved package namespaces,
+      One registry proxy for all installs,
+      Lockfiles with hashes,
+      Claim internal names on public registries,
+    ]
+  topics: [CLD-06, CLD-07]
+  labs: [supply-chain-provenance]
+  attack: [T1195.001]
+  cwe: []
+  capec: []
+  owasp: ['A03:2025']
+
+- id: package-typosquatting
+  name: Package typosquatting
+  aliases: [Typosquatted package, Look-alike package, Malicious package]
+  category: supply-chain
+  summary: An attacker publishes a malicious package under a name close to a popular one, so developers who mistype or misremember the name install it and its code runs with their privileges or the build's. It exploits how easily one character in a dependency name goes unnoticed.
+  defenses:
+    [
+      Review new dependencies before adopting them,
+      Lockfiles with hashes,
+      Allowlisted or proxied registries,
+      Software composition analysis,
+    ]
+  topics: [CLD-06, AI-03]
+  labs: []
+  attack: [T1195.001]
+  cwe: [CWE-506]
+  capec: []
+  owasp: ['A03:2025']
+
+- id: compromised-package
+  name: Compromised open-source package
+  aliases: [Malicious package release, Package hijacking, Maintainer account takeover]
+  category: supply-chain
+  summary: A legitimate package ships malicious code because a maintainer's account was taken over or a trusted maintainer turned malicious, so every project that installs the release runs it, as with the backdoored xz utils releases found in 2024. Pinning does not help if the pinned version is the malicious one.
+  defenses:
+    [
+      Lockfiles with hashes and deliberate updates,
+      Review and delay new releases,
+      Verify signatures and build provenance,
+      An SBOM to find affected systems quickly,
+    ]
+  topics: [CLD-06, CLD-07]
+  labs: [supply-chain-provenance]
+  attack: [T1195.001]
+  cwe: [CWE-506, CWE-829]
+  capec: [CAPEC-538]
+  owasp: ['A03:2025', 'A08:2025']
+
+- id: build-system-compromise
+  name: Build system compromise
+  aliases: [Build server compromise, Build pipeline compromise]
+  category: supply-chain
+  summary: Attackers break into the system that compiles and packages software and insert code during the build, so the vendor's own signed release carries it to every customer, as in the 2020 SolarWinds SUNBURST compromise. Reviewing the source cannot catch it, because the change never appears there.
+  defenses:
+    [
+      Hardened and isolated build platforms,
+      Signed build provenance such as SLSA,
+      Reproducible builds,
+      Signing keys out of reach of build steps,
+    ]
+  topics: [CLD-07]
+  labs: []
+  attack: [T1195.002]
+  cwe: []
+  capec: [CAPEC-511, CAPEC-444]
+  owasp: ['A03:2025']
+
+- id: poisoned-pipeline-execution
+  name: Poisoned pipeline execution
+  aliases: [PPE, CI/CD pipeline poisoning]
+  category: supply-chain
+  summary: An attacker who can change code or configuration in a repository, for example through a pull request, gets a CI/CD pipeline to run their commands with the pipeline's secrets and permissions. From there they can steal credentials, tamper with build artifacts or reach production.
+  defenses:
+    [
+      No secrets for untrusted triggers,
+      Short-lived least-privilege pipeline tokens,
+      Review changes to pipeline files,
+      Pin third-party actions to full commits,
+    ]
+  topics: [CLD-07]
+  labs: []
+  attack: [T1677]
+  cwe: [CWE-829]
+  capec: []
+  owasp: ['A03:2025', 'A08:2025']
+
+- id: malicious-update
+  name: Malicious software update
+  aliases: [Update hijacking, Compromised update server, Update channel attack]
+  category: supply-chain
+  summary: A tampered update is delivered through a vendor's normal update channel, for example from a compromised update server or mirror, so programs and devices that trust that channel install it automatically. It works when clients trust where an update came from instead of verifying the update itself.
+  defenses:
+    [
+      Signed updates verified on the device,
+      Rollback protection,
+      Well-guarded signing keys,
+      Staged rollouts with monitoring,
+    ]
+  topics: [IOT-06, CLD-07]
+  labs: []
+  attack: [T1195.002]
+  cwe: [CWE-494]
+  capec: [CAPEC-186]
+  owasp: ['A08:2025', 'A03:2025']
+
+- id: vulnerable-dependency
+  name: Vulnerable dependency exploitation
+  aliases:
+    [Known-vulnerable component, Using components with known vulnerabilities, Vulnerable library]
+  category: supply-chain
+  summary: Attackers exploit a publicly known vulnerability in a library or component that an application includes, often a transitive dependency its developers never chose directly. Because one component ships inside many products, a single disclosure can expose a great many systems at once.
+  defenses:
+    [
+      An SBOM and dependency inventory,
+      Software composition analysis,
+      Prompt and tested updates,
+      Remove unused and unmaintained components,
+    ]
+  topics: [CLD-06, CLD-04]
+  labs: []
+  attack: [T1190]
+  cwe: [CWE-1395, CWE-1104]
+  capec: []
+  owasp: ['A03:2025']
+
+- id: third-party-compromise
+  name: Third-party compromise
+  aliases: [Trusted relationship abuse, Vendor compromise, MSP compromise, Island hopping]
+  category: supply-chain
+  summary: Attackers breach a vendor, service provider or partner and use its trusted access, software or role in handling data to reach that provider's customers. One weak supplier can expose every organization that depends on it, as the 2023 MOVEit Transfer campaign showed.
+  defenses:
+    [
+      Vendor risk assessment and monitoring,
+      Least-privilege and logged vendor access,
+      Contract terms for security and breach notice,
+      Share only the data a vendor needs,
+    ]
+  topics: [GRC-06]
+  labs: []
+  attack: [T1199]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: hardware-supply-chain-compromise
+  name: Hardware supply chain compromise
+  aliases: [Counterfeit components, Hardware interdiction, Tampered hardware]
+  category: supply-chain
+  summary: Hardware or its firmware is modified, swapped or counterfeited while it is being manufactured or shipped, so a device arrives with hidden malicious functionality or weaker parts than the buyer expects. Buyers usually have little visibility into how a product was built.
+  defenses:
+    [
+      Trusted suppliers and authorized distributors,
+      Tamper-evident packaging and inspection,
+      Firmware and component attestation,
+      Supply chain risk management,
+    ]
+  topics: [GRC-06]
+  labs: []
+  attack: [T1195.003, T1474.002]
+  cwe: []
+  capec: [CAPEC-438, CAPEC-439]
+  owasp: []
+
+- id: stolen-code-signing-key
+  name: Stolen code-signing key
+  aliases: [Code-signing abuse, Signing key compromise, Malicious signed code]
+  category: supply-chain
+  summary: Attackers steal or misuse a developer's code-signing key or certificate and sign malicious software with it, so operating systems, update clients and users accept it as genuine. A valid signature proves only who signed the code, not that the code is safe.
+  defenses:
+    [
+      Signing keys in hardware security modules,
+      Restrict and log every signing operation,
+      Revoke compromised certificates quickly,
+      Short-lived keyless signing with transparency logs,
+    ]
+  topics: [CLD-07, CRY-04, IOT-06, SYS-07]
+  labs: []
+  attack: [T1553.002, T1588.003]
+  cwe: [CWE-732]
+  capec: [CAPEC-206]
+  owasp: []
+
+- id: cloud-storage-exposure
+  name: Cloud storage exposure
+  aliases: [open bucket, leaky bucket, public bucket, misconfigured object storage]
+  category: cloud
+  summary: >-
+    A bucket or other cloud storage is configured so that anonymous callers, or
+    anyone with an account at the provider, can read its objects, usually
+    through a policy, access control list or sharing link broader than
+    intended. It needs no exploit, since the service does what its settings
+    say, and it can last for years because nothing breaks for legitimate users.
+  defenses:
+    - Block public access at the organization or account level
+    - Grants to named principals only
+    - Separate buckets for public and private data
+    - Continuous configuration monitoring
+    - Object-level access logging
+  topics: [CLD-03, CLD-01, CLD-02, CLD-08]
+  labs: [cloud-iam-policy]
+  attack: [T1530, T1619]
+  cwe: [CWE-552, CWE-732]
+  capec: [CAPEC-180]
+  owasp: ['A02:2025', 'A01:2025']
+
+- id: cloud-account-compromise
+  name: Cloud account compromise
+  aliases: [cloud account takeover, valid cloud accounts, compromised service account]
+  category: cloud
+  summary: >-
+    An attacker signs in to a cloud tenant as a real user or service account,
+    with credentials or tokens that were guessed, phished, bought or stolen.
+    The management API is reachable from anywhere and judges each request by
+    identity, so the attacker's actions look like normal use, and dormant or
+    automated accounts without MFA are the ones most often abused.
+  defenses:
+    - Phishing-resistant MFA for people
+    - Federation and short-lived credentials
+    - Removal of dormant and unused accounts
+    - Least-privilege permissions
+    - Alerts on unusual sign-ins and API activity
+  topics: [CLD-02, IAM-07, IAM-08, IAM-02]
+  labs: []
+  attack: [T1078.004]
+  cwe: [CWE-308]
+  capec: [CAPEC-560]
+  owasp: ['A07:2025']
+
+- id: cloud-access-key-exposure
+  name: Cloud access key exposure
+  aliases: [leaked access keys, hardcoded cloud credentials, secrets in code, secret sprawl]
+  category: cloud
+  summary: >-
+    A long-lived cloud access key or other secret lands where others can read
+    it, such as a repository's history, an infrastructure-as-code state file, a
+    CI log or a container image layer, and is later found and used. The key
+    works for anyone until it is revoked, and deleting it from the current file
+    leaves every earlier copy intact.
+  defenses:
+    - Short-lived credentials instead of stored keys
+    - Secrets managers and service-managed passwords
+    - Secret scanning with push protection
+    - Revoke and rotate first, then investigate
+    - Encrypted, access-controlled IaC state
+  topics: [CLD-08, IAM-07, CLD-04, CLD-07]
+  labs: []
+  attack: [T1552.001, T1078.004]
+  cwe: [CWE-798, CWE-540, CWE-312, CWE-532]
+  capec: [CAPEC-37]
+  owasp: ['A07:2025']
+
+- id: cloud-iam-privilege-escalation
+  name: Cloud IAM privilege escalation
+  aliases: [IAM privilege escalation, over-privileged role abuse, cloud permission escalation]
+  category: cloud
+  summary: >-
+    A cloud identity with limited rights uses a permission that changes
+    permissions, such as attaching policies, creating credentials for other
+    identities or giving a more powerful role to a resource it launches, to
+    make itself an administrator. It works because wildcard grants and
+    permission-management actions are often handed out like ordinary ones.
+  defenses:
+    - Least-privilege policies without wildcards
+    - Tight limits on permission-management actions
+    - Permissions boundaries and organization guardrails
+    - Alerts on policy, role and credential changes
+    - Regular access reviews
+  topics: [CLD-02, IAM-06]
+  labs: [cloud-iam-policy]
+  attack: [T1098.003, T1098.001, T1548.005]
+  cwe: [CWE-269, CWE-266]
+  capec: [CAPEC-233, CAPEC-122]
+  owasp: ['A01:2025', 'A02:2025']
+
+- id: cloud-metadata-credential-theft
+  name: Cloud metadata credential theft
+  aliases: [IMDS abuse, instance metadata credential theft, metadata service attack]
+  category: cloud
+  summary: >-
+    An attacker obtains the temporary credentials that a cloud instance
+    metadata service gives a virtual machine's role, usually by making a
+    vulnerable application on the machine fetch them through server-side
+    request forgery, then uses them with all of that role's permissions. The
+    service trusts requests from the machine itself, so one application flaw
+    becomes access to the cloud account.
+  defenses:
+    - Session-token metadata service such as IMDSv2
+    - Least-privilege instance roles
+    - Egress blocks on link-local addresses
+    - Destination allowlists for URL fetching
+    - Alerts on role credentials used off the instance
+  topics: [CLD-02, APP-05, IAM-07]
+  labs: [ssrf-url-filter]
+  attack: [T1552.005, T1078.004]
+  cwe: [CWE-918, CWE-522]
+  capec: [CAPEC-664]
+  owasp: ['A01:2025', 'API7:2023']
+
+- id: container-escape
+  name: Container escape
+  aliases: [container breakout, escape to host]
+  category: cloud
+  summary: >-
+    A process inside a container breaks out of its isolation and gains control
+    of the host it shares with other containers. Every container runs on the
+    host's kernel, so a kernel or runtime flaw, or a risky setting such as
+    privileged mode, a mounted container-daemon socket or a host filesystem
+    mount, turns control of one application into control of the machine.
+  defenses:
+    - Non-root containers with all capabilities dropped
+    - No privileged mode, daemon socket or host mounts
+    - Default seccomp and security-module profiles
+    - Patched kernels and container runtimes
+    - Separate hosts or VMs for untrusted workloads
+  topics: [CLD-04, SYS-05, CLD-05]
+  labs: []
+  attack: [T1611]
+  cwe: [CWE-250, CWE-653]
+  capec: [CAPEC-480]
+  owasp: ['A02:2025']
+
+- id: kubernetes-rbac-abuse
+  name: Kubernetes RBAC abuse
+  aliases:
+    [
+      K8s RBAC misuse,
+      cluster-admin abuse,
+      service account token abuse,
+      Kubernetes privilege escalation,
+    ]
+  category: cloud
+  summary: >-
+    An attacker who controls a pod or holds a stolen cluster credential uses
+    overly broad role-based access control (RBAC) grants, such as cluster-admin
+    bound to a default service account or rights to read secrets, create pods
+    or bind roles, to take over the cluster. RBAC only adds permissions and some
+    quietly imply others, so one broad binding and an automatically mounted
+    token undo careful grants elsewhere.
+  defenses:
+    - Least-privilege roles scoped to a namespace
+    - No cluster-admin or wildcard grants for workloads
+    - One service account per workload
+    - No token mounting for pods that never call the API
+    - Regular review of role bindings
+  topics: [CLD-05, IAM-06, IAM-07]
+  labs: []
+  attack: [T1098.006, T1552.007, T1610]
+  cwe: [CWE-266, CWE-269]
+  capec: [CAPEC-122]
+  owasp: ['A01:2025']
+
+- id: ci-cd-credential-theft
+  name: CI/CD credential theft
+  aliases: [pipeline secret theft, CI secret exfiltration, deploy credential theft]
+  category: cloud
+  summary: >-
+    Attackers take the cloud and registry credentials that a build pipeline
+    stores or is issued, through code that runs in a privileged job, a
+    compromised CI service or third-party action, or a cloud trust policy that
+    accepts tokens from any repository, and use them to reach production.
+    Pipelines hold powerful deployment rights, often as long-lived secrets,
+    while running code from many contributors, plugins and dependencies.
+  defenses:
+    - Short-lived OIDC credentials instead of stored secrets
+    - Cloud trust policies pinned to one repository and branch
+    - Least-privilege deployment roles
+    - Protected release environments with approval
+    - Fast rotation of any remaining CI secrets
+  topics: [CLD-07, IAM-07, CLD-08]
+  labs: []
+  attack: [T1677, T1078.004]
+  cwe: [CWE-522, CWE-863, CWE-829]
+  capec: []
+  owasp: ['A03:2025']
+
+- id: cloud-resource-hijacking
+  name: Cloud resource hijacking
+  aliases: [cloud cryptojacking, cloud cryptomining, LLMjacking, cloud service hijacking]
+  category: cloud
+  summary: >-
+    An attacker with access to a cloud account or cluster spends its compute
+    and paid services on their own work, most often cryptocurrency mining but
+    also bulk email or SMS and hosted AI models, and leaves the owner with the
+    bill. Cloud capacity scales on demand and is billed to the account, so
+    stolen credentials turn straight into money unless quotas and spending
+    alerts intervene.
+  defenses:
+    - Least-privilege credentials and MFA
+    - Service quotas and budget alerts
+    - Alerts on unusual usage spikes
+    - Resource limits for containers
+    - Disabled unused regions and services
+  topics: [MAL-01, CLD-02, CLD-05]
+  labs: []
+  attack: [T1496.001, T1496.004]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: cross-tenant-attack
+  name: Cross-tenant attack
+  aliases: [tenant isolation breach, cross-tenant escape, shared technology vulnerability]
+  category: cloud
+  summary: >-
+    A customer of a shared cloud service, or an attacker posing as one,
+    exploits a flaw in the provider's isolation between tenants, such as an
+    escape from a shared host, a weakness in a managed service or a hardware
+    side channel, to reach other customers' data. Because tenants share
+    hardware, kernels and service code, one such bug on the provider's side can
+    expose every customer, whatever their own settings.
+  defenses:
+    - Provider isolation testing and patching
+    - Dedicated hosts or clusters for sensitive workloads
+    - Customer-managed encryption keys
+    - Tracking provider security bulletins
+    - Key rotation after a provider disclosure
+  topics: [CLD-01, SYS-05, SYS-08, CLD-05]
+  labs: []
+  attack: [T1611]
+  cwe: [CWE-653, CWE-668]
+  capec: [CAPEC-480]
+  owasp: []
+
+- id: evil-twin
+  name: Evil twin access point
+  aliases: [evil twin, rogue access point, fake hotspot, Wi-Fi impersonation]
+  category: wireless-iot
+  summary: >-
+    An attacker runs an access point that copies a trusted network's name, and
+    sometimes offers only weaker security, so nearby devices join it and send
+    their traffic through the attacker. It works because devices choose
+    networks by name, and open networks, shared passphrases and clients that
+    skip certificate checks give them no way to tell the real access point from
+    a copy.
+  defenses:
+    - Server certificate validation for Enterprise Wi-Fi
+    - WPA3 with SAE-PK and Transition Disable
+    - TLS or a VPN end to end
+    - Wireless intrusion detection
+  topics: [IOT-01]
+  labs: []
+  attack: [T1557.004, T1638]
+  cwe: [CWE-300, CWE-295]
+  capec: [CAPEC-615]
+  owasp: []
+
+- id: deauthentication-attack
+  name: Deauthentication attack
+  aliases: [deauth attack, disassociation attack, deauthentication flood]
+  category: wireless-iot
+  summary: >-
+    Forged disconnect messages that claim to come from the access point knock
+    devices off a Wi-Fi network, either to deny service or to make them
+    reconnect so the attacker can record a fresh handshake or draw them to an
+    evil twin. It works because, unless Protected Management Frames are in use,
+    these control messages carry no authentication at all.
+  defenses:
+    - Protected Management Frames set to required
+    - WPA3-only networks
+    - Wireless intrusion detection
+    - Wired fallback for critical devices
+  topics: [IOT-01]
+  labs: []
+  attack: []
+  cwe: [CWE-306]
+  capec: [CAPEC-604]
+  owasp: []
+
+- id: wifi-handshake-cracking
+  name: Wi-Fi handshake cracking
+  aliases: [WPA2-PSK cracking, offline Wi-Fi password guessing, Wi-Fi password cracking]
+  category: wireless-iot
+  summary: >-
+    An attacker records the handshake a device performs when it joins a
+    WPA2-Personal network, then tests passphrase guesses against the recording
+    offline until one fits. It works because everything in the handshake except
+    the passphrase-derived key travels in the clear, so no access point is
+    involved to limit the guesses and a guessable passphrase falls.
+  defenses:
+    - WPA3-Personal (SAE), which allows no offline guessing
+    - Long random passphrases
+    - Enterprise Wi-Fi with per-user credentials
+    - Rotating the passphrase when people leave
+  topics: [IOT-01, CRY-05]
+  labs: []
+  attack: [T1110.002, T1669]
+  cwe: [CWE-521, CWE-1391]
+  capec: [CAPEC-49, CAPEC-16]
+  owasp: []
+
+- id: wps-pin-brute-force
+  name: WPS PIN brute force
+  aliases: [WPS PIN attack, Wi-Fi Protected Setup attack]
+  category: wireless-iot
+  summary: >-
+    An attacker in radio range guesses the eight-digit Wi-Fi Protected Setup PIN
+    of an access point, and a recovered PIN yields the network password. It
+    works because the access point's replies show whether the first half of the
+    PIN is right on its own and the last digit is only a checksum, so at most
+    11,000 guesses are needed, and many access points never lock out.
+  defenses:
+    - Disable WPS
+    - Lockout after failed PIN attempts
+    - Access point firmware updates
+  topics: [IOT-01]
+  labs: []
+  attack: [T1110.001, T1669]
+  cwe: [CWE-307, CWE-204]
+  capec: [CAPEC-49]
+  owasp: []
+
+- id: key-reinstallation-attack
+  name: Key reinstallation attack
+  aliases: [KRACK]
+  category: wireless-iot
+  summary: >-
+    An attacker positioned between a client and an access point replays a
+    handshake message so that a vulnerable device reinstalls a key it is
+    already using, which resets its nonce and lets the attacker decrypt, and
+    sometimes forge, Wi-Fi frames. The password plays no part: the flaw lies in
+    the handshake's state machine, which its security proofs did not model, so
+    only software updates fix it.
+  defenses:
+    - Patch clients and access points
+    - TLS or a VPN end to end
+    - Isolate devices that cannot be patched
+  topics: [IOT-01, CRY-06, CRY-02]
+  labs: []
+  attack: [T1557]
+  cwe: [CWE-323]
+  capec: []
+  owasp: []
+
+- id: bluetooth-pairing-attack
+  name: Bluetooth pairing attack
+  aliases: [Bluetooth MITM, KNOB attack, BIAS attack, legacy pairing eavesdropping]
+  category: wireless-iot
+  summary: >-
+    An attacker in radio range exploits how Bluetooth devices agree on a key
+    and later trust it: by sitting unnoticed in the middle of a pairing that
+    nobody confirms, recovering the key from a recorded legacy pairing, pushing
+    devices to negotiate a weak key, or impersonating a device that was paired
+    before. It works because pairing authenticates only as strongly as its
+    association model and protocol version allow, and devices often fall back
+    to the weakest option for compatibility.
+  defenses:
+    - LE Secure Connections, ideally Secure Connections Only mode
+    - Numeric Comparison or out-of-band pairing
+    - Pairing rarely and in private
+    - Firmware updates and removal of stale bonds
+    - Authorization separate from pairing
+  topics: [IOT-02, CRY-03]
+  labs: []
+  attack: [T1557]
+  cwe: [CWE-322, CWE-326, CWE-757, CWE-290]
+  capec: [CAPEC-668, CAPEC-667]
+  owasp: []
+
+- id: proximity-relay-attack
+  name: Proximity relay attack
+  aliases: [relay attack, keyless entry relay, relay theft, mafia fraud]
+  category: wireless-iot
+  summary: >-
+    Two attacker radios forward messages between a genuine key, such as a car
+    fob or a phone, and the lock it opens while the key is far away, so the
+    lock acts as if its owner were standing beside it. Every relayed message is
+    real and fresh, so cryptography notices nothing; the attack defeats any
+    system that treats being within radio range as proof of presence.
+  defenses:
+    - Distance bounding with precise round-trip timing
+    - A required user action, such as a button press
+    - Keys that stop answering when not moving
+    - Logging and alerts for every unlock
+  topics: [IOT-02]
+  labs: []
+  attack: []
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: malicious-mobile-app
+  name: Malicious mobile app
+  aliases: [mobile permission abuse, over-privileged app, rogue app, fake app]
+  category: wireless-iot
+  summary: >-
+    An app, or a library bundled inside it, uses the permissions the user
+    granted to collect contacts, location, audio or other protected data for
+    purposes the user never agreed to. It works because a permission is a
+    lasting capability shared by all code in the app, people approve prompts by
+    reflex, and the operating system controls access to data, not what the app
+    does with it afterward.
+  defenses:
+    - Least-privilege permissions requested in context
+    - Narrower grants such as approximate or while-in-use location
+    - Audits of bundled SDKs
+    - Regular permission reviews and app store vetting
+  topics: [IOT-03, HUM-05]
+  labs: []
+  attack: [T1636, T1430, T1429]
+  cwe: [CWE-250, CWE-359]
+  capec: []
+  owasp: []
+
+- id: default-device-credentials
+  name: Default device credentials
+  aliases: [default password attack, factory default credentials, universal default password]
+  category: wireless-iot
+  summary: >-
+    An attacker logs in to a router, camera or controller with the password it
+    shipped with, or with a secret built into every unit's firmware, and takes
+    control of it; the Mirai botnet grew to hundreds of thousands of devices
+    this way. It works because one published or extracted secret unlocks every
+    unit of a model that nobody changed, and hard-coded secrets cannot be
+    changed at all.
+  defenses:
+    - Unique per-device credentials, no universal defaults
+    - No hard-coded secrets in firmware
+    - Password change required at setup
+    - Management interfaces kept off the internet
+  topics: [IOT-05, IOT-08]
+  labs: []
+  attack: [T1078.001, T1694.001, T1694.002]
+  cwe: [CWE-1392, CWE-1393, CWE-798]
+  capec: [CAPEC-70]
+  owasp: ['A07:2025']
+
+- id: firmware-update-attack
+  name: Firmware update attack
+  aliases:
+    [
+      malicious firmware update,
+      unsigned firmware update,
+      firmware rollback attack,
+      firmware downgrade attack,
+    ]
+  category: wireless-iot
+  summary: >-
+    An attacker gets a device to install firmware it should refuse: an image
+    the vendor never signed, or an old, validly signed image with known flaws.
+    Because firmware controls everything the device does and survives resets, a
+    device that trusts its download channel instead of verifying a signed
+    manifest, or never refuses older versions, can be taken over completely.
+  defenses:
+    - Signed manifests verified on the device before install
+    - Monotonic sequence numbers for rollback protection
+    - Secure boot that verifies the image again
+    - Signing keys held in an HSM, with approvals
+  topics: [IOT-06, SYS-07, IOT-05]
+  labs: []
+  attack: [T1693, T1542.001]
+  cwe: [CWE-494, CWE-347, CWE-1328]
+  capec: [CAPEC-186]
+  owasp: ['A08:2025']
+
+- id: unauthorized-control-command
+  name: Unauthorized control command
+  aliases: [unauthorized command message, rogue master, ICS process manipulation]
+  category: wireless-iot
+  summary: >-
+    An attacker who reaches an industrial control network sends controllers
+    commands or setpoint changes, or works the operators' own control screens,
+    to run pumps, valves or breakers in ways the process was never meant to go.
+    It works because many legacy control protocols act on any well-formed
+    message without checking who sent it, so the network boundary is often the
+    only protection.
+  defenses:
+    - Zones and conduits with an OT DMZ
+    - Monitored remote access with MFA
+    - Passive monitoring for unexpected commands
+    - Independent safety instrumented systems
+    - Change management and offline backups of controller logic
+  topics: [IOT-07, NET-07]
+  labs: []
+  attack: [T1692.001, T0831, T0848]
+  cwe: [CWE-306]
+  capec: []
+  owasp: []
+
+- id: malicious-hardware-addition
+  name: Malicious hardware addition
+  aliases: [malicious USB device, hardware implant, rogue device]
+  category: physical
+  summary: >-
+    Someone with brief physical access attaches a device to a computer or
+    network, such as a USB device that identifies itself as a keyboard or a
+    small hidden network device, to run commands or open a remote channel. It
+    works because computers and networks trust newly attached hardware by
+    default, and few organizations notice one extra device on a desk or in a
+    wiring closet.
+  defenses:
+    - Port and device-class restrictions
+    - Network access control on wired ports
+    - Hardware inventory and regular inspection
+    - Locked wiring closets and escorted visitors
+  topics: [IOT-08, HUM-01]
+  labs: []
+  attack: [T1200, T1674, T1219.003]
+  cwe: []
+  capec: [CAPEC-440, CAPEC-401]
+  owasp: []
+
+- id: lost-or-stolen-device
+  name: Lost or stolen device
+  aliases: [device theft, laptop theft, stolen phone]
+  category: physical
+  summary: >-
+    A lost or stolen laptop, phone or other device gives whoever holds it
+    unlimited time with its storage and with any sessions or credentials left
+    on it. Data is exposed when storage is unencrypted, when keys are usable
+    without the owner, or when the accounts it was signed in to cannot be
+    revoked remotely.
+  defenses:
+    - Disk or file encryption tied to the passcode
+    - Automatic screen lock
+    - Remote lock, wipe and session revocation
+    - Short-lived tokens and minimal stored data
+  topics: [IOT-04, IOT-08, IAM-04, SYS-07]
+  labs: []
+  attack: [T1461]
+  cwe: [CWE-311, CWE-312, CWE-922]
+  capec: [CAPEC-507]
+  owasp: []
+
+- id: evil-maid-attack
+  name: Evil maid attack
+  aliases: [unattended device tampering, boot tampering]
+  category: physical
+  summary: >-
+    Someone left alone with an unattended device, such as a laptop in a hotel
+    room, alters its boot software or hardware so that it later captures the
+    owner's password or keeps access. It works when the device neither verifies
+    nor measures its boot path, so the owner cannot tell that the machine they
+    unlock is not the one they left.
+  defenses:
+    - Secure boot and measured boot with TPM-sealed keys
+    - Pre-boot PIN for disk encryption
+    - Tamper-evident seals and inspection
+    - Keeping devices with you or locked away
+  topics: [SYS-07, IOT-08]
+  labs: []
+  attack: [T1542.003]
+  cwe: [CWE-1326]
+  capec: []
+  owasp: []
+
+- id: physical-memory-attack
+  name: Physical memory attack
+  aliases: [cold boot attack, DMA attack, direct memory access attack]
+  category: physical
+  summary: >-
+    Someone with hands on a running or sleeping computer reads its memory
+    directly, through a port that gives peripherals direct memory access or by
+    reading memory that keeps its contents briefly after power is cut. Disk
+    encryption keys must stay in memory while a disk is unlocked, so they can
+    be recovered without the password.
+  defenses:
+    - Kernel DMA protection with an IOMMU
+    - Shutting down or hibernating instead of sleeping
+    - Pre-boot authentication for disk encryption
+    - Hardware memory encryption where available
+  topics: [IOT-08, FOR-04, SYS-07, IOT-04]
+  labs: []
+  attack: [T1200]
+  cwe: [CWE-316, CWE-1190]
+  capec: [CAPEC-665]
+  owasp: []
+
+- id: hardware-tampering
+  name: Hardware tampering
+  aliases: [debug port access, fault injection, glitching, chip probing]
+  category: physical
+  summary: >-
+    An attacker who can open a device works on its circuit board or chips, for
+    example through debug interfaces left enabled in production or by inducing
+    faults, to extract keys and firmware or skip security checks. It works
+    because hardware that holds secrets is often designed as if nobody could
+    reach it, so what one captured device yields depends on per-device keys,
+    protected key storage and tamper controls.
+  defenses:
+    - Debug interfaces disabled or locked in production
+    - Keys held in a secure element, TPM or HSM
+    - Per-device keys so one capture yields little
+    - Tamper evidence, resistance and response
+  topics: [IOT-08, SYS-07]
+  labs: []
+  attack: []
+  cwe: [CWE-1191, CWE-1247]
+  capec: [CAPEC-624]
+  owasp: []
+
+- id: direct-prompt-injection
+  name: Direct prompt injection
+  aliases: [jailbreak, jailbreaking, LLM jailbreak, LLM prompt injection]
+  category: ai
+  summary: >-
+    A user types instructions meant to override the application's own, steering
+    the model to ignore its rules, reveal what it holds or misuse its tools; a
+    jailbreak is the form aimed at the model's safety training. It works because
+    the model receives the developer's instructions and the user's text as one
+    stream of tokens, and only a learned tendency, not an enforced boundary,
+    separates them.
+  defenses:
+    - Authorization enforced in tool code, not the prompt
+    - Least-privilege tools with the user's own credentials
+    - No secrets or access rules in system prompts
+    - Guardrail classifiers as one layer, not a boundary
+    - Adversarial testing after every model or prompt change
+  topics: [AI-01, AI-04]
+  labs: [prompt-injection]
+  attack: [T1699]
+  cwe: [CWE-1427]
+  capec: []
+  owasp: ['LLM01:2026']
+
+- id: indirect-prompt-injection
+  name: Indirect prompt injection
+  aliases: [remote prompt injection, cross-domain prompt injection, XPIA]
+  category: ai
+  summary: >-
+    An attacker plants instructions in content a model will read later, such as
+    a web page, email, shared document or tool result, so the model acts on them
+    while working for someone else. The user is the victim and may never see the
+    planted text, and the model cannot reliably tell retrieved data from the
+    instructions it should follow.
+  defenses:
+    - Least-privilege tools and data access
+    - Human confirmation of consequential actions
+    - Model output treated as untrusted and encoded
+    - Untrusted content kept separate, labeled and stripped of hidden markup
+    - Breaking the lethal trifecta of private data, untrusted content and outbound access
+  topics: [AI-01, AI-02, AI-04]
+  labs: []
+  attack: [T1698]
+  cwe: [CWE-1427]
+  capec: []
+  owasp: ['LLM01:2026']
+
+- id: sensitive-information-disclosure
+  name: Sensitive information disclosure
+  aliases: [LLM data leakage, RAG oversharing, system prompt leakage, hidden context exposure]
+  category: ai
+  summary: >-
+    An LLM application reveals data the person asking should not see, such as
+    documents retrieved without that person's permissions, secrets placed in a
+    system prompt, or answers cached from another user's session. It works
+    because the model can repeat anything that reaches its context, and
+    similarity search ranks passages by meaning, not by who may read them.
+  defenses:
+    - Permission filters inside the retrieval query that fail closed
+    - The end user's identity on every data access
+    - No secrets in prompts or model context
+    - Minimized indexes, caches and logs
+    - Access tests with synthetic identities
+  topics: [AI-02, AI-01, AI-07]
+  labs: [prompt-injection]
+  attack: []
+  cwe: [CWE-200, CWE-862, CWE-441]
+  capec: []
+  owasp: ['LLM02:2026', 'LLM08:2026', 'LLM09:2026']
+
+- id: excessive-agency
+  name: Excessive agency
+  aliases: [over-privileged agent, agent tool misuse]
+  category: ai
+  summary: >-
+    An AI agent holds more tools, permissions or autonomy than its task needs,
+    so a manipulated or mistaken model can send data out, change records or run
+    commands with that authority. The model holds no permissions of its own;
+    its tools and their credentials do, so whoever steers the model, including
+    through injected text, borrows them.
+  defenses:
+    - Only the narrow tools the task needs
+    - The requesting user's scoped, short-lived credentials
+    - A deny-by-default policy check in code on every tool call
+    - Confirmation showing the exact action before consequential steps
+    - Sandboxed code execution without secrets or open network access
+  topics: [AI-04, AI-01, AI-08]
+  labs: []
+  attack: [T1700]
+  cwe: [CWE-250, CWE-862, CWE-441]
+  capec: []
+  owasp: ['LLM03:2026']
+
+- id: improper-output-handling
+  name: Improper output handling
+  aliases: [insecure output handling]
+  category: ai
+  summary: >-
+    An application passes model output to a browser, database, shell or other
+    interpreter without validating or encoding it, so text the model was
+    steered into writing runs as script, a query or a command. Model output is
+    untrusted input, because anyone who can influence the prompt, directly or
+    through retrieved content, influences what the model writes.
+  defenses:
+    - Context-aware encoding before rendering
+    - Schema validation of structured output
+    - Parameterized queries and allowlisted actions for model-built requests
+    - No automatic loading of external images or links
+    - Least-privilege accounts for downstream systems
+  topics: [AI-01, WEB-05, APP-01]
+  labs: []
+  attack: []
+  cwe: [CWE-1426, CWE-116, CWE-79, CWE-89, CWE-78, CWE-94]
+  capec: []
+  owasp: ['LLM10:2026']
+
+- id: data-and-model-poisoning
+  name: Data and model poisoning
+  aliases:
+    [data poisoning, training data poisoning, model backdoor, trojaned model, backdoor attack]
+  category: ai
+  summary: >-
+    An attacker corrupts what a model learns from, such as web-scale training
+    data, a fine-tuning set or a retrieval corpus, or alters the model or its
+    bundled template, so the model behaves wrongly or carries a hidden backdoor
+    that fires on a secret trigger. Poisoned examples can look legitimate and a
+    backdoored model behaves normally without its trigger, so ordinary testing
+    rarely reveals either.
+  defenses:
+    - Snapshotted, hashed training data with restricted write access
+    - Models pinned to verified revisions and digests
+    - A provenance inventory with model and dataset documentation
+    - Evaluation on held-out data and monitoring of outputs
+    - Limited tools and permissions for unverified models
+  topics: [AI-05, AI-08]
+  labs: []
+  attack: []
+  cwe: [CWE-345]
+  capec: []
+  owasp: ['LLM05:2026', 'LLM04:2026', 'LLM09:2026']
+
+- id: adversarial-examples
+  name: Adversarial examples
+  aliases: [evasion attack, model evasion, adversarial perturbation, adversarial input]
+  category: ai
+  summary: >-
+    An attacker modifies an input, often by a change too small for a person to
+    notice, so that a machine-learning model such as a malware, spam or phishing
+    classifier makes the decision the attacker wants. It works because inputs
+    can sit near a model's decision boundary, and in high dimensions many tiny
+    feature changes add up to a large change in its score.
+  defenses:
+    - A stated threat model with robust-accuracy testing
+    - Adversarial training
+    - Labels instead of confidence scores, with per-identity query limits
+    - Layered decisions that include non-ML checks
+    - Adaptive evaluation by attackers who know the defense
+  topics: [AI-06]
+  labs: []
+  attack: []
+  cwe: [CWE-1039]
+  capec: []
+  owasp: []
+
+- id: membership-inference
+  name: Membership inference
+  aliases: [MIA, membership inference attack]
+  category: ai
+  summary: >-
+    An attacker queries a model to learn whether a particular person's record
+    was in its training data, which can itself be a disclosure, as when the data
+    comes from one clinic's patients. It works because models often fit their
+    training examples better than unseen ones, for example by answering them
+    with higher confidence.
+  defenses:
+    - Differential privacy in training
+    - No confidence scores or log-probabilities in responses
+    - Per-identity query limits and monitoring
+    - Minimized, de-identified training data
+  topics: [AI-07]
+  labs: []
+  attack: []
+  cwe: [CWE-359]
+  capec: []
+  owasp: ['LLM02:2026']
+
+- id: training-data-extraction
+  name: Training-data extraction
+  aliases: [training data leakage, memorization attack, data extraction attack]
+  category: ai
+  summary: >-
+    An attacker recovers verbatim or near-verbatim training examples, such as
+    names, phone numbers or private text, from a trained model by querying it
+    or inspecting its weights. It works because models can memorize rare
+    sequences, and data that shaped the weights can stay extractable after the
+    source record is deleted.
+  defenses:
+    - Personal data scrubbed before training
+    - Differential privacy for sensitive training sets
+    - Canary and extraction tests before release
+    - Deletion that covers checkpoints, adapters and embeddings
+  topics: [AI-07]
+  labs: []
+  attack: []
+  cwe: [CWE-200, CWE-359]
+  capec: []
+  owasp: ['LLM02:2026']
+
+- id: model-extraction
+  name: Model extraction
+  aliases: [model stealing, model theft, distillation attack, model cloning]
+  category: ai
+  summary: >-
+    An attacker queries a model many times and trains a substitute on its
+    answers, or copies weights shipped inside an app, to get a working copy of
+    a model they do not own. Besides taking the owner's investment, the copy
+    lets the attacker prepare evasion and other attacks offline, out of the
+    owner's sight.
+  defenses:
+    - Per-identity rate limits and quotas
+    - Monitoring for systematic querying, including across many accounts
+    - Labels or rounded scores instead of full probabilities
+    - Protection of weights deployed to devices
+  topics: [AI-07, AI-08]
+  labs: []
+  attack: []
+  cwe: [CWE-799]
+  capec: []
+  owasp: ['LLM06:2026']
+
+- id: unbounded-consumption
+  name: Unbounded consumption
+  aliases: [denial of wallet, LLM denial of service, model denial of service]
+  category: ai
+  summary: >-
+    An attacker floods an LLM service with requests, very long inputs or tasks
+    that trigger its most expensive processing, degrading it for others or
+    running up the owner's pay-per-use bill, which is called denial of wallet.
+    Each request can cost far more compute than it takes to send, so a service
+    without per-identity quotas and caps on tokens, time and tool calls lets one
+    caller consume without limit.
+  defenses:
+    - Per-identity rate limits and spending caps
+    - Caps on input size, output tokens and execution time
+    - Limits on agent iterations, retries and tool calls
+    - Usage monitoring with cost alerts
+  topics: [AI-08, APP-08]
+  labs: []
+  attack: [T1499.003]
+  cwe: [CWE-770, CWE-400]
+  capec: [CAPEC-130]
+  owasp: ['LLM06:2026']
+
+- id: insider-data-theft
+  name: Insider data theft
+  aliases: [insider data exfiltration, departing-employee data theft, intellectual property theft]
+  category: insider
+  summary: >-
+    An employee, contractor or partner copies data they can reach, such as
+    customer records, designs or source code, out of the organization for
+    personal gain or a new employer, often around the time they resign. It
+    works because the copying uses the person's own legitimate access and can
+    look like everyday work, so controls built to stop outsiders do not see it.
+  defenses:
+    - Least privilege and need-to-know access
+    - Data loss prevention for removable media, email and personal cloud storage
+    - Prompt removal of access when people leave
+    - Disclosed, proportionate activity monitoring with fair assessment
+  topics: [HUM-06, IAM-08, FOR-07]
+  labs: []
+  attack: [T1213, T1039, T1052.001, T1567.002]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: insider-sabotage
+  name: Insider sabotage
+  aliases: [IT sabotage, logic bomb, disgruntled insider]
+  category: insider
+  summary: >-
+    An insider, often an administrator with a grievance or a pending dismissal,
+    uses legitimate access to damage the organization, for example by deleting
+    or altering data, planting code that destroys data later, wiping backups or
+    locking colleagues out. It works because the privileges needed to run
+    systems are the same ones needed to destroy them, and insiders know where
+    the backups and blind spots are.
+  defenses:
+    - Two-person approval for destructive or bulk changes
+    - Immutable, offline backups with tested restores
+    - Privileged access removed at or before dismissal
+    - Review of code and configuration changes
+    - Logs kept where administrators cannot erase them
+  topics: [HUM-06, FND-05, IAM-08]
+  labs: []
+  attack: [T1485, T1565.001, T1490, T1531]
+  cwe: [CWE-511]
+  capec: [CAPEC-443]
+  owasp: []
+
+- id: insider-privilege-misuse
+  name: Insider privilege misuse
+  aliases: [privilege abuse, insider fraud, snooping]
+  category: insider
+  summary: >-
+    An insider uses access they legitimately hold for a purpose it was never
+    granted for, such as looking up a neighbor's records, approving their own
+    payments or granting themselves extra rights. It works because access
+    checks confirm who is asking rather than why, and standing access is often
+    broader than each job needs.
+  defenses:
+    - Least privilege with object-level access rules
+    - Separation of duties for approvals and payments
+    - Audit logs of sensitive lookups, reviewed regularly
+    - Periodic access recertification
+  topics: [HUM-06, IAM-06, FND-05, FND-07]
+  labs: []
+  attack: [T1078, T1213, T1098]
+  cwe: [CWE-269]
+  capec: []
+  owasp: []
+
+- id: unintentional-insider-threat
+  name: Unintentional insider threat
+  aliases: [negligent insider, accidental insider, careless insider]
+  category: insider
+  summary: >-
+    Someone with legitimate access and no intent to harm exposes data or
+    systems by mistake or by working around a rule, for example by emailing a
+    file to the wrong person, keeping customer records on a personal drive or
+    sharing a folder too widely. It works because everyday work handles
+    sensitive data, and the safe way to do a task is often slower or harder
+    than the unsafe one.
+  defenses:
+    - Safe, easy tools for sharing and storing data
+    - Recipient warnings and data loss prevention
+    - Clear data-handling rules, with training on why they exist
+    - Blameless reporting of mistakes
+  topics: [HUM-06, HUM-07, GRC-03]
+  labs: []
+  attack: []
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: insider-collusion
+  name: Insider collusion
+  aliases: [collusive insider, recruited insider, insider recruitment, bribed insider]
+  category: insider
+  summary: >-
+    An outside group recruits, pays or pressures an employee or contractor to
+    use their access on its behalf, for example by handing over credentials,
+    approving sign-in prompts or installing remote-access software. It works
+    because the insider's legitimate access and knowledge carry the outsider
+    past controls built to stop strangers.
+  defenses:
+    - Least privilege and separation of duties
+    - Alerts on new remote-access tools and unusual sign-ins
+    - Confidential channels for reporting recruitment approaches
+    - Vetting and monitoring of contractors and partners
+  topics: [HUM-06, HUM-07]
+  labs: []
+  attack: [T1204, T1078, T1219]
+  cwe: []
+  capec: []
+  owasp: []
+
+- id: orphaned-access-abuse
+  name: Orphaned access abuse
+  aliases: [orphaned account, lingering access, ex-employee access, access creep]
+  category: insider
+  summary: >-
+    A former employee or contractor, or someone who changed roles, keeps using
+    access that was never fully removed, such as a long-lived session, a
+    personal API token, a local password or a shared account. It works because
+    access lives in many systems besides the identity provider, and removing it
+    is a step nobody requests unless the lifecycle is automated and reviewed.
+  defenses:
+    - Deprovisioning driven by HR records, such as through SCIM
+    - Sessions ended and tokens revoked at departure
+    - Single sign-on only, without local passwords
+    - Regular access reviews that remove orphaned accounts
+    - Shared secrets rotated when someone leaves
+  topics: [IAM-08, IAM-02, HUM-06, IAM-07]
+  labs: []
+  attack: [T1078]
+  cwe: [CWE-613, CWE-269]
+  capec: []
+  owasp: []

@@ -1,0 +1,407 @@
+# Glossary: systems, memory, and isolation (SYS domain).
+# Ids are canonical and must stay stable. Search content/glossary/ for an id
+# before adding a term, and link an existing term instead of redefining it.
+
+- id: memory-safety
+  term: Memory safety
+  aliases: [memory-safe, spatial safety, temporal safety]
+  short: 'The guarantee that every memory access stays within the bounds and the lifetime of an object the program legitimately obtained.'
+  long: >
+    Spatial safety keeps each access inside its object's bounds, ruling out
+    a [[buffer-overflow]] or an out-of-bounds read. Temporal safety keeps
+    each access inside its object's lifetime, ruling out a
+    [[use-after-free]]. C and C++ leave both to the programmer. Memory-safe
+    languages such as Java, Python, Go and Rust enforce them with
+    [[bounds-checking]] and automatic or [[ownership]]-based memory
+    management, except in code explicitly marked unsafe.
+  related: [buffer-overflow, use-after-free, bounds-checking, undefined-behavior, ownership]
+  topicId: SYS-01
+
+- id: virtual-memory
+  term: Virtual memory
+  aliases: [virtual address space, address space, paging]
+  short: 'An operating-system and hardware mechanism that gives each process its own private range of addresses, mapped page by page onto physical memory with per-page read, write and execute permissions.'
+  long: >
+    The [[kernel]] keeps a page table for each process, and the processor's
+    memory-management unit translates every access through it. Because a process can only name addresses
+    in its own mappings, virtual memory is the foundation of
+    [[process-isolation]], and per-page permissions make defenses such as
+    the [[nx-bit]] possible.
+  related: [process-isolation, kernel, nx-bit, aslr]
+  topicId: SYS-01
+
+- id: stack
+  term: Stack (call stack)
+  aliases: [call stack, stack frame, activation record]
+  short: 'The memory region that holds a frame for each active function call, with its local variables, saved registers and return address, reclaimed automatically when the call returns.'
+  long: >
+    On common processors the stack grows toward lower addresses, and a
+    frame's local variables sit below its saved return address. That layout
+    is why a [[buffer-overflow]] in a local array can reach control data,
+    and why compilers add a [[stack-canary]].
+  related: [heap, buffer-overflow, stack-canary]
+  topicId: SYS-01
+
+- id: heap
+  term: Heap
+  aliases: [free store, dynamic memory]
+  short: 'The memory region for objects allocated while the program runs (with malloc or new), which live until the program frees them or a garbage collector reclaims them.'
+  long: >
+    Not to be confused with the heap data structure. Because heap lifetimes
+    are managed by hand in C and C++, the heap is where
+    [[use-after-free]] and double-free errors occur, and clear
+    [[ownership]] is the main defense.
+  related: [stack, use-after-free, ownership, dangling-pointer]
+  topicId: SYS-01
+
+- id: undefined-behavior
+  term: Undefined behavior
+  aliases: [UB]
+  short: 'Program behavior on which the C or C++ standard places no requirements, such as an out-of-bounds access or a use after free, so the program may do anything.'
+  long: >
+    In practice the program usually reads or writes whatever happens to be
+    at the address, which is why memory errors can corrupt data, hijack
+    control flow or leak secrets instead of stopping. Optimizing compilers
+    assume correct programs contain no undefined behavior, so its effects
+    can be surprising.
+  related: [memory-safety, buffer-overflow, use-after-free]
+  topicId: SYS-01
+
+- id: ownership
+  term: Ownership (memory)
+  aliases: [ownership model, borrowing, borrow checker]
+  short: 'A discipline in which each allocation has exactly one owner responsible for freeing it, while other code may only borrow it for as long as it is alive.'
+  long: >
+    Rust's compiler enforces ownership and borrowing rules before the
+    program runs. C++ expresses ownership with smart pointers such as
+    `std::unique_ptr` (one owner) and `std::shared_ptr` (shared, counted
+    ownership). In C, ownership lives only in conventions and comments, so
+    a mistake can leave a [[dangling-pointer]] or cause a
+    [[use-after-free]].
+  related: [use-after-free, dangling-pointer, memory-safety, heap]
+  topicId: SYS-03
+
+- id: buffer-overflow
+  term: Buffer overflow
+  aliases: [buffer overrun, out-of-bounds write, stack smashing, heap overflow]
+  short: 'Writing past the end, or before the start, of a fixed-size memory buffer, which corrupts whatever memory lies next to it.'
+  long: >
+    A stack-based overflow can reach a function's saved return address; a
+    heap-based overflow corrupts neighboring heap objects. Its read-side
+    twin, the out-of-bounds read or over-read, leaks data instead. MITRE
+    tracks them as CWE-787 (out-of-bounds write) and CWE-125 (out-of-bounds
+    read). The fix is [[bounds-checking]]; mitigations such as a
+    [[stack-canary]] or [[aslr]] only make exploitation harder.
+  related: [bounds-checking, stack-canary, memory-safety, stack, heap]
+  topicId: SYS-02
+
+- id: bounds-checking
+  term: Bounds checking
+  aliases: [bounds check, range check, array bounds checking]
+  short: 'Verifying, before a memory access, that an index or length stays within the buffer it refers to.'
+  long: >
+    Memory-safe languages insert the check automatically and stop with an
+    error, such as an exception or a panic, when it fails. In C and C++ the
+    programmer must compare every index and copy length against the
+    destination's real size. Either way, the check turns a silent
+    [[buffer-overflow]] into a predictable failure.
+  related: [buffer-overflow, memory-safety, input-validation]
+  topicId: SYS-02
+
+- id: aslr
+  term: Address space layout randomization (ASLR)
+  aliases: [ASLR, address randomization]
+  short: "A mitigation that places a process's code, stack, heap and libraries at random addresses on each run, so an attacker cannot rely on knowing where anything is."
+  long: >
+    ASLR raises the cost of exploiting a memory error but does not remove
+    the error. A single leaked address can reveal the rest of a region,
+    because offsets inside it do not change, and 32-bit systems have little
+    room for randomness.
+  related: [stack-canary, nx-bit, buffer-overflow, virtual-memory]
+  topicId: SYS-02
+
+- id: stack-canary
+  term: Stack canary
+  aliases: [stack protector, stack cookie, StackGuard]
+  short: "A random value the compiler places between a function's local variables and its saved return information, checked before the function returns so that a contiguous overwrite is detected and the program stops."
+  long: >
+    A canary protects only the control data behind it. It does not stop an
+    overflow into other local variables or heap objects, a write that skips
+    over it, or an attacker who has learned its value.
+  related: [buffer-overflow, stack, aslr, nx-bit]
+  topicId: SYS-02
+
+- id: nx-bit
+  term: Non-executable memory (NX bit)
+  aliases: [NX, DEP, W^X, XD bit, data execution prevention]
+  short: 'A hardware page permission that lets the operating system mark data regions such as the stack and heap as non-executable, so bytes written there cannot run as code.'
+  long: >
+    The policy that no page is both writable and executable is called W^X;
+    Windows calls it data execution prevention (DEP). It does not stop
+    attacks that reuse code already in memory or that only corrupt data,
+    so it works best combined with [[aslr]] and a [[stack-canary]].
+  related: [aslr, stack-canary, virtual-memory]
+  topicId: SYS-02
+
+- id: dangling-pointer
+  term: Dangling pointer
+  aliases: [stale pointer, expired pointer]
+  short: 'A pointer that still holds the address of an object whose lifetime has ended, such as freed heap memory or a local variable of a function that has returned.'
+  long: >
+    Dereferencing it is a temporal [[memory-safety]] violation; on the heap
+    this is a [[use-after-free]]. Setting one pointer to NULL after freeing
+    does not help other copies, so clear [[ownership]] is the real fix.
+  related: [use-after-free, ownership, memory-safety]
+  topicId: SYS-03
+
+- id: use-after-free
+  term: Use after free (UAF)
+  aliases: [UAF]
+  short: 'Accessing heap memory through a pointer after that memory was freed, when the allocator may already have reused it for a different object.'
+  long: >
+    MITRE tracks it as CWE-416. Because the freed memory may now hold an
+    unrelated object, a use after free can leak that object's data or let
+    an attacker-controlled value be used as a pointer. Clear [[ownership]],
+    smart pointers and memory-safe languages prevent it.
+  related: [dangling-pointer, ownership, heap, memory-safety]
+  topicId: SYS-03
+
+- id: process-isolation
+  term: Process isolation
+  aliases: [address-space isolation, memory isolation]
+  short: 'Keeping each running program in its own protected address space and security context, so it cannot read or modify another process or the kernel except through interfaces the operating system controls.'
+  long: >
+    The [[kernel]] enforces it with [[virtual-memory]] and permission
+    checks on every system call. Isolation limits damage but does not
+    remove bugs: a flaw in the kernel or a shared hardware resource can
+    still cross the boundary, and a [[sandbox]] narrows what an isolated
+    process may ask for.
+  related: [sandbox, virtual-memory, kernel, least-privilege]
+  topicId: SYS-05
+
+- id: sandbox
+  term: Sandbox
+  aliases: [sandboxing]
+  short: 'A restricted environment that runs code with far fewer rights than its user has, so that a compromised or malicious program can reach only what the sandbox allows.'
+  long: >
+    Sandboxes build on [[process-isolation]] and remove further abilities,
+    such as opening files, making network connections or calling most
+    system functions. Browsers sandbox the processes that parse web content.
+    A sandbox reduces the damage of a bug but adds its own
+    [[attack-surface]], and sandbox escapes do occur.
+  related: [process-isolation, least-privilege, attack-surface]
+  topicId: SYS-05
+
+- id: kernel
+  term: Kernel
+  aliases: [operating-system kernel, supervisor mode, kernel mode]
+  short: 'The core of the operating system, which runs with full hardware privilege and mediates every access by programs to memory, files, devices and other processes.'
+  long: >
+    Programs run in an unprivileged processor mode and must ask the kernel,
+    through system calls, to do anything outside their own memory. The
+    kernel is therefore the component that enforces permissions and
+    [[process-isolation]], and a bug in it can undermine both.
+  related: [process-isolation, virtual-memory, privilege-escalation]
+  topicId: SYS-05
+
+- id: privilege-escalation
+  term: Privilege escalation
+  aliases: [elevation of privilege, EoP, privesc]
+  short: 'Gaining rights beyond those an account or process was granted, for example a normal user obtaining administrator or kernel privileges.'
+  long: >
+    It is vertical when it moves to a more privileged role and horizontal
+    when it moves to another account at the same level. Applying
+    [[least-privilege]] limits how much any single flaw can give an
+    attacker.
+  related: [least-privilege, kernel, process-isolation]
+  topicId: SYS-04
+
+- id: secure-boot
+  term: Secure boot
+  aliases: [verified boot, UEFI Secure Boot, secure boot chain]
+  short: 'A startup process in which each stage checks the digital signature of the next stage before running it, so only software from trusted signers can boot.'
+  long: >
+    Verification starts from a [[root-of-trust]] and continues stage by
+    stage, from boot firmware to the operating-system loader and kernel.
+    Secure boot blocks unsigned or modified boot code such as a bootkit or
+    boot-level [[rootkit]], but it trusts whatever the accepted signers
+    sign, so signed vulnerable code still runs. It checks [[digital-signature|signatures]]
+    but does not record what booted; [[measured-boot]] does that.
+  related: [root-of-trust, digital-signature, rootkit, measured-boot, tpm]
+  topicId: SYS-07
+
+- id: root-of-trust
+  term: Root of trust
+  aliases: [hardware root of trust, RoT]
+  short: 'A highly protected component, usually immutable hardware or firmware, that the rest of a platform trusts without verifying it, and that performs the first check from which every later check follows.'
+  long: >
+    NIST SP 800-193 calls a root of trust the first element in a chain of
+    trust and says roots must be secure by design, typically by making them
+    immutable or by verifying any change to them. A [[secure-boot]] chain is only as strong as its root: if an
+    attacker can change the first code that runs or the keys it trusts,
+    every later verification can be subverted. The code that takes the first
+    [[measured-boot]] measurement is part of the root of trust too.
+  related: [secure-boot, measured-boot, tpm, digital-signature]
+  topicId: SYS-07
+
+- id: setuid
+  term: Set-user-ID (setuid)
+  aliases: [SUID, set-user-ID bit, setuid bit, set-group-ID, setgid]
+  short: "A permission bit on an executable file that makes it run with the identity of the file's owner, often root, instead of the identity of the user who started it."
+  long: >
+    The `passwd` program uses it so that ordinary users can update the
+    root-owned password database. Because a setuid-root program handles input
+    chosen by unprivileged users while holding root's power, any flaw in it
+    can become a [[privilege-escalation]]. The related set-group-ID bit does
+    the same for the group, and on a directory it makes new files inherit the
+    directory's group. A single [[linux-capability]] can often replace
+    setuid root.
+  related: [privilege-escalation, least-privilege, linux-capability, kernel]
+  topicId: SYS-04
+
+- id: system-call
+  term: System call
+  aliases: [syscall, kernel call]
+  short: 'The controlled entry point through which a program asks the kernel to do something it cannot do itself, such as opening a file, sending network data or starting another program.'
+  long: >
+    The processor switches from its unprivileged user mode into the
+    [[kernel]], which checks the request against the caller's credentials
+    before acting. Because every process can make system calls, the
+    system-call interface is the kernel's main [[attack-surface]], and
+    sandboxes such as [[seccomp]] filters shrink it.
+  related: [kernel, process-isolation, sandbox, seccomp]
+  topicId: SYS-05
+
+- id: race-condition
+  term: Race condition
+  aliases: [race, race hazard, CWE-362]
+  short: 'A flaw in which the result depends on the timing of concurrent operations on a shared resource, so another thread, process or request can change the resource in the middle of a sequence that needed exclusive access.'
+  long: >
+    Read-modify-write and check-then-act sequences are the usual sources. In
+    C and C++, unsynchronized access to the same memory from two threads, at
+    least one of them writing, is a data race and [[undefined-behavior]].
+    Fixes make the whole sequence atomic with a lock, an atomic operation, or
+    a single system call or database statement that checks and acts at once.
+    A [[toctou]] flaw is a common special case.
+  related: [toctou, undefined-behavior, complete-mediation]
+  topicId: SYS-06
+
+- id: toctou
+  term: Time-of-check to time-of-use (TOCTOU)
+  aliases: [TOCTTOU, time-of-check/time-of-use, CWE-367, check-then-act]
+  short: 'A race condition in which a program checks the state of a resource and then uses it, but the state can change in the gap between, so the use relies on a stale check.'
+  long: >
+    The classic case is a privileged program that checks a file by name with
+    `access()` or `stat()` and then opens it by name, while someone else
+    re-points the name, for example with a [[symbolic-link]]. The fix removes
+    the gap instead of shortening it: one operation that checks and acts,
+    such as `open` with `O_CREAT` and `O_EXCL` or a conditional database
+    update, or work on a file descriptor already held.
+  related: [race-condition, symbolic-link, setuid, complete-mediation]
+  topicId: SYS-06
+
+- id: tpm
+  term: Trusted Platform Module (TPM)
+  aliases: [TPM, TPM 2.0, Trusted Platform Module, firmware TPM, fTPM]
+  short: 'A tamper-resistant security chip, or protected firmware component, that stores keys and records boot measurements, and can report those measurements or release a secret only when they match a policy.'
+  long: >
+    A TPM's platform configuration registers (PCRs) can only be extended,
+    never simply overwritten, so the chain of hashes recorded during
+    [[measured-boot]] cannot be erased by software that runs later. The TPM
+    can seal a key so that it is released only when the PCRs hold expected
+    values, which lets full-disk encryption unlock automatically on an
+    unmodified machine, and it can sign a report of its PCRs for remote
+    attestation. It records and reports; by itself it does not stop a
+    tampered boot.
+  related: [measured-boot, secure-boot, root-of-trust, hardware-security-module]
+  topicId: SYS-07
+
+- id: measured-boot
+  term: Measured boot
+  aliases: [boot measurement, TPM measured boot]
+  short: 'A boot process in which each stage hashes the next stage before running it and records the hash in a TPM, so the software that actually booted can later be checked or attested.'
+  long: >
+    Measured boot blocks nothing: it keeps a tamper-evident record.
+    [[secure-boot]] is the complementary control that refuses to run
+    software without a valid signature. Together, secure boot stops unsigned
+    code, and the measurements let a remote verifier, or a key sealed in the
+    [[tpm]], notice any boot that differs from the expected one.
+  related: [tpm, secure-boot, root-of-trust]
+  topicId: SYS-07
+
+- id: side-channel-attack
+  term: Side-channel attack
+  aliases: [side channel, side-channel leak, microarchitectural side channel]
+  short: 'An attack that learns secrets from the physical or timing effects of a computation, such as how long it takes, which cache lines it touches or how much power it draws, rather than from its intended outputs.'
+  long: >
+    The code can be logically correct and still leak. A [[timing-attack]]
+    measures running time, cache attacks observe which memory a victim
+    touched, and power analysis measures the hardware itself. [[spectre]]
+    combines [[speculative-execution]] with a cache side channel. Defenses
+    make observable behavior independent of secrets, as
+    [[constant-time-code]] does, or keep attackers from sharing hardware
+    with the victim and measuring it precisely.
+  related: [timing-attack, spectre, speculative-execution, constant-time-code]
+  topicId: SYS-08
+
+- id: timing-attack
+  term: Timing attack
+  aliases: [timing side channel, timing side-channel attack]
+  short: 'A side-channel attack that infers secret data from how long operations take, for example a comparison that returns as soon as the first byte differs.'
+  long: >
+    Each difference may be tiny, but by repeating measurements and averaging
+    away noise an attacker can sometimes recover a secret piece by piece.
+    The defense is [[constant-time-code]], whose running time and memory
+    accesses do not depend on secret values, such as a comparison that
+    always examines every byte.
+  related: [side-channel-attack, constant-time-code, mac]
+  topicId: SYS-08
+
+- id: spectre
+  term: Spectre
+  aliases:
+    [
+      Spectre attack,
+      Spectre variant 1,
+      bounds check bypass,
+      Spectre variant 2,
+      branch target injection,
+    ]
+  short: 'A class of attacks, disclosed in 2018, that trick a processor into speculatively executing instructions that read secret data, then recover that data through a cache side channel even though the speculative work is thrown away.'
+  long: >
+    [[speculative-execution]] lets a processor run ahead of a branch whose
+    outcome is not yet known. When the guess is wrong, the results are
+    discarded, but changes to the cache remain and can be measured through a
+    [[side-channel-attack|side channel]]. Mitigations include speculation
+    barriers and index masking after bounds checks, processor and
+    operating-system changes that restrict branch prediction, and keeping
+    mutually distrusting code in separate processes, as browsers do with
+    [[site-isolation]].
+  related: [speculative-execution, side-channel-attack, site-isolation, timing-attack]
+  topicId: SYS-08
+
+- id: speculative-execution
+  term: Speculative execution
+  aliases: [speculation, transient execution]
+  short: 'A processor optimization that guesses the outcome of a branch or other pending operation and executes ahead along the guessed path, discarding the results if the guess was wrong.'
+  long: >
+    Speculation keeps a modern processor busy instead of waiting, and it is
+    a major source of performance. Discarded instructions leave no trace in
+    registers or memory, but they can still change microarchitectural state
+    such as the cache, which [[spectre]]-style attacks measure.
+  related: [spectre, side-channel-attack]
+  topicId: SYS-08
+
+- id: constant-time-code
+  term: Constant-time code
+  aliases: [constant-time programming, constant-time comparison, data-independent timing]
+  short: 'Code whose running time, branches and memory accesses do not depend on secret values, so timing measurements reveal nothing about the secrets.'
+  long: >
+    A constant-time comparison examines every byte and combines the
+    differences, instead of returning at the first mismatch. Libraries
+    provide vetted versions, such as Python's `hmac.compare_digest`.
+    Optimizing compilers can reintroduce secret-dependent branches, so
+    constant-time code must be written and checked with care, ideally at the
+    machine-code level.
+  related: [timing-attack, side-channel-attack]
+  topicId: SYS-08

@@ -1,459 +1,1061 @@
-# Glossary: security foundations, web deception, and application security.
-# Ids are canonical and must stay stable; another file may define a few of the
-# same concepts, and the lead de-duplicates overlaps.
+# Glossary: security foundations, web deception, and the shared application,
+# identity, and email terms that lessons across domains link to.
+# Ids are canonical and must stay stable because lessons link to them. Ids must
+# be unique across content/glossary/: other files link to these terms instead of
+# redefining them.
 
 - id: cia-triad
   term: CIA triad
-  aliases: [CIA, security triad]
-  short: 'The three classic security goals: confidentiality, integrity, and availability.'
+  aliases: [CIA, AIC triad, security triad]
+  short: 'The three classic security goals of confidentiality, integrity, and availability, used as a checklist for what a system must protect.'
   long: >
-    A compact model for stating what a system must protect. Many real
-    requirements also need [[authenticity]], [[non-repudiation]], and
-    [[accountability]], so treat the triad as a starting point rather than a
-    complete list.
-  related: [confidentiality, integrity, availability, authenticity]
+    For a grade portal at campus.example, confidentiality means only alice can
+    see alice's grades, integrity means no one can quietly change them, and
+    availability means the portal works during finals week. The goals can
+    pull against each other: locking an account after repeated failed logins
+    protects confidentiality but lets an attacker lock real users out. Many
+    requirements also need [[authenticity]], [[non-repudiation]],
+    [[accountability]], and [[assurance]], so treat the triad as a starting
+    point rather than a complete list.
+  related: [confidentiality, integrity, availability, authenticity, non-repudiation, accountability]
   topicId: FND-01
 
 - id: confidentiality
   term: Confidentiality
-  aliases: [secrecy]
-  short: 'Keeping information from being read or disclosed to anyone not authorized to see it.'
-  related: [cia-triad, encryption, authorization]
+  aliases: [secrecy, data confidentiality]
+  short: 'The goal that information is disclosed only to the people, processes, and devices authorized to see it.'
+  long: >
+    Access control decides who may read data, and [[encryption]] keeps it
+    unreadable while it travels or sits where others can reach it. Metadata
+    can leak even when contents are protected: an encrypted email still
+    reveals that alice wrote to the campus.example counseling office.
+    Confidentiality is about disclosure, not change, so an attacker who cannot
+    read an encrypted record may still corrupt it, which is an [[integrity]]
+    failure. It also differs from privacy, which concerns people's control
+    over information about themselves.
+  related: [cia-triad, encryption, authorization, integrity]
   topicId: FND-01
 
 - id: integrity
   term: Integrity
-  aliases: [data integrity]
-  short: 'Guarding information and systems against improper or undetected modification or destruction.'
-  related: [cia-triad, hash-function, authenticity]
+  aliases: [data integrity, system integrity]
+  short: 'The goal that information and systems are not altered or destroyed improperly, and that any such change can be detected.'
+  long: >
+    Access controls prevent unauthorized changes, while a [[mac]] or a
+    [[digital-signature]] lets a receiver detect them: if someone on the
+    network changes a transfer to bank.example from $10 to $1,000, the tag no
+    longer verifies. A plain [[hash-function]] digest helps only if the
+    digest itself arrives over a trusted channel, because an attacker who can
+    change a file can also change a digest stored next to it. Encryption
+    alone does not guarantee integrity, which is why modern protocols use
+    [[aead]].
+  related: [cia-triad, hash-function, mac, digital-signature, authenticity, aead]
   topicId: FND-01
 
 - id: availability
   term: Availability
-  short: 'Ensuring timely and reliable access to information and systems when they are needed.'
-  related: [cia-triad]
+  short: 'The goal that information and systems are usable by authorized people when they need them.'
+  long: >
+    Availability can fail through [[dos-attack|denial-of-service attacks]],
+    [[ransomware]], hardware faults, or plain overload: an online exam at
+    campus.example that crashes when every student logs in at 9:00 has failed
+    availability with no attacker involved. Defenses include redundancy,
+    spare capacity, rate limits, tested [[backup|backups]], and recovery
+    plans. Availability is judged against stated needs, such as a maximum
+    outage time, rather than a promise of 100 percent uptime.
+  related: [cia-triad, dos-attack, ransomware, backup]
   topicId: FND-01
 
 - id: authenticity
   term: Authenticity
-  short: 'The property of being genuine and verifiable, so a claimed origin of data or a message can be trusted.'
-  related: [authentication, integrity, non-repudiation]
+  short: 'The property that data, a message, or an entity is genuine and really comes from the source it claims.'
+  long: >
+    For people and devices, authenticity is established by
+    [[authentication]]; for data, by a [[mac]] or a [[digital-signature]] that
+    only the claimed sender could have produced. It is closely linked to
+    integrity but not the same: integrity asks whether a message changed,
+    authenticity asks who it came from. A padlock icon shows only that the
+    browser reached the domain in the address bar, so a
+    [[homograph-attack]] look-alike can be authentic in that narrow sense and
+    still not be the bank you meant.
+  related: [authentication, integrity, non-repudiation, digital-signature, mac]
   topicId: FND-01
 
 - id: non-repudiation
   term: Non-repudiation
-  short: 'Assurance that an actor cannot credibly deny a genuine action they took, such as sending a message.'
-  related: [authenticity, accountability]
+  aliases: [nonrepudiation]
+  short: 'Assurance, backed by evidence a third party can check, that an actor cannot credibly deny an action they took, such as sending or signing a message.'
+  long: >
+    It usually rests on a [[digital-signature]], because only the holder of
+    the private key could have produced it. A shared-key [[mac]] cannot
+    provide it, since either party holding the key could have computed the
+    tag. The evidence is only as strong as the key protection and record
+    keeping around it: if alice's private key was stolen, or the logs that
+    timestamp her signature can be edited, she can credibly deny the action.
+  related: [authenticity, accountability, digital-signature, mac]
   topicId: FND-01
 
 - id: authentication
   term: Authentication
   aliases: [authn]
-  short: 'Verifying that an entity really is who or what it claims to be.'
-  related: [authorization, authenticity]
+  short: 'Verifying that a user, device, or service really is who or what it claims to be.'
+  long: >
+    Evidence comes from factors such as something you know (a password),
+    something you have (a security key or phone), and something you are (a
+    fingerprint); [[mfa]] combines factors of different kinds.
+    Authentication answers "who are you?" while [[authorization]] answers
+    "what may you do?" A common bug confuses the two: bob signs in to
+    shop.example correctly, changes the order number in a URL, and sees
+    alice's order, because the site authenticated him but never checked
+    authorization.
+  related: [authorization, authenticity, mfa, authenticator, passkey, session]
   topicId: IAM-01
 
 - id: authorization
   term: Authorization
   aliases: [authz, access control]
-  short: 'Deciding what an already-identified entity is allowed to do.'
-  related: [authentication, least-privilege]
+  short: 'Deciding whether an identified user, process, or service is allowed to perform a specific action on a specific resource.'
+  long: >
+    Systems express these decisions as policies, for example by role
+    ([[rbac]]) or by attributes ([[abac]]), and should check them on the
+    server for every request, not only when a page is shown. Granting each
+    party only what it needs is [[least-privilege]]. In law and lab ethics
+    the word also means permission: whether access was authorized is the
+    central question under the [[cfaa]], and [[rules-of-engagement]] record
+    what a tester is authorized to do.
+  related: [authentication, least-privilege, rbac, abac, cfaa, rules-of-engagement]
   topicId: IAM-01
 
 - id: threat-model
   term: Threat model
   aliases: [threat modeling]
-  short: 'A structured description of who might attack a system, what they want, and what capabilities they have.'
-  related: [threat-actor, attack-surface, risk]
+  short: 'A structured description of what a system must protect, who might attack it, what those attackers can do, and which threats the design will and will not address.'
+  long: >
+    Teams typically sketch the system and its
+    [[trust-boundary|trust boundaries]], list threats (for example with
+    [[stride]]), choose mitigations, and write down their assumptions. For a
+    homework portal at campus.example, the model might include students
+    trying to read classmates' grades but explicitly exclude an attacker with
+    physical access to the servers. Calling a system "secure" only means
+    something relative to a threat model, which must be revisited when the
+    system or its attackers change.
+  related: [threat, threat-actor, asset, attack-surface, trust-boundary, stride]
   topicId: FND-03
 
 - id: attack-surface
   term: Attack surface
-  short: 'The sum of all points where an attacker can try to enter, affect, or extract data from a system.'
-  related: [threat-model, vulnerability]
+  short: 'All the points where an attacker could try to send input to, change, or extract data from a system, such as open ports, web forms, APIs, and file uploads.'
+  long: >
+    At shop.example the attack surface includes the storefront, the login
+    form, the public API, a forgotten admin page, and the staff who can be
+    phished into helping. Reducing it means removing unused features, closing
+    [[port|ports]], and limiting who can reach sensitive interfaces. A smaller
+    surface lowers exposure but does not make what remains safe, so it
+    complements fixing each [[vulnerability]].
+  related: [threat-model, vulnerability, port, defense-in-depth]
   topicId: FND-04
 
 - id: vulnerability
   term: Vulnerability
-  aliases: [weakness, flaw]
-  short: 'A weakness in a system that a threat could use to cause harm.'
-  related: [exploit, risk, attack-surface]
+  aliases: [vuln, security flaw]
+  short: "A weakness in a system's design, code, configuration, or operation that a threat could exploit to cause harm."
+  long: >
+    Vulnerabilities range from coding bugs such as [[sql-injection]] to
+    default passwords and missing access checks. Publicly known
+    vulnerabilities in specific products get CVE identifiers, while [[cwe]]
+    names the underlying kinds of weakness, so one CWE type can appear in
+    thousands of CVEs. A vulnerability becomes [[risk]] only when a
+    [[threat]] can reach and exploit it: the same flaw matters more on a
+    public server than on an isolated test machine.
+  related: [exploit, threat, risk, attack-surface, cwe]
   topicId: FND-02
 
 - id: exploit
   term: Exploit
-  short: 'A technique or piece of code that takes advantage of a specific vulnerability to produce an effect.'
-  related: [vulnerability, threat-actor]
+  short: 'Code, input, or a sequence of steps that takes advantage of a specific vulnerability to make a system do something its owner did not intend.'
+  long: >
+    The [[vulnerability]] is the weakness, the exploit is the means of using
+    it, and an attack is someone actually doing so. Typing a crafted value
+    into a search box at shop.example to read other customers' data exploits
+    a [[sql-injection]] flaw. A zero-day exploit targets a flaw for which no
+    fix is available yet, and a public exploit raises urgency because it
+    lowers the skill an attacker needs.
+  related: [vulnerability, threat-actor, penetration-testing, sql-injection]
   topicId: FND-02
 
 - id: threat-actor
   term: Threat actor
-  aliases: [adversary, attacker]
-  short: 'A person or group that may act against a system, ranging from a curious insider to an organized crew.'
-  related: [threat-model, exploit]
+  aliases: [attacker, adversary, threat agent]
+  short: 'A person, group, or organization that might act against a system, such as a curious insider, a criminal gang, or a government agency.'
+  long: >
+    Threat models describe actors by motivation (money, espionage, activism,
+    revenge), capability (skill, time, and resources), and access (outsider
+    or insider). For a university grade system, plausible actors include
+    students who want better grades, ransomware crews, and a former employee
+    who still has credentials. Not every [[threat]] has an actor behind it:
+    storms, hardware failures, and honest mistakes also cause harm.
+  related: [threat, threat-model, exploit, risk]
   topicId: FND-02
 
 - id: risk
   term: Risk
-  short: 'The combination of how likely a harmful event is and how bad its impact would be, under uncertainty.'
-  related: [vulnerability, threat-model]
+  short: 'The combination of how likely a harmful event is and how bad its impact would be, estimated under uncertainty.'
+  long: >
+    Risk needs a [[threat]], a [[vulnerability]] the threat can use, and
+    something of value at stake, so removing any one of them shrinks it. The
+    same unpatched flaw is a higher risk on a shop.example server that stores
+    card numbers than on an isolated test machine with no data.
+    Organizations respond through [[risk-treatment]] (mitigate, accept,
+    transfer, or avoid), and scores such as "likelihood 4 times impact 5" are
+    rough estimates, not measurements.
+  related: [threat, vulnerability, likelihood, impact, risk-assessment, risk-treatment]
   topicId: FND-02
 
 - id: least-privilege
   term: Least privilege
-  aliases: [principle of least privilege]
-  short: 'Giving each user, process, or account only the access it needs, so a failure does limited damage.'
-  related: [authorization, defense-in-depth]
+  aliases: [principle of least privilege, PoLP]
+  short: 'Giving each user, program, or account only the access it needs for its task, for only as long as it needs it, so a mistake or compromise does limited damage.'
+  long: >
+    It is one of the design principles Saltzer and Schroeder set out in 1975.
+    If the web application at shop.example connects to its database with an
+    account that can read and add orders but cannot read the staff table or
+    drop tables, a [[sql-injection]] bug exposes far less. Least privilege
+    limits damage after something goes wrong; it does not prevent the initial
+    compromise, so it works alongside other controls.
+  related: [authorization, defense-in-depth, separation-of-duties, privilege-escalation]
   topicId: FND-05
 
 - id: defense-in-depth
   term: Defense in depth
-  aliases: [layered defense]
-  short: 'Using several independent controls so that one failure does not defeat the whole system.'
-  related: [least-privilege, content-security-policy]
+  aliases: [layered defense, layered security]
+  short: 'Layering several different security controls so that an attacker must defeat more than one, and a single failure does not expose the whole system.'
+  long: >
+    At shop.example, [[parameterized-query|parameterized queries]], a
+    least-privilege database account, monitoring, and a
+    [[content-security-policy]] each limit a different failure. Layers are
+    rarely fully independent: if one administrator password unlocks all of
+    them, or every layer relies on the same faulty assumption, one mistake can
+    defeat several at once. Extra layers also add complexity, which can
+    introduce errors of its own.
+  related: [least-privilege, security-control, content-security-policy, parameterized-query]
   topicId: FND-06
 
 - id: input-validation
   term: Input validation
-  short: 'Checking that incoming data matches an expected shape, usually by allowing known-good values rather than blocking bad ones.'
-  related: [allowlist, output-encoding, sanitization]
+  aliases: [data validation]
+  short: 'Checking that incoming data has the expected type, length, format, and range before using it, preferably by accepting only known-good values.'
+  long: >
+    Validation must run on the server, because anyone can bypass checks in
+    the browser, and it should follow [[canonicalization]] so the check sees
+    the same value the code will use. Check meaning as well as syntax: a
+    well-formed date can still be a return date before the departure date.
+    Validation does not replace [[parameterized-query|parameterized queries]]
+    or [[output-encoding]], because a legitimate name such as O'Brien is
+    valid input that still breaks a query built by joining strings.
+  related:
+    [allowlist, denylist, canonicalization, sanitization, output-encoding, parameterized-query]
   topicId: APP-02
 
 - id: output-encoding
   term: Output encoding
-  aliases: [output escaping, contextual encoding]
-  short: 'Transforming data as it is written into a specific context so the receiver treats it as data, not as code.'
+  aliases: [output escaping, escaping, contextual output encoding]
+  short: 'Transforming data as it is written into a specific context, such as HTML or a URL, so the receiver treats it as data rather than as code.'
   long: >
-    The correct transform depends on the destination context: HTML element
-    text, an HTML attribute, JavaScript, CSS, and URLs each need a different
-    encoding. Encoding for the wrong context can still be unsafe.
-  related: [xss, encoding, sanitization]
+    If alice's comment contains `<script>`, encoding it for HTML as
+    `&lt;script&gt;` makes the browser show the characters instead of running
+    them, which is the main defense against [[xss]]. Each destination needs
+    its own rules: HTML text, HTML attributes, JavaScript strings, CSS, and
+    URLs differ, and encoding for the wrong context can still be unsafe.
+    Modern template engines encode by default, so many XSS bugs appear where
+    developers bypass that default.
+  related: [xss, encoding, sanitization, input-validation]
   topicId: WEB-05
 
 - id: hash-function
   term: Cryptographic hash function
-  aliases: [hash, digest]
-  short: 'A function that maps any input to a fixed-size value such that finding two inputs with the same output is infeasible.'
-  related: [integrity, encoding, encryption]
+  aliases: [hash, hashing, cryptographic hash]
+  short: 'A function that maps input of any length to a short fixed-size digest, designed so that no one can feasibly find an input for a given digest or two inputs with the same digest.'
+  long: >
+    SHA-256 and SHA-3 are current examples; MD5 and SHA-1 are broken for
+    collision resistance and should not be used where collisions matter.
+    Changing one bit of the input changes about half of the output bits,
+    which makes digests useful fingerprints for checking [[integrity]].
+    Hashing is not [[encryption]]: there is no key and no way to decrypt, and
+    fast hashes are the wrong tool for storing passwords, which need slow,
+    salted [[password-hashing]].
+  related: [integrity, password-hashing, hmac, digital-signature, encoding, encryption]
   topicId: CRY-01
 
 - id: encryption
   term: Encryption
-  short: 'Reversibly transforming data with a key so that only holders of the right key can recover the original.'
-  related: [confidentiality, encoding, hash-function]
+  aliases: [encipherment]
+  short: 'Transforming data with a key so that only someone holding the right key can turn it back into the original.'
+  long: >
+    [[symmetric-encryption|Symmetric encryption]] uses one shared key, while
+    [[public-key-cryptography]] encrypts with a public key and decrypts with a
+    private key; either way, [[plaintext]] becomes [[ciphertext]]. Encryption
+    protects [[confidentiality]] but not, by itself, integrity: some
+    ciphertexts can be altered without detection, which is why modern systems
+    use [[aead]]. HTTPS encrypts traffic between alice's browser and
+    shop.example, but the server still sees the data in the clear, so
+    encryption in transit is not end-to-end or at-rest protection.
+  related:
+    [confidentiality, symmetric-encryption, public-key-cryptography, aead, encoding, hash-function]
   topicId: CRY-01
 
 - id: encoding
   term: Encoding
-  short: 'A reversible, keyless mapping of data into another representation for transport or display, such as Base64 or percent-encoding.'
+  short: 'A public, reversible, keyless way of representing data in another form for storage, transport, or display, such as Base64, percent-encoding, or UTF-8.'
   long: >
-    Encoding is not a security control by itself because anyone can reverse it.
-    It is distinct from [[encryption]] (which needs a key) and from hashing.
-  related: [encryption, output-encoding, punycode]
+    Anyone can reverse an encoding: the Base64 text `YWxpY2U=` decodes to
+    `alice` with no key, so a password stored in Base64 is not protected. That
+    is the difference from [[encryption]], which needs a key, and from a
+    [[hash-function]], which cannot be reversed at all. Encodings such as
+    [[percent-encoding]] and [[punycode]] also matter for security because a
+    check that runs before decoding can see different text from the code that
+    runs after it, which is why validation follows [[canonicalization]].
+  related:
+    [encryption, hash-function, output-encoding, percent-encoding, punycode, canonicalization]
   topicId: CRY-01
 
 - id: phishing
   term: Phishing
-  short: 'A social-engineering attack that uses a fake message or site to trick someone into revealing data or running an action.'
-  related: [social-engineering, spoofing, homograph-attack]
+  short: 'A social-engineering attack in which a message posing as a trusted party tricks someone into revealing secrets, installing malware, or taking a harmful action such as paying a fake invoice.'
+  long: >
+    A typical lure creates urgency ("your account will be closed today") and
+    links to a look-alike site built with [[typosquatting]] or a
+    [[homograph-attack]]. The evidence is in the details: the real
+    destination of each link, the [[registrable-domain]] in that destination,
+    and the sender's authentication results ([[spf]], [[dkim]], [[dmarc]]). A
+    padlock proves nothing here, since phishing sites routinely use HTTPS, and
+    variants such as [[spear-phishing]], [[smishing]], and [[vishing]] change
+    the targeting or the channel.
+  related:
+    [
+      social-engineering,
+      spoofing,
+      spear-phishing,
+      lookalike-domain,
+      business-email-compromise,
+      dmarc,
+    ]
   topicId: WEB-03
 
 - id: domain-name
   term: Domain name
-  short: 'A human-readable name in the Domain Name System, such as campus.test, made of labels separated by dots.'
-  related: [dns, url, registrable-domain]
+  aliases: [domain]
+  short: 'A human-readable name in the Domain Name System, such as mail.campus.example, made of dot-separated labels that run from most specific on the left to most general on the right.'
+  long: >
+    In mail.campus.example, `example` is the [[top-level-domain]],
+    `campus.example` is the [[registrable-domain]], and adding `mail` on the
+    left makes a [[subdomain]]. The DNS standards (RFC 1034 and RFC 1035)
+    limit each label to 63 octets and a whole name to 255 octets, and they
+    compare names without regard to ASCII case. To learn who controls a name,
+    read it from the right: shop.example.login-check.test belongs to whoever
+    registered login-check.test, whatever the left side says.
+  related: [dns, registrable-domain, subdomain, top-level-domain, url, idn]
   topicId: WEB-02
 
 - id: dns
   term: Domain Name System (DNS)
   aliases: [DNS]
-  short: 'The distributed system that translates domain names into the network addresses and records clients use.'
-  related: [domain-name, url]
+  short: "The internet's distributed, hierarchical naming system, which maps domain names to IP addresses and other records such as mail servers and text policies."
+  long: >
+    To look up shop.example, a [[recursive-resolver]] asks a root server,
+    then a server for the top-level domain, then the
+    [[authoritative-name-server]] for shop.example, and caches the answer for
+    the record's time to live (TTL). Common record types include A and AAAA
+    for addresses, MX for mail servers, CNAME for aliases, and TXT for text,
+    which carries [[spf]] and [[dmarc]] policies and [[dkim]] keys. Classic DNS
+    does not authenticate answers, so a forged reply can be cached
+    ([[dns-cache-poisoning]]); [[dnssec]] adds signatures that validating
+    resolvers can check.
+  related:
+    [
+      domain-name,
+      recursive-resolver,
+      authoritative-name-server,
+      dns-cache-poisoning,
+      dnssec,
+      ip-address,
+    ]
   topicId: NET-02
 
 - id: url
   term: URL
   aliases: [uniform resource locator, web address]
-  short: 'A string that locates a resource, built from a scheme, authority (host and optional userinfo and port), path, query, and fragment.'
-  related: [domain-name, userinfo, registrable-domain]
+  short: 'A web address that identifies a resource and how to reach it, written as a scheme, an authority (optional userinfo, a host, and an optional port), a path, an optional query, and an optional fragment.'
+  long: >
+    In `https://alice@shop.example:8443/orders?id=42#top`, the scheme is
+    https, the [[userinfo]] is alice, the host is shop.example, the [[port]]
+    is 8443, the path is /orders, the query is id=42, and the fragment is
+    top. The host and port decide which server the browser contacts, while
+    the rest can say anything its author likes, which is why phishers hide
+    trusted names in paths, subdomains, and userinfo. RFC 3986 defines the
+    generic syntax and browsers follow the WHATWG URL Standard, which differs
+    in some edge cases; in both, the fragment stays in the browser and is not
+    sent to the server.
+  related: [domain-name, userinfo, registrable-domain, percent-encoding, origin, punycode]
   topicId: WEB-02
 
 - id: unicode
   term: Unicode
-  short: "The standard that assigns a number to nearly every character in the world's writing systems, enabling multilingual text."
-  related: [code-point, glyph, unicode-script]
+  aliases: [Unicode Standard]
+  short: "The character standard that gives each character in the world's writing systems, plus symbols and emoji, a unique number called a code point."
+  long: >
+    Unicode defines code points from U+0000 to U+10FFFF and properties for
+    each character, such as its [[unicode-script|script]]; encodings such as
+    UTF-8 then turn code points into bytes. It does not fix how a character
+    looks, because fonts draw the [[glyph|glyphs]]. Since many characters
+    look alike, the Unicode Consortium also publishes security standards,
+    including UTS #39 for [[confusable]] detection and UTS #46 for processing
+    internationalized domain names.
+  related: [code-point, glyph, unicode-script, unicode-normalization, confusable]
   topicId: WEB-01
 
 - id: code-point
   term: Code point
-  short: 'An integer that Unicode assigns to an abstract character, written like U+0430, independent of how it is drawn.'
-  related: [unicode, glyph]
+  aliases: [Unicode code point]
+  short: 'A number from U+0000 to U+10FFFF that Unicode uses to identify a character, written in hexadecimal, such as U+0061 for Latin small letter a.'
+  long: >
+    Latin a (U+0061) and Cyrillic а (U+0430) usually look identical,
+    but they are different code points, so `bank.example` and a look-alike
+    spelled with U+0430 are different names to every computer. One visible
+    character can also be several code points: é is either U+00E9 or e
+    followed by the combining accent U+0301, which is why text is compared
+    after [[unicode-normalization]]. In UTF-8, a code point takes one to four
+    bytes.
+  related: [unicode, glyph, unicode-normalization, confusable]
   topicId: WEB-01
 
 - id: glyph
   term: Glyph
-  short: 'The visible shape used to draw a character; different code points can share a nearly identical glyph.'
-  related: [code-point, confusable]
+  short: 'The visible shape a font draws for a character; different characters can share nearly identical glyphs, which is what makes look-alike text possible.'
+  long: >
+    A character can have many glyphs (serif, sans-serif, bold), and very
+    different characters can share one: Latin o, Cyrillic о, Greek
+    ο, and in some fonts the digit 0 look the same. Computers compare
+    [[code-point|code points]] while people compare glyphs, and a
+    [[homograph-attack]] lives in that gap. Font choice matters, so
+    characters that are easy to tell apart in one typeface, such as l, I, and
+    1, can be ambiguous in another.
+  related: [code-point, confusable, homograph-attack, unicode]
   topicId: WEB-01
 
 - id: punycode
   term: Punycode
-  short: 'An encoding that represents a Unicode domain label using only letters, digits, and hyphens, carried in an xn-- label.'
+  aliases: [RFC 3492]
+  short: 'The RFC 3492 encoding that represents any Unicode string using only ASCII letters, digits, and hyphens, which IDNA uses to write non-ASCII domain labels in their xn-- form.'
   long: >
-    Defined in RFC 3492. Clients convert an internationalized label to its
-    ASCII-compatible form (an A-label) that always begins with the prefix
-    xn--. For example, the label bücher becomes xn--bcher-kva.
-  related: [idn, idna, encoding]
+    Punycode copies the ASCII characters first, adds a hyphen if there were
+    any, and then encodes each non-ASCII character and its position as a
+    compact base-36 number, so `bücher` becomes `bcher-kva`. The `xn--`
+    prefix comes from [[idna]], not from Punycode, and together they form the
+    [[a-label]] `xn--bcher-kva`. Punycode is an encoding, not a safety check:
+    a look-alike name encodes just as easily as a genuine one.
+  related: [idna, a-label, idn, encoding, homograph-attack]
   topicId: WEB-01
 
 - id: idn
   term: Internationalized domain name (IDN)
-  aliases: [internationalized domain name]
-  short: 'A domain name that can contain non-ASCII characters, allowing names in scripts beyond basic Latin.'
-  related: [punycode, idna, domain-name]
+  aliases: [IDN]
+  short: 'A domain name that contains at least one label with characters beyond ASCII letters, digits, and hyphens, such as bücher.example, which DNS carries in its ASCII xn-- form.'
+  long: >
+    RFC 5890 defines an IDN as a name with at least one [[u-label]] or
+    [[a-label]]; the DNS stores only the ASCII form, and [[idna]] converts
+    between the two. IDNs let people use names in their own languages, such
+    as `bücher.example` or a name written entirely in Han characters,
+    so a non-ASCII name is not suspicious by itself. The risk is imitation: a
+    [[homograph-attack]] uses an IDN whose characters look like a trusted
+    name, which is why browsers apply an [[idn-display-policy]].
+  related: [idna, punycode, a-label, u-label, homograph-attack, idn-display-policy]
   topicId: WEB-01
 
 - id: idna
-  term: IDNA
-  aliases: [internationalizing domain names in applications]
-  short: 'The application-layer process that converts internationalized domain labels to and from their ASCII (xn--) form.'
-  related: [idn, punycode, unicode]
+  term: Internationalized Domain Names for Applications (IDNA)
+  aliases: [IDNA, IDNA2008, IDNA2003, Internationalizing Domain Names in Applications]
+  short: 'The IETF standards (IDNA2008, RFCs 5890 to 5894) that define which Unicode characters a domain label may contain and how applications convert such labels to and from their ASCII xn-- form.'
+  long: >
+    IDNA works entirely in applications: software checks each label against
+    rules derived from Unicode properties (RFC 5892 sorts characters into
+    PVALID, CONTEXTJ, CONTEXTO, DISALLOWED, and UNASSIGNED), then encodes it
+    with [[punycode]] and adds `xn--` to form an [[a-label]], so DNS servers
+    never handle Unicode. Browsers first apply Unicode UTS #46 processing,
+    which maps characters (for example, uppercase and full-width letters to
+    lowercase ASCII) and normalizes the result to NFC. IDNA2003 (RFC 3490)
+    and IDNA2008 treat a few characters differently: `faß.de` became
+    `fass.de` under IDNA2003 but is `xn--fa-hia.de` under IDNA2008, a
+    difference that UTS #46 warns can be used for spoofing.
+  related: [idn, punycode, a-label, u-label, unicode-normalization]
   topicId: WEB-01
 
 - id: homograph-attack
   term: Homograph attack
-  aliases: [homoglyph attack, IDN homograph attack]
-  short: 'Registering a name that looks like a trusted one by using characters whose glyphs are confusable with the real ones.'
+  aliases: [homoglyph attack, IDN homograph attack, IDN spoofing]
+  short: 'Impersonating a trusted name, such as a domain, with a look-alike string built from confusable characters, often taken from another script.'
   long: >
-    For example, a name spelled with a Cyrillic small letter a (U+0430) in
-    place of the Latin a can be visually indistinguishable from the original
-    while resolving to a completely different site.
-  related: [confusable, mixed-script, typosquatting, phishing]
+    For example, bаnk.example spelled with a Cyrillic а (U+0430)
+    can look exactly like bank.example, yet it is a different domain whose
+    [[a-label]] is `xn--bnk-6cd`, and its owner can get a valid TLS
+    certificate for it. Defenses include browser
+    [[idn-display-policy|IDN display policies]] that fall back to the `xn--`
+    form, [[confusable-skeleton]] checks against protected names, registry
+    limits on which characters a TLD accepts, and phishing-resistant
+    [[passkey|passkeys]] that a look-alike site cannot use. Blocking every
+    non-ASCII name is a poor fix, because it also blocks legitimate
+    [[idn|internationalized domain names]].
+  related:
+    [
+      confusable,
+      mixed-script,
+      whole-script-confusable,
+      confusable-skeleton,
+      lookalike-domain,
+      phishing,
+    ]
   topicId: WEB-01
 
 - id: confusable
   term: Confusable
-  aliases: [confusable character]
-  short: 'A character (or string) whose shape can be mistaken for another, as defined by Unicode security data (UTS #39).'
-  related: [glyph, homograph-attack, mixed-script]
+  aliases: [confusable character, look-alike character, homoglyph]
+  short: "A character or string that people can easily mistake for a different one, such as Cyrillic а for Latin a, as cataloged in Unicode's UTS #39 confusables data."
+  long: >
+    UTS #39 maps each character to a prototype and calls two strings
+    confusable when their [[confusable-skeleton|skeletons]] are identical. It
+    distinguishes single-script confusables (the Latin strings ǉeto and
+    ljeto), mixed-script confusables (bаnk with a Cyrillic а versus
+    bank), and [[whole-script-confusable|whole-script confusables]] (Cyrillic
+    ѕсоре versus Latin scope). Confusability depends on fonts and is a
+    matter of degree, so the data supports detection and review rather than
+    serving as a list of forbidden characters.
+  related:
+    [
+      glyph,
+      confusable-skeleton,
+      whole-script-confusable,
+      mixed-script,
+      homograph-attack,
+      unicode-script,
+    ]
   topicId: WEB-01
 
 - id: mixed-script
   term: Mixed-script string
-  short: 'A string whose characters come from more than one writing system, which can be a signal of a spoofing attempt.'
-  related: [unicode-script, confusable, homograph-attack]
+  aliases: [mixed script, script mixing]
+  short: 'A string that combines letters from more than one script, such as Latin and Cyrillic in a single domain label, which is a common sign of spoofing.'
+  long: >
+    UTS #39 decides this with resolved script sets: characters in the Common
+    and Inherited scripts, such as digits, hyphens, and combining marks, do
+    not count, and some combinations count as one writing system, such as
+    Han, Hiragana, and Katakana for Japanese. The label ѕhop, a Cyrillic ѕ
+    followed by Latin letters, is mixed-script, but сосоа, written entirely in
+    Cyrillic to imitate the Latin word cocoa, is not, so a mixed-script rule
+    alone misses [[whole-script-confusable|whole-script confusables]].
+    Browsers therefore combine this check with others in their
+    [[idn-display-policy]].
+  related:
+    [unicode-script, confusable, whole-script-confusable, restriction-level, homograph-attack]
   topicId: WEB-01
 
 - id: typosquatting
   term: Typosquatting
-  aliases: [URL hijacking]
-  short: 'Registering misspellings or near-variants of a popular domain to catch mistyped traffic or impersonate a brand.'
-  related: [homograph-attack, domain-name, phishing]
+  aliases: [typo-squatting, URL hijacking]
+  short: 'Registering misspellings or near-variants of a popular domain name to catch mistyped visits, misaddressed email, or victims of a phishing lure.'
+  long: >
+    Common patterns include a missing, doubled, or swapped letter
+    (shpo.example), a neighboring key on the keyboard, and a different
+    top-level domain, while the related [[combosquatting]] adds words to a
+    correctly spelled brand (shop-example-login.test). Typosquatting uses
+    ordinary characters and relies on slips or quick reading, whereas a
+    [[homograph-attack]] substitutes characters that look identical. Defenses
+    include registering common variants yourself, watching new registrations
+    that resemble your names, and teaching users to check the
+    [[registrable-domain]] rather than a familiar word.
+  related: [lookalike-domain, combosquatting, homograph-attack, registrable-domain, phishing]
   topicId: WEB-02
 
 - id: sql-injection
   term: SQL injection (SQLi)
-  aliases: [SQLi]
-  short: 'An attack where attacker-controlled input changes the structure of a database query because data was mixed into code.'
+  aliases: [SQLi, CWE-89]
+  short: "An attack in which input pasted into a SQL query changes the query's structure, letting the attacker read or change data, or bypass checks, beyond what the application intended."
   long: >
-    Classic forms include tautology-based login bypass (making a WHERE clause
-    always true) and UNION-based extraction (appending a second query to read
-    other tables). The reliable fix is the [[parameterized-query]].
-  related: [parameterized-query, input-validation, least-privilege]
+    It happens when code builds a query by joining strings, as in
+    `"SELECT * FROM users WHERE name = '" + input + "'"`; input such as
+    `' OR '1'='1` then becomes part of the SQL and makes the condition always
+    true. Typical outcomes are login bypass, reading other tables with a UNION
+    query, and changing or deleting rows. The reliable fix is a
+    [[parameterized-query]], with a [[least-privilege]] database account to
+    limit the damage of any mistake; escaping quotes or blocking keywords is
+    fragile.
+  related:
+    [parameterized-query, injection, input-validation, least-privilege, cwe, second-order-injection]
   topicId: APP-01
 
 - id: parameterized-query
   term: Parameterized query
-  aliases: [prepared statement, bind variables]
-  short: 'A query whose structure is fixed in advance, with user data sent separately as parameters that can never become code.'
-  related: [sql-injection, input-validation, allowlist]
+  aliases: [prepared statement, bind variables, bound parameters]
+  short: 'A database query whose SQL text is fixed in advance, with user data sent separately as parameter values that the database never parses as SQL.'
+  long: >
+    In `SELECT * FROM orders WHERE customer = ?`, the database parses the
+    statement first and only then binds a value such as alice, so input like
+    `' OR '1'='1` is treated as an odd customer name, not as code.
+    Placeholders work only for values: table names, column names, and sort
+    directions cannot be parameters and must be chosen from an [[allowlist]].
+    Most [[orm|ORMs]] parameterize automatically, but raw-query helpers that
+    accept a finished string can reintroduce [[sql-injection]].
+  related: [sql-injection, injection, allowlist, orm, input-validation]
   topicId: APP-01
 
 - id: xss
   term: Cross-site scripting (XSS)
-  aliases: [XSS]
-  short: "A web flaw where attacker-controlled content runs as script in another user's browser in the context of a trusted site."
+  aliases: [XSS, CWE-79]
+  short: "A web vulnerability in which attacker-controlled content runs as script in another user's browser, with the privileges of the trusted site that delivered it."
   long: >
-    Three common forms are reflected (echoed from the request), stored (saved
-    and served to others), and DOM-based (introduced entirely in client-side
-    code). XSS subverts the [[same-origin-policy]] because the script runs with
-    the victim site's origin.
-  related: [output-encoding, content-security-policy, same-origin-policy, sanitization]
+    Common forms are [[reflected-xss|reflected]] (echoed from the request),
+    [[stored-xss|stored]] (saved and shown to other users), and
+    [[dom-based-xss|DOM-based]] (created by the page's own JavaScript).
+    Because the script runs with the victim site's [[origin]], the
+    [[same-origin-policy]] does not stop it from reading the page, acting as
+    the user, or sending data away. Contextual [[output-encoding]] and
+    [[sanitization]] are the main defenses, with a
+    [[content-security-policy]] and [[trusted-types]] as backup layers.
+  related:
+    [
+      output-encoding,
+      sanitization,
+      content-security-policy,
+      same-origin-policy,
+      stored-xss,
+      reflected-xss,
+      dom-based-xss,
+    ]
   topicId: WEB-05
 
 - id: same-origin-policy
   term: Same-origin policy
   aliases: [SOP]
-  short: 'A browser rule that limits how a document or script from one origin (scheme, host, port) can interact with another origin.'
-  related: [xss, csrf, content-security-policy]
+  short: 'The browser rule that restricts how a document or script loaded from one origin (scheme, host, and port) can interact with resources from another origin.'
+  long: >
+    `https://shop.example` and `https://shop.example:8443` are different
+    origins, and so are `http://shop.example` and `https://shop.example`.
+    Cross-origin embedding (images, scripts) and writes (links, redirects,
+    form submissions) are typically allowed, but reading another origin's
+    responses is blocked unless that origin permits it with [[cors]]. Because
+    sending is allowed, the policy does not stop [[csrf]], and cookies follow
+    their own, looser rules based on domains rather than origins.
+  related: [origin, cors, site, csrf, xss, cookie]
   topicId: WEB-04
 
 - id: content-security-policy
   term: Content Security Policy (CSP)
   aliases: [CSP]
-  short: 'An HTTP response header that tells the browser which script and resource sources to allow, as a backup defense against XSS.'
+  short: 'A policy, usually sent in the Content-Security-Policy response header, that tells the browser which scripts and other resources a page may load or run, limiting the damage of cross-site scripting.'
   long: >
-    A strict CSP uses per-response nonces or hashes together with object-src
-    'none' and base-uri 'none'. Host allowlists are weak and frequently
-    bypassable. CSP is defense in depth, not a replacement for correct output
-    handling.
-  related: [xss, defense-in-depth, output-encoding]
+    MDN recommends a strict policy such as
+    `script-src 'nonce-{RANDOM}'; object-src 'none'; base-uri 'none'`, in
+    which the server gives each legitimate script a fresh random nonce, so
+    injected scripts without it do not run. Policies that list allowed hosts
+    are hard to get right and often fail to stop [[xss]], and a
+    Content-Security-Policy-Report-Only header lets a team test a policy
+    before enforcing it. CSP is [[defense-in-depth]]: it backs up, but never
+    replaces, [[output-encoding]] and [[sanitization]], and its
+    frame-ancestors directive also defends against [[clickjacking]].
+  related: [xss, defense-in-depth, output-encoding, sanitization, trusted-types, clickjacking]
   topicId: WEB-07
 
 - id: cookie
   term: Cookie
-  short: 'A small piece of data a site stores in the browser and returns on later requests, often used to hold a session identifier.'
-  related: [session, csrf, same-origin-policy]
+  aliases: [HTTP cookie, web cookie, browser cookie]
+  short: 'A small name-value pair that a server asks the browser to store with the Set-Cookie header and that the browser sends back on later requests, often to carry a session identifier.'
+  long: >
+    Attributes control where and how it travels: Domain and Path limit which
+    requests carry it, Expires or Max-Age sets its lifetime, Secure restricts
+    it to HTTPS, HttpOnly hides it from JavaScript, and SameSite limits
+    sending it with cross-site requests ([[samesite-cookie]]). Without a
+    Domain attribute a cookie goes back only to the host that set it; with
+    Domain=shop.example it also goes to every subdomain, and browsers reject
+    a Domain that is a [[public-suffix]] such as co.uk. Cookies are scoped by
+    domain rather than by [[origin]], so they do not follow the
+    [[same-origin-policy]] exactly.
+  related: [session, samesite-cookie, csrf, session-hijacking, public-suffix, same-origin-policy]
   topicId: IAM-04
 
 - id: session
   term: Session
-  short: 'Server-side state that represents a signed-in user, usually referenced by a session identifier kept in a cookie.'
-  related: [cookie, authentication]
+  aliases: [web session]
+  short: "The state that links a user's later requests to an earlier sign-in, usually tracked with a hard-to-guess session ID that the browser returns in a cookie."
+  long: >
+    After alice signs in to shop.example, the server creates a random session
+    ID, records it with her account, and sends it in a [[cookie]]; until it
+    expires, anyone holding that ID is treated as alice, which is what
+    [[session-hijacking]] exploits. Good practice is to issue a new ID at
+    sign-in (which defeats [[session-fixation]]), mark the cookie Secure and
+    HttpOnly, expire idle sessions, and invalidate the session on the server
+    at logout. Some designs keep session data in a signed token such as a
+    [[jwt]] instead, which avoids server-side storage but makes early
+    revocation harder.
+  related: [cookie, authentication, session-hijacking, session-fixation, jwt, access-token]
   topicId: IAM-04
 
 - id: csrf
   term: Cross-site request forgery (CSRF)
-  aliases: [CSRF, XSRF]
-  short: "An attack that makes a victim's browser send an unwanted authenticated request to a site where they are logged in."
-  related: [cookie, same-origin-policy]
+  aliases: [CSRF, XSRF, session riding, CWE-352]
+  short: "An attack in which a malicious site makes a victim's browser send an unwanted, state-changing request to another site where the victim is signed in, riding on the victim's cookies."
+  long: >
+    If alice is signed in to bank.example, a page on evil.test can submit a
+    hidden form to the bank's transfer endpoint, and her browser attaches her
+    session cookie automatically. The [[same-origin-policy]] stops the
+    attacking page from reading the response but not from sending the
+    request. Defenses include [[csrf-token|anti-CSRF tokens]],
+    [[samesite-cookie|SameSite cookies]], checking the Origin or
+    Sec-Fetch-Site request header, and re-authentication for sensitive
+    actions; unlike [[xss]], CSRF never runs code inside the target site.
+  related: [cookie, same-origin-policy, csrf-token, samesite-cookie, xss, session]
   topicId: WEB-06
 
 - id: responsible-disclosure
   term: Responsible disclosure
-  aliases: [coordinated vulnerability disclosure, CVD]
-  short: 'Reporting a vulnerability privately to those who can fix it and allowing reasonable time before any public release.'
-  related: [vulnerability, rules-of-engagement]
+  short: 'Reporting a vulnerability privately to the people who can fix it and giving them reasonable time before any public release; many organizations now call this coordinated vulnerability disclosure.'
+  long: >
+    The finder reports through the vendor's published channel, such as its
+    [[vulnerability-disclosure-policy]], agrees on a timeline (deadlines such
+    as 90 days are common), and publishes details after a fix or when the
+    deadline passes. The newer term [[coordinated-vulnerability-disclosure]]
+    is often preferred because it stresses cooperation among finders,
+    vendors, and coordinators rather than judging who is being
+    "responsible." Reporting a flaw carefully does not make the testing that
+    found it authorized: probing systems without permission can still violate
+    the [[cfaa]], so look first for a policy with an explicit safe harbor.
+  related:
+    [
+      coordinated-vulnerability-disclosure,
+      vulnerability-disclosure-policy,
+      vulnerability,
+      cfaa,
+      rules-of-engagement,
+    ]
   topicId: GRC-08
 
 - id: accountability
   term: Accountability
-  short: "The goal that an entity's actions can be traced uniquely to that entity, supporting audit and after-the-fact review."
-  related: [non-repudiation, authentication]
+  short: 'The goal that every action in a system can be traced to the specific person or process that performed it, so it can be reviewed and answered for.'
+  long: >
+    It depends on unique accounts, [[authentication]], and protected
+    [[security-log|audit logs]]: if three teaching assistants share one "ta"
+    account in the campus.example grading system, a changed grade cannot be
+    traced to any of them. Logs provide accountability only if the people
+    they record cannot quietly edit them. Accountability is weaker than
+    [[non-repudiation]], which aims to produce evidence that would convince an
+    outside party.
+  related: [non-repudiation, authentication, security-log, cia-triad]
   topicId: FND-01
 
 - id: assurance
   term: Assurance
-  short: 'Grounds for justified confidence that a security claim has been or will be met, built from credible evidence.'
-  related: [cia-triad]
+  aliases: [security assurance, information assurance]
+  short: 'Justified confidence, based on evidence such as testing, review, and analysis, that a system really meets its security claims.'
+  long: >
+    Assurance measures how sure we are, not how strong a protection is: two
+    systems with the same features can have very different assurance
+    depending on the evidence behind them. A vendor's statement that its
+    login page requires MFA is weak evidence, while a test showing that the
+    second factor cannot be skipped, an independent
+    [[penetration-testing|penetration test]], or a formal proof is stronger.
+    Assurance is never a guarantee, and paperwork showing compliance is not
+    by itself evidence that a control works.
+  related: [security-policy, security-control, penetration-testing, cia-triad]
   topicId: FND-01
 
 - id: cfaa
   term: Computer Fraud and Abuse Act (CFAA)
-  aliases: [18 U.S.C. 1030]
-  short: 'The main U.S. federal anti-hacking statute, which criminalizes accessing a computer without or beyond authorization.'
+  aliases: [CFAA, 18 U.S.C. 1030, 18 U.S.C. § 1030]
+  short: 'The main U.S. federal anti-hacking law, 18 U.S.C. 1030, which makes it a crime to access a computer without authorization or to exceed authorized access, and which also lets victims sue.'
   long: >
-    Codified at 18 U.S.C. 1030. In Van Buren v. United States (2021) the
-    Supreme Court read exceeds authorized access narrowly, to cover entering
-    areas of a computer that are off limits, not merely misusing access one
-    already has. This glossary entry is background, not legal advice.
-  related: [authorization, responsible-disclosure, rules-of-engagement]
+    It covers any "protected computer," a term that includes computers used
+    in or affecting interstate or foreign commerce, so in practice almost any
+    internet-connected machine. In Van Buren v. United States (2021), the
+    Supreme Court held that a person exceeds authorized access by obtaining
+    information from areas of a computer, such as files, folders, or
+    databases, that are off limits to them, not by misusing information they
+    are allowed to reach. In May 2022 the Justice Department told federal
+    prosecutors to decline to charge good-faith security research, but that
+    policy creates no legal rights, does not bind state prosecutors, and does
+    not prevent civil lawsuits. Always get written [[authorization]] and
+    agreed [[rules-of-engagement]] before testing; this entry is background,
+    not legal advice.
+  related: [authorization, rules-of-engagement, penetration-testing, responsible-disclosure]
   topicId: FND-07
 
 - id: rules-of-engagement
   term: Rules of engagement (ROE)
-  aliases: [ROE]
-  short: 'A written agreement that defines exactly what security testing is authorized: scope, timing, methods, and contacts.'
-  related: [penetration-testing, authorization, responsible-disclosure]
+  aliases: [ROE, RoE]
+  short: 'A written agreement, signed by someone with authority over the systems, that defines exactly what security testing is allowed: scope, timing, methods, and contacts.'
+  long: >
+    A typical document lists in-scope and out-of-scope systems (for example,
+    192.0.2.0/24 but not the payroll server), permitted techniques (often
+    excluding denial of service and social engineering), testing windows, how
+    any data found must be handled, and whom to call if something breaks.
+    Permission must come from someone who controls the systems: a client
+    cannot authorize an attack on its email provider's servers, and cloud
+    providers set their own rules for testing resources hosted on them. If a
+    test drifts outside the agreed scope, stop and ask, because the agreement
+    is what separates authorized testing from a crime under laws such as the
+    [[cfaa]].
+  related: [penetration-testing, authorization, cfaa, responsible-disclosure]
   topicId: FND-07
 
 - id: penetration-testing
   term: Penetration testing
-  aliases: [pen testing, ethical hacking]
-  short: 'Authorized, scoped testing that safely simulates attacks to find weaknesses before a real adversary does.'
-  related: [rules-of-engagement, vulnerability]
+  aliases: [pen testing, pentest, pen test]
+  short: 'Authorized, scoped security testing in which testers use real attack techniques against a system to find weaknesses and show their impact before an attacker does.'
+  long: >
+    A test follows [[rules-of-engagement]] and usually moves from planning
+    and discovery to attempted exploitation and a report that ranks findings
+    and recommends fixes. Unlike an automated vulnerability scan, it tries to
+    prove impact, for example by chaining a weak password and a misconfigured
+    file share to reach payroll data at campus.example. It is often called
+    ethical hacking, and a clean result does not prove a system secure: it
+    shows what one team found with limited time, skill, and scope.
+  related: [rules-of-engagement, vulnerability, exploit, authorization, cfaa]
   topicId: FND-07
 
 - id: social-engineering
   term: Social engineering
-  short: 'Manipulating people into revealing information or taking actions, rather than attacking technology directly.'
-  related: [phishing, spoofing]
+  short: 'Manipulating people, rather than technology, into revealing information, granting access, or taking actions that help an attacker.'
+  long: >
+    Social engineers exploit authority, urgency, fear, helpfulness, and
+    curiosity, through channels such as [[phishing]] email,
+    [[vishing|phone calls]], and in-person [[pretexting]] or [[tailgating]].
+    For example, a caller claiming to be from the campus.example help desk
+    asks bob to read out the one-time code he just received "to verify his
+    account." Strong defenses change processes as well as training people,
+    such as [[out-of-band-verification]] for payment changes and
+    phishing-resistant [[passkey|passkeys]], so that one person's mistake is
+    not catastrophic.
+  related:
+    [phishing, pretexting, vishing, business-email-compromise, out-of-band-verification, spoofing]
   topicId: HUM-01
 
 - id: registrable-domain
   term: Registrable domain
-  aliases: [eTLD+1, organizational domain]
-  short: 'The public suffix plus the one label before it, such as example.com, which is the part a single party controls.'
-  related: [public-suffix, subdomain, domain-name]
+  aliases: [eTLD+1, registered domain]
+  short: 'The public suffix plus the one label immediately to its left, such as shop.example in www.shop.example, which is the part of a name that one registrant controls.'
+  long: >
+    Software finds it with the [[public-suffix]] list: it takes the longest
+    matching suffix and adds one more label, so under a two-label suffix such
+    as co.uk the registrable domain has three labels. Browsers use it to
+    define a [[site]] for SameSite cookies and to highlight the owner in the
+    address bar, and it is the first thing to check in a suspicious link: in
+    shop.example.login-check.test, the registrable domain is
+    login-check.test. DMARC's "organizational domain" is a similar idea, but
+    [[dmarc|RFC 9989]] now finds it with a DNS tree walk instead of the
+    Public Suffix List.
+  related: [public-suffix, subdomain, domain-name, site, top-level-domain, dmarc]
   topicId: WEB-02
 
 - id: public-suffix
   term: Public suffix
-  aliases: [eTLD, effective top-level domain]
-  short: 'A domain suffix under which the public can register names, such as com or co.uk, tracked by the Public Suffix List.'
-  related: [registrable-domain, top-level-domain]
+  aliases: [eTLD, effective top-level domain, effective TLD]
+  short: 'A domain suffix under which anyone can register names, such as com or co.uk, as recorded in the community-maintained Public Suffix List.'
+  long: >
+    The list, started by Mozilla and maintained as a community resource,
+    includes suffixes run by registries and private ones added by companies
+    that let customers create names under their domain. Browsers use it to
+    stop sites from setting cookies for a whole suffix (so-called
+    supercookies), to find [[registrable-domain|registrable domains]] and
+    sites, and to highlight domains in the address bar. A public suffix is
+    not always a [[top-level-domain]], and because no algorithm can infer a
+    registry's policy, software must ship and update a copy of the list; when
+    no rule matches, the default rule treats the last label as the suffix.
+  related: [registrable-domain, top-level-domain, cookie, site, subdomain]
   topicId: WEB-02
 
 - id: subdomain
   term: Subdomain
-  short: "A label placed to the left of the registrable domain, such as the mail in mail.example.com, controlled by that domain's owner."
-  related: [registrable-domain, domain-name]
+  short: 'A domain name that sits inside another domain, such as mail.shop.example inside shop.example, created by adding labels on the left.'
+  long: >
+    In DNS terms every name is a subdomain of the names to its right, but in
+    everyday use the word means a name under a [[registrable-domain]], which
+    that domain's owner controls. The owner of login-check.test can create
+    shop.example.login-check.test, so a trusted-looking word on the left of a
+    name proves nothing about who runs it. A forgotten DNS record that still
+    points a subdomain at a deleted cloud resource can let someone else claim
+    the resource and serve content under the subdomain, an attack called
+    subdomain takeover.
+  related: [registrable-domain, domain-name, dns, public-suffix]
   topicId: WEB-02
 
 - id: top-level-domain
   term: Top-level domain (TLD)
   aliases: [TLD]
-  short: 'The rightmost label of a domain name, such as com, org, edu, or a country code like uk.'
-  related: [public-suffix, domain-name]
+  short: 'The rightmost label of a domain name, such as com, org, edu, or a two-letter country code like uk, listed in the DNS root zone.'
+  long: >
+    Generic TLDs include com, org, and hundreds of newer names, while
+    country-code TLDs (ccTLDs) are two-letter codes such as uk and de; IANA
+    keeps the authoritative list in its Root Zone Database. The names
+    example, test, invalid, and localhost are reserved for special uses (RFC
+    6761), so they never collide with real sites, which is why lessons use
+    names like shop.example. A TLD is not always the [[public-suffix]]:
+    names are often registered under second-level suffixes such as co.uk.
+  related: [public-suffix, domain-name, dns, registrable-domain]
   topicId: WEB-02
 
 - id: userinfo
   term: Userinfo
-  aliases: [URL credentials]
-  short: 'An optional part of a URL before an @ sign that can mislead a reader about the real host; its password form is deprecated.'
-  related: [url, phishing]
+  aliases: [URL credentials, user information]
+  short: 'The optional user name, and deprecated password, written before an @ sign at the start of a URL authority, which can make a link appear to point at a trusted host.'
+  long: >
+    In `https://shop.example@login-check.test/account`, the browser connects
+    to login-check.test; shop.example is only a user name. RFC 3986
+    deprecates the user:password form, warns that userinfo can be crafted to
+    look like a trusted domain name, and recommends displaying it
+    distinctly. Links in email and chat often appear as raw text, so read the
+    host that follows the @ sign.
+  related: [url, phishing, registrable-domain, domain-name]
   topicId: WEB-02
 
 - id: unicode-script
   term: Script (writing system)
-  aliases: [Unicode script]
-  short: 'A set of characters used by one or more languages, such as Latin, Cyrillic, Greek, or Han.'
-  related: [unicode, mixed-script, confusable]
+  aliases: [Unicode script, Script property]
+  short: 'A collection of letters and signs used to write one or more languages, such as Latin, Cyrillic, Greek, or Han, which Unicode records for every character in its Script property.'
+  long: >
+    Unicode Standard Annex #24 gives each code point one Script value and,
+    through Script_Extensions, the set of scripts it is commonly used with.
+    Characters shared by many scripts, such as spaces, digits, and most
+    punctuation, get the value Common, and combining marks that take the
+    script of the preceding letter get Inherited. A script is not a language:
+    English, French, and Vietnamese all use Latin, while Japanese mixes Han,
+    Hiragana, and Katakana, which is why [[mixed-script]] rules treat some
+    combinations as normal.
+  related: [unicode, mixed-script, confusable, restriction-level, code-point]
   topicId: WEB-01
 
 - id: unicode-normalization
   term: Unicode normalization
-  aliases: [NFC, NFD]
-  short: 'Rewriting text into a canonical form so that strings that should be equal compare as equal, for example combining accents.'
-  related: [unicode, code-point]
+  aliases: [NFC, NFD, NFKC, NFKD, Unicode normal forms]
+  short: 'Converting text to a standard form so that different code-point sequences for the same text, such as é as one code point or as e plus a combining accent, compare as equal.'
+  long: >
+    Unicode Standard Annex #15 defines four forms: NFC and NFD apply canonical
+    equivalence, while NFKC and NFKD also fold compatibility variants, so the
+    ligature ﬁ becomes fi and the full-width Ａ becomes A. Normalize before
+    validating or comparing, otherwise a check can approve a different string
+    from the one the code later uses (see [[canonicalization]]); IDNA, for
+    example, requires domain labels in NFC. Normalization does not remove
+    look-alikes from other scripts: Cyrillic а stays Cyrillic in every form,
+    so catching it needs [[confusable]] detection.
+  related: [unicode, code-point, canonicalization, idna, confusable]
   topicId: WEB-01
 
 - id: spoofing
   term: Spoofing
-  short: 'Faking the apparent source of a message, address, or identity so a target trusts it.'
-  related: [phishing, spf, dmarc]
+  short: 'Faking the apparent source of a message, connection, or identity, such as a sender address, caller ID, or IP address, so that the target trusts it.'
+  long: >
+    Email is easy to spoof because SMTP lets a sender write any From address,
+    which is why domains publish [[spf]], [[dkim]], and [[dmarc]] records
+    that let receivers check claims about the sending domain. Other forms
+    include caller-ID spoofing, forged source IP addresses, [[arp-spoofing]]
+    on a local network, and look-alike domains. Spoofing is the S in the
+    [[stride]] threat categories, and the general defense is to authenticate
+    the source rather than trust what it says about itself.
+  related: [phishing, spf, dmarc, authentication, arp-spoofing, stride]
   topicId: WEB-03
 
 - id: spf
   term: Sender Policy Framework (SPF)
-  aliases: [SPF]
-  short: 'A DNS record that lists which servers may send mail for a domain; it checks the envelope sender, not the visible From.'
-  related: [dkim, dmarc, spoofing]
+  aliases: [SPF, RFC 7208]
+  short: 'An email authentication standard (RFC 7208) in which a domain lists, in a DNS TXT record, the servers allowed to send mail using that domain as the SMTP envelope sender.'
+  long: >
+    A receiving server takes the domain from the SMTP MAIL FROM (or HELO)
+    identity, looks up a record such as `v=spf1 ip4:192.0.2.25 -all`, and
+    checks the connecting IP address, producing a result such as pass, fail,
+    softfail, neutral, or none. SPF checks the [[envelope-sender]], which
+    readers never see, so a message can pass SPF for attacker.test while
+    showing `From: registrar@campus.example`; [[dmarc]] closes that gap by
+    requiring alignment with the visible From domain. Forwarding often breaks
+    SPF because the forwarding server is not on the original domain's list,
+    and an evaluation may use at most 10 terms that trigger DNS lookups.
+  related: [dkim, dmarc, envelope-sender, spoofing, dns]
   topicId: WEB-03
 
 - id: dkim
   term: DomainKeys Identified Mail (DKIM)
-  aliases: [DKIM]
-  short: 'An email signature that lets a domain take responsibility for a message, verified with a public key published in DNS.'
-  related: [spf, dmarc, hash-function]
+  aliases: [DKIM, RFC 6376]
+  short: 'An email authentication standard (RFC 6376) in which a domain digitally signs messages, so receivers can verify with a public key in DNS that the domain took responsibility and the signed parts were not altered.'
+  long: >
+    The signer adds a DKIM-Signature header naming its domain (d=) and a
+    selector (s=), and the receiver fetches the public key from a TXT record
+    at `selector._domainkey.campus.example` to check the
+    [[digital-signature]] over the listed headers and a hash of the body. A
+    valid signature says nothing about whether the content is honest, and the
+    signing domain need not match the visible From address: attacker.test can
+    validly sign mail that claims to come from campus.example, which is why
+    [[dmarc]] requires alignment. Mailing lists that edit the subject or body
+    break the signature.
+  related: [spf, dmarc, digital-signature, dns, public-key-cryptography]
   topicId: WEB-03
 
 - id: dmarc
-  term: DMARC
-  aliases: [domain-based message authentication reporting and conformance]
-  short: 'A policy, published in DNS, that requires the From domain to align with a passing SPF or DKIM check and reports on failures.'
-  related: [spf, dkim, spoofing]
+  term: Domain-Based Message Authentication, Reporting, and Conformance (DMARC)
+  aliases: [DMARC, RFC 9989, RFC 7489]
+  short: 'An email standard that lets the domain in the visible From address publish a DNS policy telling receivers what to do with mail that fails aligned SPF or DKIM checks, and where to send reports.'
+  long: >
+    A message passes DMARC when SPF or DKIM passes for a domain that aligns
+    with the From domain, either exactly (strict) or by sharing an
+    organizational domain (relaxed, the default). The policy is a TXT record
+    at `_dmarc.campus.example` such as
+    `v=DMARC1; p=reject; rua=mailto:dmarc-reports@campus.example`, where p
+    is none, quarantine, or reject. DMARC first appeared as the informational
+    RFC 7489 (2015); in May 2026 the standards-track RFC 9989 replaced it,
+    moved reporting to RFC 9990 and RFC 9991, found organizational domains by
+    a DNS tree walk instead of the Public Suffix List, and dropped the pct
+    tag. DMARC protects only the exact From domain, so it does not stop
+    look-alike domains or a misleading display name.
+  related: [spf, dkim, envelope-sender, spoofing, registrable-domain, dns]
+  topicId: WEB-03
+
+- id: envelope-sender
+  term: Envelope sender
+  aliases: [MAIL FROM, Return-Path, bounce address, RFC5321.MailFrom]
+  short: 'The sender address given in the SMTP MAIL FROM command, which receives bounce messages and which SPF checks, separate from the From address that people see.'
+  long: >
+    Mail has two sender addresses: the envelope sender, which mail servers
+    use during the SMTP conversation, and the From header field (RFC 5322)
+    shown in the inbox. The receiving system usually records the envelope
+    sender in a Return-Path header, so a message can show
+    `From: registrar@campus.example` while its Return-Path is
+    `bounce@attacker.test`. Because [[spf]] authenticates only the envelope
+    sender's domain, [[dmarc]] requires that domain to align with the From
+    domain before an SPF pass counts.
+  related: [spf, dmarc, spoofing, dkim]
   topicId: WEB-03
 
 - id: sanitization
   term: Sanitization
-  short: 'Removing or neutralizing unsafe parts of untrusted content, such as stripping dangerous HTML before it is rendered.'
-  related: [output-encoding, input-validation, xss]
+  aliases: [HTML sanitization, sanitizing]
+  short: 'Removing or neutralizing the unsafe parts of untrusted content while keeping the safe parts, such as stripping scripts from user-written HTML before it is displayed.'
+  long: >
+    Sanitizing fits cases where some markup must survive, like bold text and
+    links in a forum post: a sanitizer parses the HTML and keeps only an
+    [[allowlist]] of elements and attributes, dropping script elements and
+    event-handler attributes such as onerror. Use a well-maintained library,
+    such as DOMPurify, rather than regular expressions, which are routinely
+    bypassed. Sanitizing differs from [[output-encoding]], which displays
+    markup as plain text, and editing HTML after it has been sanitized can
+    make it unsafe again.
+  related: [output-encoding, xss, allowlist, input-validation, trusted-types]
   topicId: WEB-05
 
 - id: allowlist
   term: Allowlist
-  aliases: [allow-list, whitelist]
-  short: 'A control that permits only values known to be good and rejects everything else, the opposite of blocking known-bad values.'
-  related: [input-validation, parameterized-query]
+  aliases: [allow list, allow-list, whitelist, safelist]
+  short: 'A control that accepts only values known to be good and rejects everything else, the opposite of a denylist that blocks known-bad values.'
+  long: >
+    A file upload at shop.example that accepts only PNG and JPEG images,
+    after checking the file contents and not just the name, is safer than one
+    that tries to block every dangerous file type. Allowlists fail safe: a
+    value nobody anticipated is rejected, while a [[denylist]] lets it
+    through. An allowlist is only as good as its matching, so compare parsed
+    values exactly; a check that a URL merely contains shop.example also
+    accepts shop.example.attacker.test.
+  related: [denylist, input-validation, fail-safe-defaults, parameterized-query, canonicalization]
   topicId: APP-02

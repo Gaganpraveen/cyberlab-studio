@@ -5,11 +5,13 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
+import { contentPlugin } from './scripts/vite-plugin-content.ts';
+
 // Relative base so the same build works on GitHub Pages (/cyberlab-studio/),
 // any static host, a local file server, and inside the desktop app.
 export default defineConfig({
   base: './',
-  plugins: [react(), tailwindcss()],
+  plugins: [contentPlugin(), react(), tailwindcss()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -27,7 +29,6 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: false,
-    setupFiles: ['./tests/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}', 'tests/unit/**/*.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',

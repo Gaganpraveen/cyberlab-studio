@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         Thanks for the report. Please do not use this form for security issues —
-        see [SECURITY.md](../blob/main/SECURITY.md) instead.
+        see the [security policy](https://github.com/Gaganpraveen/cyberlab-studio/security/policy) instead.
   - type: textarea
     id: what-happened
     attributes:

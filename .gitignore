@@ -3,25 +3,20 @@ node_modules/
 
 # Builds
 dist/
-dist-ssr/
-*.local
 src-tauri/target/
 src-tauri/gen/
 
 # Tests
-coverage/
+/coverage/
 playwright-report/
 test-results/
 blob-report/
 
 # Logs
 *.log
-npm-debug.log*
 
 # Editors and OS
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
+.vscode/
 .idea/
 .DS_Store
 Thumbs.db

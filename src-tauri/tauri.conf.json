@@ -1,0 +1,49 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "CyberLab Studio",
+  "version": "../package.json",
+  "identifier": "io.github.gaganpraveen.cyberlabstudio",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "CyberLab Studio",
+        "width": 1280,
+        "height": 840,
+        "minWidth": 900,
+        "minHeight": 600,
+        "center": true,
+        "create": false,
+        "backgroundColor": "#191817"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost; frame-src 'self' blob: data:; worker-src 'self' blob:"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "Education",
+    "publisher": "CyberLab Studio contributors",
+    "copyright": "Copyright (c) 2026 CyberLab Studio contributors. Released under the MIT License.",
+    "homepage": "https://gaganpraveen.github.io/cyberlab-studio/",
+    "license": "MIT",
+    "licenseFile": "../LICENSE",
+    "shortDescription": "Cybersecurity lessons and safe, in-browser attack and defense labs",
+    "longDescription": "CyberLab Studio teaches cybersecurity with linked lessons, a glossary, a textbook library and hands-on labs that attack and defend fictional systems inside the app. Nothing it teaches touches a real network.",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}

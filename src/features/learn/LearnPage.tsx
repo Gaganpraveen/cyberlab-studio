@@ -1,17 +1,28 @@
-import { BookOpen, FlaskConical, Search } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { BookOpen, FlaskConical, Grid3x3, Search } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router';
 
 import { PageContainer } from '@/components/layout/AppShell';
+import { ButtonLink } from '@/components/ui/Button';
 import { Badge, inputClasses, PageHeader } from '@/components/ui/primitives';
 import { DOMAINS, TOPICS } from '@/content/catalog';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 
 import { CATALOG_SUMMARY, domainStats, topicStatus } from './catalogStats';
+import { domainIcon } from './domainIcons';
 import { TopicCard } from './TopicCard';
 
 export default function LearnPage() {
   useDocumentTitle('Topic map');
+  const [params] = useSearchParams();
+  const domainParam = params.get('domain')?.toUpperCase();
   const [query, setQuery] = useState('');
+
+  // /learn?domain=NET opens the map scrolled to that domain.
+  useEffect(() => {
+    if (!domainParam) return;
+    document.getElementById(`domain-${domainParam}`)?.scrollIntoView({ block: 'start' });
+  }, [domainParam]);
   const [readyOnly, setReadyOnly] = useState(false);
 
   const normalized = query.trim().toLowerCase();
@@ -45,6 +56,11 @@ export default function LearnPage() {
         eyebrow="Topic map"
         title="The whole field, one map"
         description={`${CATALOG_SUMMARY.topics} topics across ${CATALOG_SUMMARY.domains} domains. ${CATALOG_SUMMARY.lessons} have full lessons today; the rest show what is coming. Topics with a flask have a hands-on lab.`}
+        actions={
+          <ButtonLink to="/coverage" icon={<Grid3x3 className="size-4" aria-hidden />}>
+            Coverage map
+          </ButtonLink>
+        }
       />
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -92,15 +108,21 @@ export default function LearnPage() {
           const topics = byDomain.get(domain.id);
           if (!topics || topics.length === 0) return null;
           const stats = domainStats(domain.id);
+          const Icon = domainIcon(domain.id);
           return (
-            <section key={domain.id} aria-labelledby={`domain-${domain.id}`}>
+            <section
+              key={domain.id}
+              aria-labelledby={`domain-${domain.id}`}
+              className="scroll-mt-20"
+            >
               <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
                 <h2
                   id={`domain-${domain.id}`}
-                  className="text-fg flex items-center gap-2.5 text-lg font-semibold tracking-tight"
+                  className="text-fg flex scroll-mt-20 items-center gap-2.5 text-lg font-semibold tracking-tight"
                 >
-                  <span className="text-fg-subtle font-mono text-sm">{domain.id}</span>
+                  <Icon className="text-accent size-5" aria-hidden />
                   {domain.title}
+                  <span className="text-fg-subtle font-mono text-xs font-normal">{domain.id}</span>
                 </h2>
                 <Badge tone={stats.ready > 0 ? 'accent' : 'neutral'}>
                   {stats.ready} of {stats.total} ready

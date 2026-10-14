@@ -18,7 +18,8 @@ npm run check   # format:check is run separately in CI; see below
 npm run format  # fix formatting
 ```
 
-CI runs `format:check`, `lint`, `typecheck`, `test`, and `build`. A pull
+CI runs `format:check`, `lint`, `typecheck`, `test`, and `build`, then the
+browser and accessibility tests (`npm run build && npm run test:e2e`). A pull
 request needs all of them green.
 
 ## Ground rules for labs

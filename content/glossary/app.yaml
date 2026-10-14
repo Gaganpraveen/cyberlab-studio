@@ -1,0 +1,366 @@
+# Glossary: application and API security (APP-01 to APP-08).
+# Ids are canonical and must stay stable. Terms such as sql-injection,
+# parameterized-query, input-validation and allowlist live in foundations-web.yaml.
+
+- id: injection
+  term: Injection
+  aliases: [injection attack, injection flaw]
+  short: 'A class of flaws where untrusted data reaches an interpreter as part of a command or query, so the data can change what the interpreter does.'
+  long: >
+    Injection appears wherever a program builds code for another interpreter
+    out of text: SQL queries ([[sql-injection]]), shell commands, file paths,
+    LDAP filters, and template or expression languages. The durable fix is an
+    interface that keeps code and data apart, such as a
+    [[parameterized-query]], rather than trying to clean the data.
+  related: [sql-injection, command-injection, parameterized-query, input-validation]
+  topicId: APP-01
+
+- id: cwe
+  term: Common Weakness Enumeration (CWE)
+  aliases: [CWE]
+  short: 'A community catalog of software and hardware weakness types, maintained by MITRE, in which each type has an id such as CWE-89 for SQL injection.'
+  long: >
+    A CWE entry names a kind of mistake, not one product's bug; vulnerabilities
+    in specific products receive CVE ids instead. MITRE also publishes a yearly
+    CWE Top 25 ranking of the most dangerous weaknesses, computed from recent
+    vulnerability data.
+  related: [vulnerability, injection]
+  topicId: APP-01
+
+- id: second-order-injection
+  term: Second-order injection
+  aliases: [second-order SQL injection, stored SQL injection]
+  short: 'Injection in which input is first stored safely and later pasted unsafely into a different query or command.'
+  long: >
+    The flaw is not where the data enters but where it is reused. Because the
+    stored value looks like trusted internal data, the later query is easy to
+    overlook. The fix is the same as always: bind the value as a parameter
+    everywhere it is used.
+  related: [sql-injection, parameterized-query]
+  topicId: APP-01
+
+- id: orm
+  term: Object-relational mapper (ORM)
+  aliases: [ORM, object-relational mapping]
+  short: 'A library that maps database rows to objects in a program and generates parameterized SQL for common queries.'
+  long: >
+    Examples include Hibernate for Java and SQLAlchemy for Python. Most ORMs
+    also accept raw SQL or filter strings, and passing them text built from
+    input reintroduces [[sql-injection]].
+  related: [sql-injection, parameterized-query, mass-assignment]
+  topicId: APP-01
+
+- id: canonicalization
+  term: Canonicalization
+  aliases: [canonicalisation, canonical form]
+  short: 'Reducing the many ways of writing a value, such as different cases, encodings, or path spellings, to one standard form before it is compared or checked.'
+  long: >
+    Validation is only meaningful on the canonical form. If a check examines
+    one spelling and later code uses another, the check can be bypassed, a
+    mistake MITRE catalogs as CWE-180, validate before canonicalize. Examples
+    include decoding [[percent-encoding]] exactly once, applying
+    [[unicode-normalization]] and case folding to identifiers, and resolving
+    file paths to a real path.
+  related: [input-validation, unicode-normalization, percent-encoding, path-traversal]
+  topicId: APP-02
+
+- id: denylist
+  term: Denylist
+  aliases: [deny-list, blocklist, blacklist]
+  short: 'A control that rejects values known to be bad and lets everything else through, so it tends to miss inputs its authors did not foresee.'
+  long: >
+    Denylists are useful for detecting likely attacks and for rejecting
+    obviously malformed input, but they are a weak primary control because an
+    attacker can choose a spelling nobody listed. Prefer an [[allowlist]].
+  related: [allowlist, input-validation]
+  topicId: APP-02
+
+- id: percent-encoding
+  term: Percent-encoding
+  aliases: [URL encoding, percent-escape]
+  short: 'Writing a byte in a URL as a percent sign followed by two hexadecimal digits, so %2F stands for a slash and %20 for a space.'
+  long: >
+    Because the same character can arrive encoded or not, code should decode
+    exactly once, at a known point, and validate the decoded value. Decoding a
+    second time can change a value after it has already been checked.
+  related: [url, encoding, canonicalization]
+  topicId: APP-02
+
+- id: redos
+  term: Regular-expression denial of service (ReDoS)
+  aliases: [ReDoS, catastrophic backtracking]
+  short: 'Making a program spend excessive time matching a regular expression, usually with a long input that nearly matches a pattern containing nested repetition.'
+  long: >
+    Backtracking regex engines can take time that grows exponentially with the
+    input length on such patterns. Defenses include bounding input length
+    before matching, avoiding ambiguous nested quantifiers, and using a
+    non-backtracking engine or a match timeout.
+  related: [input-validation, dos-attack]
+  topicId: APP-02
+
+- id: command-injection
+  term: OS command injection
+  aliases: [command injection, shell injection]
+  short: "An attack in which input pasted into a command line is parsed by a shell, so it can run additional commands with the application's privileges."
+  long: >
+    MITRE catalogs it as CWE-78. The reliable fix is to avoid the shell: use a
+    library call where one exists, or start the program from an
+    [[argument-vector]] so each value is exactly one argument. Without a shell,
+    [[argument-injection]] can remain, so arguments still need validation.
+  related: [injection, metacharacter, argument-vector, argument-injection]
+  topicId: APP-03
+
+- id: metacharacter
+  term: Metacharacter
+  aliases: [shell metacharacter, special character]
+  short: 'A character with special meaning to an interpreter, such as a quote in SQL or a semicolon, pipe, or dollar sign in a Unix shell.'
+  long: >
+    Injection works by smuggling metacharacters into text that an interpreter
+    parses. Because each interpreter has its own set and its own quoting rules,
+    escaping them correctly is error-prone; interfaces that keep data separate,
+    such as a [[parameterized-query]] or an [[argument-vector]], avoid the
+    problem.
+  related: [injection, command-injection, sql-injection]
+  topicId: APP-03
+
+- id: argument-vector
+  term: Argument vector (argv)
+  aliases: [argv, argument list, argument array]
+  short: 'The list of separate strings a program receives as its arguments; starting a program from a list instead of a command-line string avoids shell parsing.'
+  long: >
+    Examples include passing a list to Python's subprocess.run without
+    shell=True, or an array to Node.js execFile. Each element reaches the
+    program unchanged, so separators and quotes inside a value have no special
+    meaning, although the program may still parse options
+    ([[argument-injection]]).
+  related: [command-injection, argument-injection]
+  topicId: APP-03
+
+- id: argument-injection
+  term: Argument injection
+  aliases: [option injection, flag injection]
+  short: 'A flaw where a value passed to a program as an argument is read as an option, for example because it begins with a dash.'
+  long: >
+    It survives even when no shell is involved. Defenses are allowlist
+    validation that rejects values starting with a dash, and the end-of-options
+    marker -- before user-supplied operands, for programs that follow that
+    convention.
+  related: [command-injection, argument-vector, input-validation]
+  topicId: APP-03
+
+- id: path-traversal
+  term: Path traversal
+  aliases: [directory traversal, dot-dot-slash attack]
+  short: 'A flaw where input used to build a file path leads the program outside its intended folder, for example through .. segments, an absolute path, or a symbolic link.'
+  long: >
+    MITRE catalogs it as CWE-22. The strongest fix is an
+    [[indirect-reference-map]], so input never becomes a path. Otherwise,
+    validate the name against an [[allowlist]], then
+    [[canonicalization|canonicalize]] the full path and check that it is still
+    inside the base folder, comparing whole path components.
+  related: [canonicalization, symbolic-link, indirect-reference-map, allowlist]
+  topicId: APP-04
+
+- id: symbolic-link
+  term: Symbolic link
+  aliases: [symlink, soft link]
+  short: 'A special file whose content is another path, which the operating system follows automatically when a program opens it.'
+  long: >
+    A link inside an allowed folder can point anywhere, so a well-formed name
+    can still open a file outside the folder. Checks must therefore examine the
+    fully resolved path, or use an API that refuses to follow links out of a
+    directory.
+  related: [path-traversal, canonicalization, toctou]
+  topicId: APP-04
+
+- id: indirect-reference-map
+  term: Indirect reference map
+  aliases: [indirect object reference, id-to-resource mapping]
+  short: 'A server-side table that maps a harmless identifier chosen by the user, such as a report id, to the real file or record the server selects.'
+  long: >
+    Because the user supplies only an id, input never becomes a file path or a
+    database key that could point somewhere unexpected. The server must still
+    check that the current user may use the id it receives.
+  related: [path-traversal, authorization, bola]
+  topicId: APP-04
+
+- id: ssrf
+  term: Server-side request forgery (SSRF)
+  aliases: [SSRF, server side request forgery]
+  short: "A flaw where an attacker can make a server send a request to a destination the attacker chooses, borrowing the server's network position and sometimes its credentials."
+  long: >
+    MITRE catalogs it as CWE-918, and the OWASP Top 10:2025 lists it under
+    broken access control. It is a [[confused-deputy]] problem. Targets include
+    services on the server itself, internal networks, and cloud
+    [[instance-metadata-service]] endpoints. Defenses combine an [[allowlist]]
+    of destinations, checks on the resolved address at connection time,
+    refusing redirects, and [[egress-filtering]].
+  related:
+    [confused-deputy, instance-metadata-service, dns-rebinding, open-redirect, egress-filtering]
+  topicId: APP-05
+
+- id: dns-rebinding
+  term: DNS rebinding
+  aliases: [DNS rebinding attack]
+  short: 'An attack in which a domain name resolves to one address when it is checked and to a different one, often internal, when the connection is made.'
+  long: >
+    It defeats defenses that validate a host name, or a single lookup of it,
+    and then let the client resolve the name again. The defense is to check
+    the address actually used for the connection, for example in a dialer hook
+    or an egress proxy, and to connect only to addresses that passed. Browsers
+    face a related form, in which a site's name is rebound to an address on
+    the visitor's local network.
+  related: [ssrf, dns, egress-filtering]
+  topicId: APP-05
+
+- id: open-redirect
+  term: Open redirect
+  aliases: [unvalidated redirect, open redirection]
+  short: 'A page that sends the visitor or client on to whatever URL a request parameter names, so a trusted address can lead anywhere.'
+  long: >
+    In phishing, it lends a trusted domain to a malicious link. In [[ssrf]], it
+    lets a URL that passes a destination check redirect the server's request
+    to a destination nobody checked. Redirect only to relative paths within the
+    site or to destinations on an [[allowlist]], and make server-side fetchers
+    refuse redirects or re-check every hop.
+  related: [ssrf, allowlist, url]
+  topicId: APP-05
+
+- id: egress-filtering
+  term: Egress filtering
+  aliases: [outbound filtering, egress control, egress rules]
+  short: 'Network rules that limit which destinations a system may connect out to, so a misused or compromised program cannot reach everything its network can.'
+  long: >
+    For a server that fetches URLs, egress rules or an egress proxy can block
+    loopback, private, and link-local ranges, including cloud metadata
+    addresses, so a flaw in the application's own checks still meets a
+    [[firewall]] at the network layer. The same rules limit malware calling
+    home and data leaving the network.
+  related: [firewall, network-segmentation, ssrf, least-privilege]
+  topicId: APP-05
+
+- id: bola
+  term: Broken object level authorization (BOLA)
+  aliases: [BOLA, IDOR, insecure direct object reference]
+  short: "A flaw where an API acts on an object named in the request without checking that the caller may access that particular object, such as another customer's order."
+  long: >
+    It is the first entry of the OWASP API Security Top 10 2023. MITRE
+    catalogs it as CWE-639, Authorization Bypass Through User-Controlled Key,
+    which lists IDOR and BOLA as alternate terms. Unguessable ids reduce the
+    risk but do not fix it. The fix is an object-level [[authorization]] check on every request:
+    load the object, then confirm the caller's relationship to it, or scope
+    the query to objects the caller owns.
+  related: [authorization, bfla, privilege-escalation, indirect-reference-map]
+  topicId: APP-06
+
+- id: bfla
+  term: Broken function level authorization (BFLA)
+  aliases: [BFLA, missing function level access control]
+  short: 'A flaw where a caller can use a function meant for another role, such as an administrative endpoint, because the server does not check the role for that function.'
+  long: >
+    It is a form of vertical [[privilege-escalation]] and the fifth entry of
+    the OWASP API Security Top 10 2023. Hiding a link or button does not
+    prevent it. The defense is one server-side policy that denies by default
+    and requires every route to declare the permission it needs.
+  related: [authorization, bola, privilege-escalation, fail-safe-defaults]
+  topicId: APP-06
+
+- id: mass-assignment
+  term: Mass assignment
+  aliases: [auto-binding, over-posting, object injection through binding]
+  short: 'A flaw where an application copies every property in a request into a stored object, so a caller can set fields they should not control, such as a role.'
+  long: >
+    Frameworks and [[orm|ORMs]] that bind request data onto models make it
+    easy. OWASP groups it with excessive data exposure under broken object
+    property level authorization (API3:2023). The defense is an explicit
+    allowlist of the properties each endpoint may change, with anything else
+    rejected or ignored.
+  related: [bola, orm, authorization]
+  topicId: APP-06
+
+- id: access-control-matrix
+  term: Access control matrix
+  aliases: [authorization matrix, permission matrix]
+  short: 'A table that records who may do what: one axis lists users or roles, the other lists operations or resources, and each cell states the rule.'
+  long: >
+    It turns a policy into something reviewers can read and tests can check.
+    Writing allow and deny test cases from a reviewed matrix, rather than from
+    the code's own policy table, catches both missing checks and wrong grants.
+  related: [authorization, rbac, abac, bola, bfla]
+  topicId: APP-06
+
+- id: insecure-deserialization
+  term: Insecure deserialization
+  aliases: [deserialization of untrusted data, object injection, unsafe deserialization]
+  short: 'Rebuilding objects from untrusted bytes with a format that lets the data choose which types are created, so the input can control code that runs during loading.'
+  long: >
+    MITRE catalogs it as CWE-502. Formats such as Python's pickle and Java's
+    built-in serialization are the classic cases; libraries that read type
+    names from JSON or YAML can recreate the problem. Checks on the finished
+    object come too late, because a [[gadget-chain]] can run during loading.
+    Prefer data-only formats parsed into plain values and validated before
+    the application builds its own objects.
+  related: [gadget-chain, xxe, input-validation]
+  topicId: APP-07
+
+- id: gadget-chain
+  term: Gadget chain
+  aliases: [gadget, deserialization gadget]
+  short: 'A sequence of methods that already exist in an application or its libraries and that crafted serialized data can trigger one after another during deserialization.'
+  long: >
+    The attacker supplies no new code, only data that arranges existing code.
+    Because every installed library may contribute gadgets, blocklists of
+    known dangerous classes keep falling behind; avoiding native
+    deserialization of untrusted data removes the risk.
+  related: [insecure-deserialization]
+  topicId: APP-07
+
+- id: xxe
+  term: XML external entity (XXE) injection
+  aliases: [XXE, XML external entity attack]
+  short: "An attack in which an XML parser resolves an external entity declared in untrusted input, so it reads local files or makes network requests on the attacker's behalf."
+  long: >
+    MITRE catalogs it as CWE-611. It can expose files, cause [[ssrf]], or
+    exhaust resources. The primary defense is to disable document type
+    definitions (DTDs) for untrusted XML by rejecting any DOCTYPE
+    declaration; related entity-expansion attacks, such as billion laughs,
+    need limits as well.
+  related: [ssrf, insecure-deserialization, input-validation]
+  topicId: APP-07
+
+- id: rate-limiting
+  term: Rate limiting
+  aliases: [rate limit, throttling, request throttling]
+  short: 'Capping how many requests a client may make in a period, for example with a token bucket, and refusing the excess, typically with HTTP status 429.'
+  long: >
+    What a limit counts by matters as much as its numbers: per account, API
+    key, target, and operation is stronger than per IP address alone. Rate
+    limits work alongside quotas on volume and cost, but they do not stop
+    [[business-logic-flaw|business logic flaws]] or a [[limit-overrun]] that
+    needs only a few well-timed requests.
+  related: [dos-attack, business-logic-flaw, limit-overrun, redos]
+  topicId: APP-08
+
+- id: business-logic-flaw
+  term: Business logic flaw
+  aliases: [logic flaw, business logic vulnerability, workflow bypass]
+  short: 'A flaw in how an application enforces its own rules, such as skipping a payment step or ordering a negative quantity, using requests that each look legitimate.'
+  long: >
+    These flaws come from assumptions about how users will behave, so
+    automated scanners rarely find them. Defenses keep workflow state on the
+    server, validate values against documented business limits, and make
+    multi-step changes atomic.
+  related: [limit-overrun, rate-limiting, race-condition, input-validation]
+  topicId: APP-08
+
+- id: limit-overrun
+  term: Limit overrun
+  aliases: [limit overrun race condition]
+  short: 'A race condition in which several simultaneous requests all pass a business check, such as "coupon not yet used," before any of them records the result, so a limit is exceeded.'
+  long: >
+    It is a form of [[toctou]] at the application level. The fix is to make
+    the check and the change one atomic step, for example a transaction with a
+    uniqueness constraint or a conditional update, rather than to shorten the
+    gap.
+  related: [race-condition, toctou, business-logic-flaw]
+  topicId: APP-08

@@ -1,0 +1,326 @@
+# Glossary: cryptography and data protection (CRY-01 to CRY-08).
+# Ids are canonical and must stay stable. Terms that other domains define
+# (for example hash-function, encryption, and encoding) are linked, not
+# redefined.
+
+- id: plaintext
+  term: Plaintext
+  aliases: [cleartext]
+  short: 'The readable data that goes into an encryption algorithm, or comes back out of decryption.'
+  related: [ciphertext, encryption]
+  topicId: CRY-01
+
+- id: ciphertext
+  term: Ciphertext
+  short: 'The output of encryption; without the key it should reveal nothing about the plaintext except roughly its length.'
+  related: [plaintext, encryption, aead]
+  topicId: CRY-01
+
+- id: symmetric-encryption
+  term: Symmetric encryption
+  aliases: [secret-key encryption, symmetric-key cryptography]
+  short: 'Encryption in which the same secret key both encrypts and decrypts, so every party that can read the data holds that key.'
+  related: [aes, block-cipher, aead, public-key-cryptography]
+  topicId: CRY-02
+
+- id: block-cipher
+  term: Block cipher
+  aliases: [keyed permutation, mode of operation]
+  short: 'A keyed permutation that encrypts one fixed-size block at a time, such as AES on 16-byte blocks; a mode of operation extends it to longer messages.'
+  long: >
+    The mode decides most of the security properties. ECB leaks repeated
+    blocks, CBC and CTR hide content but not tampering, and an [[aead]] mode
+    such as GCM protects both confidentiality and integrity.
+  related: [aes, symmetric-encryption, aead]
+  topicId: CRY-02
+
+- id: aes
+  term: AES (Advanced Encryption Standard)
+  aliases: [AES, Rijndael, AES-128, AES-256, FIPS 197]
+  short: 'The NIST-standardized block cipher (FIPS 197) with 128-bit blocks and 128-, 192-, or 256-bit keys.'
+  related: [block-cipher, aead, symmetric-encryption]
+  topicId: CRY-02
+
+- id: public-key-cryptography
+  term: Public-key cryptography
+  aliases: [asymmetric cryptography, public-key encryption]
+  short: 'Cryptography that uses a key pair: a public key that anyone may know and a matching private key that only its owner holds.'
+  long: >
+    Public keys encrypt or verify; private keys decrypt or sign. Public-key
+    cryptography solves key distribution between strangers but is much slower
+    than [[symmetric-encryption]], so real systems use it to agree on or wrap
+    a symmetric key.
+  related: [symmetric-encryption, digital-signature]
+  topicId: CRY-03
+
+- id: aead
+  term: Authenticated encryption with associated data (AEAD)
+  aliases: [AEAD, authenticated encryption, AES-GCM, ChaCha20-Poly1305]
+  short: 'Encryption that also detects any change to the ciphertext, or to extra unencrypted data bound to it, and refuses to decrypt if anything changed.'
+  long: >
+    AES-GCM and ChaCha20-Poly1305 are the common examples. Decryption either
+    returns the original [[plaintext]] or fails; it never returns modified
+    data. The associated data, such as a header or record id, is
+    authenticated but not encrypted.
+  related: [symmetric-encryption, mac, ciphertext]
+  topicId: CRY-02
+
+- id: mac
+  term: Message authentication code (MAC)
+  aliases: [MAC, message authentication code, authentication tag]
+  short: 'A short tag computed from a message and a shared secret key, which lets anyone holding the key detect a changed or forged message.'
+  long: >
+    A MAC gives [[integrity]] and [[authenticity]] between parties who share
+    the key, but not [[non-repudiation]], because either party could have
+    computed the tag. Compare tags with a constant-time function.
+  related: [hmac, digital-signature, aead]
+  topicId: CRY-02
+
+- id: hmac
+  term: HMAC
+  aliases: [HMAC-SHA256, keyed-hash message authentication code]
+  short: 'A standard construction (RFC 2104) that builds a message authentication code from a hash function such as SHA-256 and a secret key.'
+  long: >
+    HMAC hashes the key and message in two nested passes, which avoids the
+    length-extension weakness of simply hashing the key followed by the
+    message with SHA-256.
+  related: [mac, hash-function]
+  topicId: CRY-02
+
+- id: digital-signature
+  term: Digital signature
+  aliases: [signature, signing]
+  short: 'A value computed over a message with a private key that anyone with the matching public key can check, showing who produced the message and that it was not changed.'
+  related: [public-key-cryptography, mac, non-repudiation]
+  topicId: CRY-04
+
+- id: password-hashing
+  term: Password hashing
+  aliases: [password hash, password storage, Argon2id, bcrypt, scrypt]
+  short: 'Storing a password as the output of a deliberately slow, salted one-way function, so a stolen database is expensive to attack.'
+  long: >
+    Argon2id, scrypt, bcrypt, and PBKDF2 are designed for this. A fast
+    [[hash-function]] such as SHA-256 is not, because it lets an attacker test
+    guesses quickly.
+  related: [salt, hash-function]
+  topicId: CRY-05
+
+- id: salt
+  term: Salt
+  short: 'A random, non-secret value stored with each password hash and mixed into it, so identical passwords produce different hashes and precomputed tables stop working.'
+  related: [password-hashing]
+  topicId: CRY-05
+
+- id: csprng
+  term: Cryptographically secure pseudorandom number generator (CSPRNG)
+  aliases: [CSPRNG, CSRNG, DRBG, secure random number generator]
+  short: 'A random number generator whose output an attacker cannot predict, even after seeing earlier outputs.'
+  long: >
+    Use the operating system's generator through APIs such as Python's
+    `secrets` module or the browser's `crypto.getRandomValues()`.
+    General-purpose generators such as Python's `random` module and
+    JavaScript's `Math.random()` are predictable and must not produce keys,
+    tokens, or nonces.
+  topicId: CRY-06
+
+- id: nonce
+  term: Nonce
+  aliases: [number used once, IV, initialization vector]
+  short: 'A value that must never repeat for a given key or session, such as the 96-bit nonce passed to AES-GCM or a fresh challenge in a protocol.'
+  long: >
+    Nonces are not secret. Some only need to be unique, so a counter works;
+    others, such as CBC initialization vectors, must also be unpredictable.
+    Reusing an AES-GCM nonce with the same key can expose relationships
+    between plaintexts and let an attacker forge messages.
+  related: [aead, csprng]
+  topicId: CRY-06
+
+- id: key-exchange
+  term: Key exchange
+  aliases: [key agreement, key establishment, key transport]
+  short: 'A protocol that lets two parties establish a shared secret key over a channel that others can observe.'
+  long: >
+    In key agreement, such as [[diffie-hellman]], both parties contribute to
+    the secret; in key transport, one party picks the key and encrypts it to
+    the other's public key. Either way, the exchange must be authenticated,
+    or an active attacker can sit in the middle.
+  related: [diffie-hellman, key-encapsulation-mechanism, forward-secrecy, public-key-cryptography]
+  topicId: CRY-03
+
+- id: diffie-hellman
+  term: Diffie-Hellman key agreement
+  aliases: [Diffie-Hellman, DH, ECDH, ECDHE, X25519]
+  short: "A key-agreement method in which each party combines its own secret with the other party's public value, so both reach the same shared secret that an eavesdropper cannot compute."
+  long: >
+    Plain Diffie-Hellman resists a passive eavesdropper but authenticates
+    nobody, so the exchange must be signed or otherwise authenticated. The
+    elliptic-curve variants, such as X25519, use much smaller keys. Its
+    security rests on discrete-logarithm problems that a large quantum
+    computer could solve.
+  related: [key-exchange, forward-secrecy, public-key-cryptography]
+  topicId: CRY-03
+
+- id: key-encapsulation-mechanism
+  term: Key encapsulation mechanism (KEM)
+  aliases: [KEM, key encapsulation, ML-KEM]
+  short: "A public-key method in which a sender uses the recipient's public key to create a fresh shared secret and a ciphertext that only the recipient's private key can turn back into the same secret."
+  long: >
+    A KEM has three operations: key generation, encapsulation, and
+    decapsulation. ML-KEM, standardized in FIPS 203, is the main
+    [[post-quantum-cryptography|post-quantum]] KEM.
+  related: [key-exchange, public-key-cryptography]
+  topicId: CRY-03
+
+- id: forward-secrecy
+  term: Forward secrecy
+  aliases: [perfect forward secrecy, PFS]
+  short: 'A property of a key exchange in which stealing a long-term key later does not reveal the session keys of past conversations.'
+  long: >
+    It comes from ephemeral key agreement: each session uses fresh
+    [[diffie-hellman]] secrets that are erased afterward, and the long-term
+    key only signs. It does not protect a session whose keys are stolen while
+    it runs.
+  related: [diffie-hellman, key-exchange]
+  topicId: CRY-03
+
+- id: key-derivation-function
+  term: Key derivation function (KDF)
+  aliases: [KDF, HKDF, PBKDF2]
+  short: 'A function that turns a secret, such as a shared Diffie-Hellman value or a password, into one or more cryptographic keys of the required length.'
+  long: >
+    KDFs for high-entropy input, such as HKDF, are fast and bind each derived
+    key to context such as the protocol and its purpose. Password-based KDFs,
+    such as PBKDF2, scrypt, and Argon2, are deliberately slow because their
+    input is guessable; see [[password-hashing]].
+  related: [password-hashing, salt, hmac]
+  topicId: CRY-05
+
+- id: certificate
+  term: Certificate
+  aliases: [X.509 certificate, public-key certificate, TLS certificate]
+  short: 'A signed statement, usually in X.509 format, in which an issuer vouches that a public key belongs to a named subject such as a domain.'
+  long: >
+    A certificate carries the subject's name and public key, a validity
+    period, permitted uses, and the issuer's [[digital-signature]]. Verifiers
+    check a chain of certificates up to a trust anchor they already hold.
+  related: [digital-signature, public-key-cryptography]
+  topicId: CRY-04
+
+- id: post-quantum-cryptography
+  term: Post-quantum cryptography (PQC)
+  aliases: [PQC, quantum-resistant cryptography, quantum-safe cryptography]
+  short: 'Public-key algorithms designed to resist attacks by large quantum computers while running on ordinary computers, such as ML-KEM, ML-DSA, and SLH-DSA.'
+  long: >
+    It replaces RSA, Diffie-Hellman, and elliptic-curve algorithms, which a
+    large quantum computer running Shor's algorithm could break. It is not
+    quantum key distribution, which needs special hardware.
+  related: [key-encapsulation-mechanism, public-key-cryptography, digital-signature]
+  topicId: CRY-08
+
+- id: certificate-authority
+  term: Certificate authority (CA)
+  aliases: [CA, issuer, root CA, intermediate CA]
+  short: 'An organization or system trusted to verify that a public key belongs to a name and to sign certificates saying so.'
+  long: >
+    Browsers and operating systems ship with a root store of trusted CA keys.
+    A root CA usually signs intermediate CAs, which sign the certificates
+    that servers present. One misbehaving CA can issue a valid-looking
+    [[certificate]] for any name.
+  related: [certificate, public-key-infrastructure, digital-signature]
+  topicId: CRY-04
+
+- id: public-key-infrastructure
+  term: Public key infrastructure (PKI)
+  aliases: [PKI, Web PKI, chain of trust]
+  short: 'The certificates, certificate authorities, policies, and software that let a verifier trust that a public key belongs to a particular name.'
+  long: >
+    Trust starts from anchors already installed on the verifying device and
+    flows down a chain of [[certificate|certificates]]. Validation checks
+    every link: signatures, validity dates, CA constraints, permitted uses,
+    revocation, and the name.
+  related: [certificate, certificate-authority, digital-signature]
+  topicId: CRY-04
+
+- id: rainbow-table
+  term: Rainbow table
+  aliases: [precomputed hash table, lookup table]
+  short: 'A compressed, precomputed table that maps hashes back to likely passwords for one unsalted hash function, trading storage for cracking time.'
+  long: >
+    Precomputation only pays off when the same hash of the same password
+    appears everywhere. A unique [[salt]] per password makes every table
+    useless, because the attacker cannot compute anything before seeing the
+    salt.
+  related: [salt, password-hashing]
+  topicId: CRY-05
+
+- id: entropy
+  term: Entropy
+  aliases: [password entropy, min-entropy, randomness]
+  short: 'A measure, in bits, of how unpredictable a value is to an attacker; a value with n bits of entropy is as hard to guess as a uniformly random n-bit string.'
+  long: >
+    A random 128-bit key has 128 bits of entropy. Human-chosen passwords have
+    far less than their length suggests, because people choose predictably,
+    which is why they need [[password-hashing]].
+  related: [csprng, password-hashing]
+  topicId: CRY-06
+
+- id: replay-attack
+  term: Replay attack
+  aliases: [replay, playback attack]
+  short: 'An attack in which a valid message captured earlier is sent again, so the receiver acts on it a second time.'
+  long: >
+    Encryption and MACs do not stop a replay on their own, because a copied
+    message verifies perfectly. Protocols add freshness: a challenge
+    [[nonce]] chosen by the receiver, a sequence number, or a timestamp
+    checked against a window.
+  related: [nonce, mac, aead]
+  topicId: CRY-07
+
+- id: downgrade-attack
+  term: Downgrade attack
+  aliases: [rollback attack, version rollback, bidding-down attack]
+  short: 'An attack that tricks two parties into using a weaker protocol version or algorithm than both of them support.'
+  long: >
+    The attacker edits the negotiation, or makes connections fail so that a
+    client falls back to an older version. Defenses authenticate the whole
+    handshake with a [[mac]] or [[digital-signature]], signal fallbacks, and
+    remove weak options entirely.
+  related: [mac, digital-signature, tls]
+  topicId: CRY-07
+
+- id: padding-oracle-attack
+  term: Padding oracle attack
+  aliases: [padding oracle, CBC padding oracle]
+  short: "An attack that decrypts data by sending modified ciphertexts and learning, from the receiver's errors or timing, whether each decrypted plaintext had valid padding."
+  long: >
+    It targets designs that decrypt and check padding before verifying a
+    MAC, such as MAC-then-encrypt with CBC mode. Encrypt-then-MAC or an
+    [[aead]] mode removes the oracle, because modified ciphertexts are
+    rejected before decryption.
+  related: [aead, mac, block-cipher]
+  topicId: CRY-07
+
+- id: harvest-now-decrypt-later
+  term: Harvest now, decrypt later
+  aliases: [HNDL, store now decrypt later, record now decrypt later]
+  short: 'A strategy in which an attacker records encrypted data today, planning to decrypt it once a future capability, such as a large quantum computer, breaks the key exchange that protected it.'
+  long: >
+    It makes the quantum threat urgent today for data that must stay secret
+    for years, which is why key establishment moves to
+    [[post-quantum-cryptography]] first. Signatures are less urgent, because
+    they only need to resist forgery at the time they are verified.
+  related: [post-quantum-cryptography, key-exchange, forward-secrecy]
+  topicId: CRY-08
+
+- id: crypto-agility
+  term: Crypto agility
+  aliases: [cryptographic agility, algorithm agility]
+  short: 'The ability of a system to replace its cryptographic algorithms, parameters, and keys quickly and safely, without being redesigned.'
+  long: >
+    It depends on knowing where cryptography is used, on algorithm
+    identifiers and key versions in protocols and stored data, and on
+    configuration instead of hard-coded choices. Negotiation must stay
+    authenticated and allowlisted, or flexibility invites a
+    [[downgrade-attack]].
+  related: [post-quantum-cryptography, downgrade-attack]
+  topicId: CRY-08
