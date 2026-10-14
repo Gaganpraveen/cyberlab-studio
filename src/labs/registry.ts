@@ -6,6 +6,7 @@ import { ddosLab } from './ddos';
 import { homographLab } from './homograph';
 import { jwtLab } from './jwt';
 import { loginSecurityLab } from './login-security';
+import { osPermissionsLab } from './os-permissions';
 import { passwordCrackingLab } from './password-cracking';
 import { reconAttackSurfaceLab } from './recon-and-attack-surface';
 import { spoofingMitmLab } from './spoofing-and-mitm';
@@ -33,6 +34,7 @@ export const LABS: LabDefinition[] = [
   csrfClickjackingLab,
   commandPathInjectionLab,
   ssrfUrlFilterLab,
+  osPermissionsLab,
 ];
 
 const labById = new Map(LABS.map((lab) => [lab.id, lab]));
