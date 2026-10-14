@@ -262,7 +262,7 @@ Each defense has limits. Choosing the right primitive does not fix stolen keys, 
 
 ## Try it in the lab
 
-In [the lab](lab:password-cracking), you see the difference between the strength of a hash function and the strength of the secret it protects. You start with a leaked table of password hashes from a fictional site, produced with fast, unsalted SHA-256, and check candidate passwords from a short list against it. Watch what happens when two users share a password. The lab then adds per-user salts and slow key derivation (PBKDF2, run in your browser through the Web Crypto API), so you can compare how much work each guess costs. As you go, write down which change raised the attacker's cost and why none of the steps is "decryption." The lab is still being built, so its exact steps may differ from this description.
+In [the lab](lab:password-cracking), you see the difference between the strength of a hash function and the strength of the secret it protects. You start with a leaked table of password hashes from a fictional site, produced with fast, unsalted SHA-256, and check candidate passwords from a short list against it. Watch what happens when two users share a password. The lab then adds per-user salts and slow key derivation (PBKDF2, run in your browser through the Web Crypto API), so you can compare how much work each guess costs. As you go, write down which change raised the attacker's cost and why none of the steps is "decryption."
 
 > [!ETHICS] Only test systems you own or have written permission to test.
 

@@ -294,7 +294,7 @@ Limits remain. A trusted CA that misissues a certificate passes every check, and
 
 ## Try it in the lab
 
-In [the lab](lab:jwt), you work with session tokens for a fictional application. You decode a token and confirm that its claims are only base64url-encoded. Then you test how a weak verifier treats a token whose header claims `alg: none` and a token signed with a guessable HMAC secret. Finally, you harden the verifier with a fixed algorithm, a strong key, and claim checks, and confirm that the forged tokens now fail. Throughout, connect each fix to the RFC 8725 practice it implements. The lab is still being built, so its exact steps may differ from this description.
+In [the lab](lab:jwt), you work with the session token of a fictional application. You decode it and confirm that its claims are only base64url-encoded. Then you forge an admin token whose header claims `alg: none` and watch a weak verifier accept it, and you recover the service's guessable HMAC secret from a short wordlist and sign a token that even a strict verifier trusts. Finally, you switch to a verifier that pins the algorithm and requires a signature, and run a battery of forged and tampered tokens against it. Throughout, connect each step to the RFC 8725 practice it illustrates, and note the one problem the strict verifier cannot fix: a key weak enough to guess has to be replaced.
 
 > [!ETHICS] Only test systems you own or have written permission to test.
 

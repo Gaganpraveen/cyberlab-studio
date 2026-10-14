@@ -262,7 +262,7 @@ Limits: no hashing scheme protects a password that is on the attacker's list, an
 
 ## Try it in the lab
 
-In [the lab](lab:password-cracking), you take the attacker's side against a fictional leaked table. First you check candidate passwords from a short list against fast, unsalted SHA-256 hashes and see identical passwords share a hash. Then you repeat the attempt after the lab adds per-user salts and switches to PBKDF2 with a high iteration count, and you compare how many guesses per second your browser manages in each case. Record the rates and extend them to the keyspaces in the table above. The lab is still being built, so its exact steps may differ from this description.
+In [the lab](lab:password-cracking), you take the attacker's side against a fictional leaked table. First you run a short wordlist against fast, unsalted SHA-256 hashes, crack the weak passwords in a single pass, and see that identical passwords share a hash. Then you attack the same passwords stored with per-user salts, store one with PBKDF2 at 600,000 iterations, and compare the attacker's cost, counted in hash operations, under each scheme. The lab counts work rather than timing it; to turn those counts into time, run the timing script below and extend the rates to the keyspaces in the table above.
 
 > [!ETHICS] Only test systems you own or have written permission to test.
 

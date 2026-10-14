@@ -259,7 +259,7 @@ Step 5 is the most dangerous: it lets anyone take over any account without guess
 
 ## Try it in the lab
 
-In [the lab](lab:password-cracking) you play a defender who receives a leaked table of fast, unsalted SHA-256 password hashes from a fictional site. You will see how quickly common passwords fall to a short wordlist, then store the same passwords with unique salts and PBKDF2 and compare how the attacker's cost changes. The lab is still being built; the exercise below works today.
+In [the lab](lab:password-cracking) you play a defender who receives a leaked table of fast, unsalted SHA-256 password hashes from a fictional site. You will see how quickly common passwords fall to a short wordlist while one long passphrase that is not on the list survives, then compare how the attacker's cost changes when the same passwords are stored with unique salts and with PBKDF2.
 
 **Without the lab.** First, a paper calculation. Assume, for this exercise only, a rig that tests 10 billion unsalted SHA-256 guesses per second. How long does it take to try every 8-letter lowercase password (26^8 of them)? Every 15-letter one? Now assume each guess must run 600,000 PBKDF2 iterations, making it about 600,000 times as expensive, and recompute the 8-letter case. Finally, explain why none of this helps a user whose password is `password123`. Second, review the recovery settings of one of your own accounts: confirm the recovery email and phone are current, store a set of recovery codes offline if the service offers them, and check where sign-in alerts are sent.
 
