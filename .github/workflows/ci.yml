@@ -3,8 +3,9 @@ name: CI
 on:
   push:
     branches: [main, 'build/**']
+  # Every pull request, whatever its base. The repository's default branch is
+  # build/v1, so a main-only filter skipped CI on real pull requests.
   pull_request:
-    branches: [main]
   workflow_dispatch: {}
 
 permissions:

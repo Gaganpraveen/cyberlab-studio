@@ -1,2 +1,6 @@
-# Default owner for everything in the repo.
-* @Gaganpraveen
+# Review routing for the parts that need an owner's eye: teaching content and
+# lab safety. Package manifests and workflows are deliberately not listed, so
+# automated dependency updates don't request a review on every bump.
+/content/    @Gaganpraveen
+/src/labs/   @Gaganpraveen
+/docs/       @Gaganpraveen
