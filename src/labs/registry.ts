@@ -1,5 +1,6 @@
 import { accessControlLab } from './access-control-matrix';
 import { classicalCipherLab } from './classical-cipher-breaker';
+import { csrfClickjackingLab } from './csrf-clickjacking';
 import { ddosLab } from './ddos';
 import { homographLab } from './homograph';
 import { jwtLab } from './jwt';
@@ -27,6 +28,7 @@ export const LABS: LabDefinition[] = [
   classicalCipherLab,
   accessControlLab,
   loginSecurityLab,
+  csrfClickjackingLab,
 ];
 
 const labById = new Map(LABS.map((lab) => [lab.id, lab]));
