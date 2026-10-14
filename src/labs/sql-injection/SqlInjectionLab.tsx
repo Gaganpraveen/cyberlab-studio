@@ -106,7 +106,7 @@ function ResultTable({ result }: { result: QueryResult }) {
 function ModeToggle({ mode, onChange }: { mode: QueryMode; onChange: (m: QueryMode) => void }) {
   return (
     <div
-      className="border-line bg-surface-2 inline-flex rounded-lg border p-0.5"
+      className="border-line bg-sunken inline-flex rounded-lg border p-0.5"
       role="group"
       aria-label="Query mode"
     >

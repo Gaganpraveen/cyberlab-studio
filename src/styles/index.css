@@ -7,8 +7,10 @@
  * CyberLab Studio design tokens.
  *
  * Semantic colors are CSS variables that switch with [data-theme] on <html>.
- * Every text/background pairing used for body text meets WCAG 2.2 AA (4.5:1);
- * see docs/DESIGN.md for the measured ratios.
+ * Warm grays step up from the sidebar (sunken) through the page (canvas) to
+ * raised cards (surface, surface-2, surface-3). Every text/background pairing
+ * meets WCAG 2.2 AA (4.5:1), and the browser tests check each page with axe.
+ * The accent fills buttons; accent-text is its lighter tone for text and icons.
  */
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
@@ -59,6 +61,7 @@
 }
 
 @theme inline {
+  --color-sunken: var(--c-sunken);
   --color-canvas: var(--c-canvas);
   --color-surface: var(--c-surface);
   --color-surface-2: var(--c-surface-2);
@@ -82,62 +85,67 @@
   --color-info: var(--c-info);
   --color-info-soft: var(--c-info-soft);
   --color-code-bg: var(--c-code-bg);
+  --color-focus: var(--c-focus);
 }
 
 :root,
 [data-theme='dark'] {
-  --c-canvas: #191817;
-  --c-surface: #201f1d;
-  --c-surface-2: #292825;
-  --c-surface-3: #33312e;
-  --c-line: #34322f;
-  --c-line-strong: #4d4a45;
-  --c-fg: #f3f0e8;
-  --c-fg-muted: #c2bdb2;
-  --c-fg-subtle: #9a958b;
-  --c-accent: #e8a46a;
-  --c-accent-strong: #f0b27c;
-  --c-accent-text: #f0b27c;
-  --c-accent-soft: rgb(232 164 106 / 0.14);
-  --c-on-accent: #191817;
-  --c-success: #7cc492;
-  --c-success-soft: rgb(124 196 146 / 0.13);
-  --c-warning: #e8c06a;
-  --c-warning-soft: rgb(232 192 106 / 0.13);
-  --c-danger: #f08a7e;
-  --c-danger-soft: rgb(240 138 126 / 0.13);
-  --c-info: #8fb4ee;
-  --c-info-soft: rgb(143 180 238 / 0.13);
-  --c-code-bg: #151413;
-  --c-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --c-sunken: #1f1e1b;
+  --c-canvas: #262523;
+  --c-surface: #2c2b28;
+  --c-surface-2: #32312e;
+  --c-surface-3: #3b3936;
+  --c-line: rgb(232 228 214 / 0.1);
+  --c-line-strong: rgb(232 228 214 / 0.22);
+  --c-fg: #f4f2ec;
+  --c-fg-muted: #c6c3bb;
+  --c-fg-subtle: #a7a49c;
+  --c-accent: #b85735;
+  --c-accent-strong: #ac4f31;
+  --c-accent-text: #e39573;
+  --c-accent-soft: rgb(217 119 87 / 0.11);
+  --c-on-accent: #ffffff;
+  --c-focus: #e39573;
+  --c-success: #8bc49a;
+  --c-success-soft: rgb(139 196 154 / 0.08);
+  --c-warning: #dcb875;
+  --c-warning-soft: rgb(220 184 117 / 0.08);
+  --c-danger: #f09693;
+  --c-danger-soft: rgb(240 150 147 / 0.09);
+  --c-info: #91b4e1;
+  --c-info-soft: rgb(145 180 225 / 0.08);
+  --c-code-bg: #1d1c1a;
+  --c-shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 32px -12px rgb(0 0 0 / 0.5);
   color-scheme: dark;
 }
 
 [data-theme='light'] {
-  --c-canvas: #faf8f4;
+  --c-sunken: #f2f0ea;
+  --c-canvas: #faf9f5;
   --c-surface: #ffffff;
-  --c-surface-2: #f3f0ea;
-  --c-surface-3: #e9e5dd;
-  --c-line: #e4dfd6;
-  --c-line-strong: #b9b2a6;
-  --c-fg: #1d1c1a;
-  --c-fg-muted: #4f4b45;
-  --c-fg-subtle: #6b665d;
-  --c-accent: #a8501e;
-  --c-accent-strong: #8f4218;
-  --c-accent-text: #a8501e;
-  --c-accent-soft: rgb(168 80 30 / 0.1);
+  --c-surface-2: #f4f2ed;
+  --c-surface-3: #eae7df;
+  --c-line: rgb(40 36 30 / 0.1);
+  --c-line-strong: rgb(40 36 30 / 0.26);
+  --c-fg: #1c1a18;
+  --c-fg-muted: #44423e;
+  --c-fg-subtle: #67645e;
+  --c-accent: #b1502f;
+  --c-accent-strong: #9f4325;
+  --c-accent-text: #a34b2b;
+  --c-accent-soft: rgb(177 80 47 / 0.09);
   --c-on-accent: #ffffff;
-  --c-success: #23703a;
-  --c-success-soft: rgb(35 112 58 / 0.1);
+  --c-focus: #b1502f;
+  --c-success: #296a3b;
+  --c-success-soft: rgb(41 106 59 / 0.09);
   --c-warning: #755000;
-  --c-warning-soft: rgb(131 90 0 / 0.1);
-  --c-danger: #b3261e;
-  --c-danger-soft: rgb(179 38 30 / 0.08);
-  --c-info: #1d5aa6;
-  --c-info-soft: rgb(29 90 166 / 0.08);
-  --c-code-bg: #f5f2ec;
-  --c-shadow: 0 1px 2px rgb(30 25 20 / 0.06), 0 8px 24px -12px rgb(30 25 20 / 0.18);
+  --c-warning-soft: rgb(129 87 9 / 0.09);
+  --c-danger: #a82e29;
+  --c-danger-soft: rgb(168 46 41 / 0.08);
+  --c-info: #255b9c;
+  --c-info-soft: rgb(37 91 156 / 0.08);
+  --c-code-bg: #f6f4ef;
+  --c-shadow: 0 1px 2px rgb(40 36 30 / 0.05), 0 12px 32px -12px rgb(40 36 30 / 0.14);
   color-scheme: light;
 }
 
@@ -174,7 +182,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--c-accent);
+    outline: 2px solid var(--c-focus);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -234,7 +242,7 @@
     @apply text-fg font-semibold;
   }
   .prose-lesson a {
-    @apply text-accent-text decoration-accent/40 hover:decoration-accent underline underline-offset-[3px];
+    @apply text-accent-text decoration-accent-text/40 hover:decoration-accent-text underline underline-offset-[3px];
   }
   .prose-lesson ul,
   .prose-lesson ol {

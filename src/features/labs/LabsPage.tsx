@@ -81,7 +81,7 @@ function LabCard({ lab }: { lab: LabDefinition }) {
 
       <div className="mt-auto pt-5">
         {available ? (
-          <ButtonLink to={`/labs/${lab.id}`} variant="primary" className="w-full justify-center">
+          <ButtonLink to={`/labs/${lab.id}`} variant="secondary" className="w-full justify-center">
             Open lab <ArrowRight className="size-4" aria-hidden />
           </ButtonLink>
         ) : (

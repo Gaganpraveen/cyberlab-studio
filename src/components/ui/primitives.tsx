@@ -197,7 +197,7 @@ export function ProgressBar({
       <div
         className={cn(
           'h-full rounded-full transition-[width] duration-500 ease-out',
-          tone === 'success' ? 'bg-success' : 'bg-accent',
+          tone === 'success' ? 'bg-success' : 'bg-accent-text',
         )}
         style={{ width: `${pct}%` }}
       />
@@ -240,6 +240,6 @@ export function Spinner({ label = 'Loading', className }: { label?: string; clas
 
 export const inputClasses =
   'w-full rounded-lg border border-line-strong bg-surface-2 px-3 py-2 text-sm text-fg ' +
-  'placeholder:text-fg-subtle transition-colors focus:border-accent focus:outline-none ' +
-  'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent ' +
+  'placeholder:text-fg-subtle transition-colors focus:border-focus focus:outline-none ' +
+  'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-focus ' +
   'disabled:opacity-60';

@@ -205,7 +205,7 @@ export default function HomographLab() {
                   value={original}
                   onChange={(e) => setOriginal(e.target.value)}
                   spellCheck={false}
-                  className="border-line bg-surface-2 text-fg focus:border-accent w-full rounded-lg border px-3 py-2 font-mono focus:outline-none"
+                  className="border-line bg-surface-2 text-fg focus:border-focus w-full rounded-lg border px-3 py-2 font-mono focus:outline-none"
                 />
               </label>
               <CharRow
@@ -225,7 +225,7 @@ export default function HomographLab() {
                   value={modified}
                   onChange={(e) => setModified(e.target.value)}
                   spellCheck={false}
-                  className="border-line bg-surface-2 text-fg focus:border-accent w-full rounded-lg border px-3 py-2 font-mono focus:outline-none"
+                  className="border-line bg-surface-2 text-fg focus:border-focus w-full rounded-lg border px-3 py-2 font-mono focus:outline-none"
                 />
               </label>
               <CharRow

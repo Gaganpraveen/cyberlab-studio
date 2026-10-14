@@ -39,8 +39,8 @@ export function TermLink({ termId, children }: { termId: string; children: React
   const [open, setOpen] = useState(false);
   const known = Boolean(getTerm(termId));
   const triggerClasses =
-    'cursor-help rounded-sm text-fg underline decoration-dotted decoration-accent/70 underline-offset-[3px] ' +
-    'hover:decoration-accent hover:bg-accent-soft transition-colors';
+    'cursor-help rounded-sm text-fg underline decoration-dotted decoration-accent-text/70 underline-offset-[3px] ' +
+    'hover:decoration-accent-text hover:bg-accent-soft transition-colors';
 
   if (!known) return <span>{children}</span>;
 

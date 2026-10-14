@@ -122,8 +122,8 @@ const LENSES: LensDefinition[] = [
 
 const LEVEL_CLASSES: Record<Level, string> = {
   0: 'border-dashed border-line-strong text-fg-subtle',
-  1: 'border-accent/30 bg-accent/15 text-fg-muted',
-  2: 'border-accent/50 bg-accent/45 text-fg',
+  1: 'border-accent-text/25 bg-accent-text/10 text-fg-muted',
+  2: 'border-accent-text/45 bg-accent-text/25 text-fg',
   3: 'border-accent bg-accent text-on-accent',
 };
 
@@ -495,11 +495,11 @@ function AttackCoverage() {
                     aria-hidden
                   >
                     <div
-                      className="bg-accent/45 absolute inset-y-0 left-0 rounded-full"
+                      className="bg-accent-text/35 absolute inset-y-0 left-0 rounded-full"
                       style={{ width: `${(c.taught / c.total) * 100}%` }}
                     />
                     <div
-                      className="bg-accent absolute inset-y-0 left-0 rounded-full"
+                      className="bg-accent-text absolute inset-y-0 left-0 rounded-full"
                       style={{ width: `${(c.practiced / c.total) * 100}%` }}
                     />
                   </div>

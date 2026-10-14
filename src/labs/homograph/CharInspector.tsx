@@ -37,7 +37,7 @@ export function CharRow({
               className={cn(
                 'relative flex size-11 items-center justify-center rounded-lg border font-mono text-lg transition-colors',
                 selected === cell.index
-                  ? 'border-accent bg-accent-soft'
+                  ? 'border-accent-text bg-accent-soft'
                   : 'border-line bg-surface-2 hover:border-line-strong',
                 differs && 'ring-2 ring-danger/50',
                 suspicious && 'text-warning',

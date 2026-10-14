@@ -422,7 +422,7 @@ function Objectives({ objectives }: { objectives?: string[] }) {
         <ul className="animate-fade-in space-y-1.5">
           {objectives.map((objective) => (
             <li key={objective} className="text-fg-muted flex gap-2 text-sm">
-              <ArrowRight className="text-accent mt-0.5 size-4 shrink-0" aria-hidden />
+              <ArrowRight className="text-accent-text mt-0.5 size-4 shrink-0" aria-hidden />
               {objective}
             </li>
           ))}

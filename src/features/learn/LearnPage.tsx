@@ -94,7 +94,7 @@ export default function LearnPage() {
           <BookOpen className="text-success size-3.5" aria-hidden /> Lesson ready
         </span>
         <span className="text-fg-muted inline-flex items-center gap-1.5">
-          <FlaskConical className="text-accent size-3.5" aria-hidden /> Hands-on lab
+          <FlaskConical className="text-accent-text size-3.5" aria-hidden /> Hands-on lab
         </span>
         {normalized && (
           <span className="text-fg-subtle" role="status">
@@ -120,7 +120,7 @@ export default function LearnPage() {
                   id={`domain-${domain.id}`}
                   className="text-fg flex scroll-mt-20 items-center gap-2.5 text-lg font-semibold tracking-tight"
                 >
-                  <Icon className="text-accent size-5" aria-hidden />
+                  <Icon className="text-accent-text size-5" aria-hidden />
                   {domain.title}
                   <span className="text-fg-subtle font-mono text-xs font-normal">{domain.id}</span>
                 </h2>

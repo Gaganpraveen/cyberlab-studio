@@ -193,7 +193,7 @@ export default function PromptInjectionLab() {
                     ? 'border-danger/40 bg-danger-soft text-fg'
                     : m.turn?.blockedBy && !m.turn?.falsePositive
                       ? 'border-success/40 bg-success-soft text-fg'
-                      : 'border-line bg-surface-1 text-fg',
+                      : 'border-line bg-surface text-fg',
               )}
             >
               <div className="break-words whitespace-pre-wrap">{m.text}</div>

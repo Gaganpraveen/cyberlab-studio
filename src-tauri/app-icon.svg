@@ -2,14 +2,14 @@
   <!-- Source for every app icon size. Regenerate with: npm run desktop:icons -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2c2a26"/>
-      <stop offset="1" stop-color="#171615"/>
+      <stop offset="0" stop-color="#2e2d2a"/>
+      <stop offset="1" stop-color="#1c1b19"/>
     </linearGradient>
   </defs>
   <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#bg)"/>
   <rect x="101" y="101" width="822" height="822" rx="184" fill="none" stroke="#ffffff" stroke-opacity="0.09" stroke-width="2"/>
   <g transform="translate(100 100) scale(12.875)">
-    <path d="M32 10 50 17v13c0 11.5-7.6 20.6-18 24-10.4-3.4-18-12.5-18-24V17l18-7Z" fill="none" stroke="#e8a46a" stroke-width="4" stroke-linejoin="round"/>
-    <path d="M24 33.5 29.5 39 41 26" fill="none" stroke="#f3f0e8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M32 10 50 17v13c0 11.5-7.6 20.6-18 24-10.4-3.4-18-12.5-18-24V17l18-7Z" fill="none" stroke="#e39573" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M24 33.5 29.5 39 41 26" fill="none" stroke="#f4f2ec" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 </svg>
