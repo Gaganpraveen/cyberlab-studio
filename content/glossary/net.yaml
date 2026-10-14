@@ -1,0 +1,329 @@
+# Glossary: networks and protocol security (NET-01 to NET-08).
+# Ids are canonical and must stay stable. Search content/glossary/ for an id
+# before adding it; link existing terms instead of redefining them.
+
+- id: packet
+  term: Packet
+  aliases: [datagram, IP packet]
+  short: 'A unit of data sent across a network: headers that say where it is going and how to handle it, followed by the payload it carries.'
+  long: >
+    Strictly, a link-layer unit is a frame, an IP unit is a packet (or
+    datagram), a TCP unit is a segment, and a UDP unit is a datagram, but
+    "packet" is used loosely for all of them. Every header value is chosen by
+    whoever builds the packet, so none of them proves where it came from.
+  related: [encapsulation, ip-address, port, packet-capture]
+  topicId: NET-01
+
+- id: encapsulation
+  term: Encapsulation
+  aliases: [protocol layering]
+  short: "Wrapping a higher layer's data inside a lower layer's header, so that each layer handles only its own header and passes the rest along."
+  long: >
+    An HTTPS request travels inside a TLS record, inside a TCP segment, inside
+    an IP packet, inside an Ethernet or Wi-Fi frame. The receiver removes the
+    headers in reverse order. Link-layer headers are rewritten at every hop,
+    while IP addresses and ports normally travel end to end.
+  related: [packet, tcp, ip-address, mac-address]
+  topicId: NET-01
+
+- id: ip-address
+  term: IP address
+  aliases: [IPv4 address, IPv6 address, Internet Protocol address]
+  short: 'A number that identifies a network interface for Internet Protocol routing: 32 bits long in IPv4 and 128 bits long in IPv6.'
+  long: >
+    The source address in a packet is written by the sender and is not
+    verified by IP itself, so it is a claim rather than proof of origin.
+    Documentation examples use the reserved ranges 192.0.2.0/24,
+    198.51.100.0/24, and 203.0.113.0/24 (RFC 5737) and 2001:db8::/32
+    (RFC 3849).
+  related: [packet, spoofing, mac-address, port]
+  topicId: NET-01
+
+- id: port
+  term: Port
+  aliases: [port number, TCP port, UDP port]
+  short: 'A 16-bit number in a TCP or UDP header that identifies which program on a host a message is for, such as 443 for an HTTPS server.'
+  long: >
+    Servers listen on conventional ports registered with IANA, while clients
+    usually send from a temporary (ephemeral) port chosen by the operating
+    system. A port number is a convention, not a guarantee of which protocol
+    is actually spoken on it.
+  related: [tcp, udp, port-scanning, firewall]
+  topicId: NET-01
+
+- id: udp
+  term: User Datagram Protocol (UDP)
+  aliases: [UDP]
+  short: 'A minimal transport protocol that sends independent datagrams with ports, a length, and a checksum, but with no handshake, ordering, or delivery guarantee.'
+  long: >
+    Defined in RFC 768. Because a single datagram is a complete request, a
+    UDP service can be sent queries with forged source addresses and made to
+    reply to a victim, which is the basis of reflection floods.
+  related: [tcp, port, packet]
+  topicId: NET-01
+
+- id: tcp
+  term: Transmission Control Protocol (TCP)
+  aliases: [TCP]
+  short: 'The transport protocol that gives two programs a reliable, ordered byte stream by using sequence numbers, acknowledgments, and retransmission.'
+  long: >
+    Defined in RFC 9293. TCP opens each connection with the
+    [[three-way-handshake]] and tracks it through states such as ESTABLISHED
+    and TIME-WAIT. It has no built-in authentication or encryption; [[tls]]
+    adds those on top.
+  related: [udp, three-way-handshake, port, syn-flood]
+  topicId: NET-04
+
+- id: three-way-handshake
+  term: Three-way handshake
+  aliases: [TCP handshake, SYN SYN-ACK ACK]
+  short: "The SYN, SYN-ACK, ACK exchange that opens a TCP connection and lets each side learn and acknowledge the other's initial sequence number."
+  long: >
+    Because the SYN-ACK goes to the address in the SYN, a sender that forged
+    its source address never sees the server's sequence number, which makes
+    spoofed TCP connections hard. The server holds state for each half-open
+    connection while it waits for the final ACK, which a [[syn-flood]]
+    exploits.
+  related: [tcp, syn-flood, syn-cookies]
+  topicId: NET-04
+
+- id: syn-flood
+  term: SYN flood
+  aliases: [TCP SYN flooding, SYN flooding attack]
+  short: "A denial-of-service attack that sends many TCP SYN segments, often with forged source addresses, to fill a server's table of half-open connections."
+  long: >
+    RFC 4987 describes the attack and its common mitigations. [[syn-cookies]]
+    let a server answer SYNs without storing state until a client completes
+    the [[three-way-handshake]].
+  related: [three-way-handshake, syn-cookies, tcp]
+  topicId: NET-04
+
+- id: syn-cookies
+  term: SYN cookies
+  aliases: [SYN cookie]
+  short: "A SYN flood defense in which a server encodes a connection's details in its initial sequence number instead of storing them, and rebuilds the state only when a valid final ACK arrives."
+  related: [syn-flood, three-way-handshake, tcp]
+  topicId: NET-04
+
+- id: mac-address
+  term: MAC address
+  aliases: [hardware address, Ethernet address, EUI-48]
+  short: 'A 48-bit link-layer address that identifies a network interface, such as an Ethernet or Wi-Fi adapter, on the local network.'
+  long: >
+    MAC addresses matter only within one local network, because routers
+    rewrite the link-layer header at every hop. The [[arp]] protocol maps IPv4
+    addresses to MAC addresses. Not to be confused with a message
+    authentication code ([[mac]]). Documentation examples use
+    00-00-5E-00-53-00 through 00-00-5E-00-53-FF (RFC 9542).
+  related: [arp, ip-address, arp-spoofing]
+  topicId: NET-03
+
+- id: arp
+  term: Address Resolution Protocol (ARP)
+  aliases: [ARP]
+  short: 'The local-network protocol that a host uses to find the MAC address belonging to an IPv4 address on the same link.'
+  long: >
+    Defined in RFC 826. A host broadcasts a request ("who has 192.0.2.1?") and
+    caches the reply. Replies are not authenticated, which [[arp-spoofing]]
+    abuses. IPv6 uses Neighbor Discovery for the same job.
+  related: [mac-address, arp-spoofing, ip-address]
+  topicId: NET-03
+
+- id: arp-spoofing
+  term: ARP spoofing
+  aliases: [ARP cache poisoning, ARP poisoning]
+  short: "Sending forged ARP messages so that hosts on a local network map another host's IP address, often the gateway's, to the attacker's MAC address."
+  long: >
+    Traffic meant for the victim address then reaches the attacker, who can
+    read, drop, or forward it as an [[adversary-in-the-middle]]. Defenses
+    include switch features that check ARP against trusted address bindings,
+    static entries for critical hosts, and end-to-end encryption such as
+    [[tls]].
+  related: [arp, mac-address, adversary-in-the-middle, spoofing]
+  topicId: NET-03
+
+- id: recursive-resolver
+  term: Recursive resolver
+  aliases: [recursive DNS server, caching resolver, full-service resolver]
+  short: 'A DNS server that answers clients by querying root, top-level-domain, and authoritative servers on their behalf, then caching the answers.'
+  long: >
+    Because one cached answer is reused for every client until its time to
+    live expires, a resolver is a high-value target for
+    [[dns-cache-poisoning]]. A validating resolver also checks [[dnssec]]
+    signatures.
+  related: [dns, authoritative-name-server, dns-cache-poisoning, dnssec]
+  topicId: NET-02
+
+- id: authoritative-name-server
+  term: Authoritative name server
+  aliases: [authoritative server, authoritative DNS server]
+  short: 'A DNS server that holds the official records for a zone, such as shop.example, and answers queries about it from its own data.'
+  related: [dns, recursive-resolver, dnssec]
+  topicId: NET-02
+
+- id: dns-cache-poisoning
+  term: DNS cache poisoning
+  aliases: [DNS spoofing, cache poisoning, Kaminsky attack]
+  short: 'Getting a DNS resolver to accept and cache a forged answer, so that it gives the wrong address to every client who asks until the record expires.'
+  long: >
+    An off-path attacker must deliver a forged response that matches the
+    outstanding query, including its 16-bit transaction ID and the resolver's
+    source port, before the real answer arrives. Source-port randomization
+    makes such guesses far harder, and [[dnssec]] lets validating resolvers
+    reject forged data outright.
+  related: [dns, dnssec, recursive-resolver, spoofing]
+  topicId: NET-02
+
+- id: dnssec
+  term: DNS Security Extensions (DNSSEC)
+  aliases: [DNSSEC]
+  short: 'Extensions that add digital signatures to DNS data so that a validating resolver can check that an answer came from the zone owner and was not altered.'
+  long: >
+    DNSSEC provides data origin authentication and integrity, not
+    confidentiality. Trust flows from the root zone's key down a chain of
+    delegation (DS) records to each signed zone. It is specified in RFC 4033,
+    RFC 4034, and RFC 4035.
+  related: [dns, dns-cache-poisoning, recursive-resolver, digital-signature]
+  topicId: NET-02
+
+- id: tls
+  term: Transport Layer Security (TLS)
+  aliases: [TLS, SSL, SSL/TLS]
+  short: 'The protocol that gives a connection confidentiality, integrity, and authentication of the server (and optionally the client); HTTPS is HTTP over TLS.'
+  long: >
+    In TLS 1.3, the two sides agree on fresh keys with an ephemeral key
+    exchange, the server proves its identity with a certificate and a
+    signature, and both confirm that the handshake was not tampered with. TLS
+    protects only as well as clients validate the server's certificate and
+    name.
+  related: [adversary-in-the-middle, tcp, aead, digital-signature]
+  topicId: NET-05
+
+- id: adversary-in-the-middle
+  term: Adversary-in-the-middle (AitM)
+  aliases: [man-in-the-middle, MITM, AitM, in-path attacker]
+  short: 'An attacker positioned between two parties who can read, modify, block, or inject their traffic while each believes it is talking directly to the other.'
+  long: >
+    The position can come from [[arp-spoofing]] on a local network, a rogue
+    Wi-Fi access point (an [[evil-twin]]), [[dns-cache-poisoning]], or
+    [[bgp-hijacking]].
+    Authenticated encryption with correct certificate validation, as in
+    [[tls]], reduces such an attacker to an observer who can still see
+    metadata and drop traffic but cannot read or alter it undetected.
+  related: [tls, arp-spoofing, dns-cache-poisoning, bgp-hijacking]
+  topicId: NET-05
+
+- id: bgp
+  term: Border Gateway Protocol (BGP)
+  aliases: [BGP, BGP-4]
+  short: 'The routing protocol that autonomous systems use to tell each other which IP address prefixes they can reach, and through which path of networks.'
+  long: >
+    BGP-4 is specified in RFC 4271. Each network accepts and passes on its
+    neighbors' announcements according to local policy; the base protocol
+    does not prove that the network originating a route is allowed to
+    announce that prefix, which [[bgp-hijacking]] exploits.
+  related: [autonomous-system, bgp-hijacking, rpki]
+  topicId: NET-06
+
+- id: autonomous-system
+  term: Autonomous system (AS)
+  aliases: [AS, ASN, autonomous system number]
+  short: 'A network or group of networks run by one organization with one routing policy, such as an ISP or a university, identified by an AS number.'
+  related: [bgp, bgp-hijacking, rpki]
+  topicId: NET-06
+
+- id: bgp-hijacking
+  term: BGP hijacking
+  aliases: [prefix hijacking, route hijacking, IP hijacking]
+  short: 'Announcing in BGP IP prefixes, or more specific parts of them, that a network is not authorized to originate, so that traffic for those addresses is drawn to the wrong place.'
+  long: >
+    Hijacks may be deliberate or accidental. Route origin validation with
+    [[rpki]] lets networks reject announcements from unauthorized origins,
+    but it does not check the rest of the AS path.
+  related: [bgp, rpki, autonomous-system, adversary-in-the-middle]
+  topicId: NET-06
+
+- id: rpki
+  term: Resource Public Key Infrastructure (RPKI)
+  aliases: [RPKI, ROA, route origin authorization, route origin validation, ROV]
+  short: 'A public key infrastructure in which IP address holders sign statements saying which autonomous systems may originate their prefixes, so routers can check BGP announcements against them.'
+  long: >
+    The signed statements are Route Origin Authorizations (ROAs). Route
+    origin validation (RFC 6811) labels each route valid, invalid, or not
+    found. Networks that drop invalid routes block many hijacks and
+    misconfigurations, but a forged path that ends in the legitimate origin
+    AS still passes.
+  related: [bgp, bgp-hijacking, autonomous-system, digital-signature]
+  topicId: NET-06
+
+- id: firewall
+  term: Firewall
+  aliases: [packet filter, network firewall, host firewall]
+  short: 'A device or program that enforces a policy on traffic crossing a boundary, allowing or blocking it by rules about addresses, ports, protocols, and connection state.'
+  long: >
+    Most rule sets are evaluated from top to bottom, the first matching rule
+    decides, and a final default rule denies anything not explicitly
+    allowed. A firewall can only filter traffic that actually passes through
+    it.
+  related: [stateful-firewall, network-segmentation, port, least-privilege]
+  topicId: NET-07
+
+- id: stateful-firewall
+  term: Stateful firewall
+  aliases: [stateful inspection, connection tracking]
+  short: 'A firewall that tracks connections, so it can admit replies to traffic it allowed out while blocking unsolicited inbound packets.'
+  related: [firewall, tcp, three-way-handshake]
+  topicId: NET-07
+
+- id: network-segmentation
+  term: Network segmentation
+  aliases: [segmentation, microsegmentation, network zones, VLAN segmentation]
+  short: 'Dividing a network into zones with controlled paths between them, so that a compromise in one zone does not give free access to the others.'
+  related: [firewall, least-privilege, defense-in-depth, vpn]
+  topicId: NET-07
+
+- id: vpn
+  term: Virtual private network (VPN)
+  aliases: [VPN, VPN tunnel]
+  short: 'An encrypted tunnel that carries traffic between a device or site and a remote network across an untrusted network, as if they were directly connected.'
+  long: >
+    A VPN protects traffic between its two endpoints and usually places the
+    user inside the remote network's perimeter, so it should be paired with
+    [[network-segmentation]] and per-service authorization. It does not make
+    either endpoint trustworthy.
+  related: [network-segmentation, firewall, tls]
+  topicId: NET-07
+
+- id: port-scanning
+  term: Port scanning
+  aliases: [port scan, network scanning, service discovery]
+  short: 'Sending probes to many ports or hosts to learn which services are reachable, judging each port open, closed, or filtered by the replies.'
+  long: >
+    Defenders scan their own networks to find exposed services. Scanning
+    networks without permission can violate the law and acceptable-use
+    policies.
+  related: [port, firewall, tcp]
+  topicId: NET-07
+
+- id: packet-capture
+  term: Packet capture
+  aliases: [pcap, pcapng, sniffing, traffic capture]
+  short: 'Recording copies of the packets seen on a network interface, with timestamps, so they can be analyzed later in tools such as Wireshark or tcpdump.'
+  long: >
+    Captures often contain passwords, cookies, and personal data, so capture
+    only traffic you are authorized to collect, and store and share capture
+    files as sensitive data.
+  related: [display-filter, packet, encapsulation]
+  topicId: NET-08
+
+- id: display-filter
+  term: Display filter
+  aliases: [Wireshark display filter]
+  short: 'A Wireshark expression, such as tcp.port == 443, that hides the packets in a capture that do not match it, without discarding them.'
+  long: >
+    A capture filter, written in the libpcap syntax that tcpdump also uses,
+    decides which packets are recorded at all. A display filter only changes
+    which recorded packets are shown, so it can be changed freely after the
+    capture.
+  related: [packet-capture, packet]
+  topicId: NET-08

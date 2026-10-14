@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
+import { isScalar, parseDocument, visit } from 'yaml';
 
 import { DOMAINS, getTopic } from '@/content/catalog';
 import { LESSON_ISSUES } from '@/content/lessons';
@@ -245,5 +246,30 @@ describe('attack index', () => {
       for (const l of a.labs) if (!labIds.has(l)) problems.push(`${a.id}: lab ${l}`);
     }
     expect(problems).toEqual([]);
+  });
+});
+
+// YAML hygiene ----------------------------------------------------------------
+
+describe('YAML values', () => {
+  // An unquoted " #" inside a value starts a comment, and YAML silently drops the
+  // rest of the text ("UTS #39" becomes "UTS"). Such values must be quoted.
+  it('are never cut short by an unquoted #', () => {
+    const sources = [
+      ...['glossary', 'library', 'coverage'].flatMap((dir) =>
+        filesIn(dir, /\.ya?ml$/).map((file) => [file, readFileSync(file, 'utf8')] as const),
+      ),
+      ...lessonFiles.map((file) => {
+        const frontmatter = /^---\n([\s\S]*?)\n---/.exec(readFileSync(file, 'utf8'))?.[1];
+        return [file, frontmatter ?? ''] as const;
+      }),
+    ];
+    const cut: string[] = [];
+    for (const [file, text] of sources) {
+      visit(parseDocument(text), (_key, node) => {
+        if (isScalar(node) && node.comment) cut.push(`${nameOf(file)}: #${node.comment}`);
+      });
+    }
+    expect(cut).toEqual([]);
   });
 });

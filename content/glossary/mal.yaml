@@ -1,0 +1,550 @@
+# Glossary: malware concepts and availability (MAL domain).
+# Ids are canonical and must stay stable. Search content/glossary/ for an id
+# before adding it here; link to an existing term instead of redefining it.
+
+- id: malware
+  term: Malware
+  aliases: [malicious software, malicious code]
+  short: 'Software deliberately designed to harm a system or its users, for example by stealing, altering, or destroying data or by denying access to it.'
+  long: >
+    Malware is best classified along several facets at once: how it spreads
+    ([[virus]], [[worm]], [[trojan]]), what it does ([[ransomware]],
+    [[spyware]], [[wiper]]), how it hides ([[rootkit]]), and whether a remote
+    operator directs it ([[command-and-control]]). One program often earns
+    labels from several facets.
+  related: [virus, worm, trojan, ransomware, rootkit, spyware]
+  topicId: MAL-01
+
+- id: virus
+  term: Virus
+  aliases: [computer virus, file infector, macro virus]
+  short: 'Malware that inserts copies of itself into other programs, documents, or boot records and spreads when a user runs or opens an infected file.'
+  related: [malware, worm, trojan]
+  topicId: MAL-01
+
+- id: worm
+  term: Worm
+  aliases: [computer worm, network worm]
+  short: 'A self-contained malicious program that copies itself to other computers without user action, usually by exploiting a vulnerability in a network service.'
+  long: >
+    Worm outbreaks follow epidemic models: growth is roughly exponential
+    while most vulnerable hosts are still uninfected, then levels off.
+    Patching shrinks the vulnerable population, and blocking scanning traffic
+    slows the contact rate.
+  related: [malware, virus, vulnerability, exploit]
+  topicId: MAL-01
+
+- id: trojan
+  term: Trojan
+  aliases: [Trojan horse]
+  short: 'Malware disguised as useful or harmless software, which relies on a user to run it and does not replicate itself.'
+  related: [malware, virus, social-engineering, phishing]
+  topicId: MAL-01
+
+- id: ransomware
+  term: Ransomware
+  aliases: [crypto-ransomware, data extortion]
+  short: "Malware that encrypts a victim's data or locks its systems and demands payment, usually in cryptocurrency, in exchange for restoring access."
+  related: [malware, wiper, backup, availability]
+  topicId: MAL-07
+
+- id: wiper
+  term: Wiper
+  aliases: [wiper malware, destructive malware]
+  short: 'Malware that destroys or overwrites data so it cannot be recovered, sometimes while posing as ransomware.'
+  related: [malware, ransomware, backup, availability]
+  topicId: MAL-01
+
+- id: spyware
+  term: Spyware
+  aliases: [infostealer, information stealer]
+  short: 'Malware that covertly collects information from a device, such as files, screenshots, browsing activity, or credentials, and sends it to someone else.'
+  related: [malware, keylogger, confidentiality]
+  topicId: MAL-01
+
+- id: keylogger
+  term: Keylogger
+  aliases: [keystroke logger, keystroke logging]
+  short: 'Software or hardware that records keystrokes, typically to capture passwords and other secrets as they are typed.'
+  related: [spyware, malware, authentication]
+  topicId: MAL-01
+
+- id: rootkit
+  term: Rootkit
+  aliases: [kernel rootkit, bootkit]
+  short: 'Malware that hides itself and other components by altering how the operating system reports files, processes, and network connections.'
+  long: >
+    Because a rootkit can make the infected host's own tools lie, responders
+    gather evidence from outside the running system: a memory capture, an
+    offline disk image, or a network sensor.
+  related: [malware, spyware]
+  topicId: MAL-01
+
+- id: botnet
+  term: Botnet
+  aliases: [bot network, zombie network, bots]
+  short: 'A set of compromised devices (bots) that one operator controls remotely and can direct together, for example to send spam or flood a target with traffic.'
+  related: [malware, command-and-control, worm]
+  topicId: MAL-05
+
+- id: command-and-control
+  term: Command and control
+  aliases: [C2, C&C, CnC]
+  short: 'The channel and infrastructure an attacker uses to send instructions to compromised systems and receive data back from them.'
+  related: [botnet, beaconing, malware]
+  topicId: MAL-04
+
+- id: beaconing
+  term: Beaconing
+  aliases: [beacon, check-in traffic, C2 heartbeat]
+  short: 'Periodic, automated check-ins from compromised software to its command-and-control server, a timing pattern that defenders can detect in network logs.'
+  related: [command-and-control, malware]
+  topicId: MAL-04
+
+- id: backup
+  term: Backup
+  aliases: [backups, offline backup, data backup]
+  short: 'A separate copy of data or systems, kept so they can be restored after loss, corruption, or attack.'
+  long: >
+    To survive [[ransomware]], a backup must be isolated from the systems it
+    protects (offline or immutable), so the same intruder cannot encrypt or
+    delete it, and restores must be tested before they are needed.
+  related: [ransomware, wiper, availability, integrity]
+  topicId: MAL-07
+
+- id: antivirus
+  term: Antivirus
+  aliases: [AV, anti-malware, antivirus software]
+  short: 'Software that scans files and activity on a host to detect and block known malware, traditionally by matching signatures taken from known samples.'
+  long: >
+    Signature matching works well against known samples and poorly against
+    new or modified ones, which is why modern products add behavior-based
+    detection and why antivirus is one layer of [[defense-in-depth]], not a
+    complete defense.
+  related: [malware, defense-in-depth]
+  topicId: MAL-08
+
+- id: static-analysis
+  term: Static analysis
+  aliases: [static malware analysis, basic static analysis]
+  short: 'Examining a file without running it, for example by hashing it, identifying its type and header fields, extracting strings, and matching it against rules.'
+  long: >
+    Static analysis is safe and fast but sees only what is written in the
+    file. Code that is packed, encrypted, or downloaded at run time stays
+    hidden, which is why analysts follow it with [[dynamic-analysis]].
+  related: [dynamic-analysis, magic-number, yara-rule, malware]
+  topicId: MAL-02
+
+- id: dynamic-analysis
+  term: Dynamic analysis
+  aliases: [behavioral analysis, dynamic malware analysis]
+  short: 'Running a suspicious program in an isolated, monitored environment to observe what it actually does, such as the files, processes, and network connections it creates.'
+  long: >
+    Safe dynamic analysis balances containment (nothing escapes) against
+    realism (the program behaves as it would on a victim's machine). A quiet
+    run means no behavior was observed under those conditions, not that the
+    program is benign.
+  related: [static-analysis, malware-sandbox, vm-snapshot, malware]
+  topicId: MAL-03
+
+- id: magic-number
+  term: Magic number
+  aliases: [file signature, magic bytes]
+  short: "A fixed byte pattern at a known position, usually the start of a file, that identifies the file's format regardless of its name."
+  long: >
+    Examples: Windows executables begin with `MZ` (`4D 5A`), Linux ELF
+    programs with `7F 45 4C 46`, PDF documents with `%PDF-`, and ZIP
+    archives with `PK` (`50 4B 03 04`). A name that disagrees with the magic
+    number is a warning sign.
+  related: [static-analysis]
+  topicId: MAL-02
+
+- id: yara-rule
+  term: YARA rule
+  aliases: [YARA, YARA-X, YARA signature]
+  short: 'A rule for the YARA pattern-matching tool that describes a family of files with strings and a Boolean condition, used to find and classify malware.'
+  long: >
+    A rule has a name, optional `meta` notes, a `strings` section, and a
+    required `condition`. Rules must be tested against known-good files,
+    because overly broad strings produce false positives.
+  related: [static-analysis, antivirus, malware]
+  topicId: MAL-02
+
+- id: eicar-test-file
+  term: EICAR test file
+  aliases: [EICAR, EICAR test string, anti-malware test file]
+  short: 'A harmless, standardized test string that anti-malware products deliberately detect as if it were malware, so people can check that detection works without real malware.'
+  related: [antivirus, malware]
+  topicId: MAL-02
+
+- id: malware-sandbox
+  term: Malware sandbox
+  aliases: [analysis sandbox, detonation sandbox, automated malware analysis]
+  short: 'An isolated, instrumented environment that runs a suspicious file and records its behavior, often automatically, to produce a report for analysts.'
+  long: >
+    Unlike the general operating-system [[sandbox]], which confines everyday
+    programs, a malware sandbox exists to observe. Samples can detect it,
+    wait out its time limit, or need a trigger it never supplies, so a clean
+    report is not proof of safety.
+  related: [dynamic-analysis, vm-snapshot, sandbox]
+  topicId: MAL-03
+
+- id: vm-snapshot
+  term: VM snapshot
+  aliases: [snapshot, virtual machine snapshot, checkpoint]
+  short: "A saved copy of a virtual machine's complete state that can be restored later, used in malware analysis to start every run from a known clean system."
+  long: >
+    Restoring a snapshot discards everything that happened after it was
+    taken, including evidence, so analysts export logs and hashes before
+    reverting.
+  related: [malware-sandbox, dynamic-analysis]
+  topicId: MAL-03
+
+- id: dos-attack
+  term: Denial-of-service attack
+  aliases: [DoS, DoS attack, denial of service]
+  short: 'An attack that makes a system or service unavailable to its legitimate users, typically by exhausting a resource such as bandwidth, connection slots, memory, or processing time.'
+  related: [availability, ddos-attack, syn-flood, botnet]
+  topicId: MAL-06
+
+- id: ddos-attack
+  term: Distributed denial-of-service attack
+  aliases: [DDoS, DDoS attack, distributed denial of service]
+  short: 'A denial-of-service attack sent from many machines at once, often a botnet, so that the combined traffic overwhelms the target and cannot be stopped by blocking one source.'
+  related: [dos-attack, botnet, availability]
+  topicId: MAL-06
+
+- id: domain-generation-algorithm
+  term: Domain generation algorithm
+  aliases: [DGA, algorithmically generated domains]
+  short: 'A method by which malware and its operator derive the same long, changing list of candidate domain names, so the operator needs to register only a few of them to stay reachable.'
+  long: >
+    Because most generated names are never registered, DGA activity tends to
+    show up as random-looking lookups with a high rate of failed (NXDOMAIN)
+    answers, often from a process that does not normally use DNS.
+  related: [command-and-control, sinkhole, dns]
+  topicId: MAL-04
+
+- id: sinkhole
+  term: Sinkhole
+  aliases: [DNS sinkhole, sinkholing]
+  short: 'A server or DNS answer controlled by defenders that receives traffic meant for a malicious domain, cutting off command and control and revealing which hosts are infected.'
+  related: [command-and-control, domain-generation-algorithm, dns]
+  topicId: MAL-04
+
+- id: amplification-attack
+  term: Amplification attack
+  aliases: [reflection attack, reflected amplification, amplification]
+  short: 'A denial-of-service method in which small requests, forged to look as if they came from the victim, go to third-party services whose much larger replies then converge on the victim.'
+  long: >
+    It needs two weaknesses at once: networks that let packets leave with a
+    forged source address, and connectionless services that send a large answer
+    to a small unauthenticated question. Defenders filter spoofed traffic at the
+    network edge (BCP 38 ingress filtering), keep services such as open DNS
+    resolvers off the public internet, and rely on upstream scrubbing to absorb
+    floods that still arrive.
+  related: [dos-attack, ddos-attack, availability]
+  topicId: MAL-06
+
+- id: edr
+  term: Endpoint detection and response
+  aliases: [EDR]
+  short: 'Security software on laptops and servers that records process, file and network activity, flags behavior that looks malicious even without a known signature, and gives responders tools to investigate and isolate a host remotely.'
+  long: >
+    EDR adds behavioral telemetry and response actions to signature-based
+    [[antivirus]]. It is only as good as its tuning and the people triaging its
+    alerts, and it sees only what the host reports, so a compromised kernel or a
+    [[rootkit]] can blind it. Treat it as one layer of [[defense-in-depth]].
+  related: [antivirus, malware, rootkit, dynamic-analysis]
+  topicId: MAL-08
+
+- id: network-telescope
+  term: Network telescope
+  aliases: [darknet, internet telescope, darkspace]
+  short: 'A large block of routed but unused IP addresses whose incoming traffic is recorded; since no legitimate service lives there, the traffic reveals internet-wide scanning, such as infected devices searching for new victims.'
+  long: >
+    Researchers estimate how many hosts a malware family has infected by
+    counting the sources whose telescope traffic carries that family's
+    fingerprint. Raw address counts mislead in both directions: devices get
+    new addresses over time, so one device can appear as many, and
+    [[network-address-translation]] hides many devices behind one address.
+  related: [honeypot, botnet, ip-address, port-scanning]
+  topicId: MAL-05
+
+- id: honeypot
+  term: Honeypot
+  aliases: [honeypots, honeynet, decoy system]
+  short: 'A decoy system with no production use, set up so that anyone who probes or attacks it can be observed, and whose logs and captured files show defenders what attackers are doing.'
+  long: >
+    Legitimate users have no reason to contact a honeypot, so almost
+    everything it records is suspicious, which keeps [[false-positive|false
+    positives]] low. It sees only the attacks that happen to reach it, and its
+    operators must contain it so it cannot be used to harm others.
+  related: [network-telescope, malware-sandbox, ids, false-positive]
+  topicId: MAL-05
+
+- id: flash-crowd
+  term: Flash crowd
+  aliases: [legitimate traffic surge, demand spike, Slashdot effect]
+  short: 'A sudden, legitimate surge of demand on a service, such as course registration opening or breaking news, that can exhaust its capacity just as a denial-of-service attack would.'
+  long: >
+    A flash crowd and a [[ddos-attack]] both put more demand on a service than
+    it can serve, so request volume alone cannot tell them apart. The
+    differences lie in who the clients are and what they do: a flash crowd is
+    mostly known users following the normal path through a site, often at a
+    predictable time, and completed transactions rise with the traffic until
+    capacity runs out.
+  related: [ddos-attack, availability, rate-limiting, botnet]
+  topicId: MAL-05
+
+- id: botnet-takedown
+  term: Botnet takedown
+  aliases: [takedown, coordinated takedown, infrastructure takedown]
+  short: "A coordinated action in which registrars, hosting providers, law enforcement, and researchers seize or disable a botnet's command-and-control servers and domains together, so the operator cannot simply move to new ones."
+  long: >
+    Takedowns are often paired with a [[sinkhole]], which receives the bots'
+    check-ins and identifies infected devices so their owners can be notified.
+    A takedown removes an operator's control, not the weakness: devices that
+    still accept default passwords or run unpatched software can be recruited
+    into the next [[botnet]].
+  related: [botnet, command-and-control, sinkhole, domain-generation-algorithm]
+  topicId: MAL-05
+
+- id: utilization
+  term: Utilization
+  aliases: [server utilization, load factor, rho]
+  short: 'The rate at which work arrives divided by the rate at which a system can complete it; below 1 the system keeps up, and above 1 its queue grows until requests are dropped.'
+  long: >
+    Written ρ = λ/μ, where λ is the arrival rate and μ the service rate in
+    the same units, such as requests per second. Real arrivals come in bursts,
+    so queues and waiting times climb steeply as ρ approaches 1, and operators
+    keep spare capacity (headroom) instead of planning to run at full
+    utilization. Above 1, a [[dos-attack]] or a crowd of real users turns the
+    excess first into delay and then into dropped requests.
+  related: [availability, dos-attack, load-shedding, autoscaling]
+  topicId: MAL-06
+
+- id: load-shedding
+  term: Load shedding
+  aliases: [shedding load, admission control]
+  short: 'Deliberately rejecting some requests early and cheaply when demand exceeds capacity, so that the requests a service does accept finish in time.'
+  long: >
+    An overloaded service fails some requests no matter what; shedding decides
+    which ones, and when. A quick error with a hint to retry later costs far
+    less than accepting work that waits in a queue until the client has given
+    up. Shedding by priority, such as checkout before browsing, is a form of
+    [[graceful-degradation]].
+  related: [graceful-degradation, rate-limiting, utilization]
+  topicId: MAL-06
+
+- id: graceful-degradation
+  term: Graceful degradation
+  aliases: [degraded mode, fail soft, brownout]
+  short: 'Designing a service so that, under overload or partial failure, it keeps its most important functions working by switching off or simplifying less important ones.'
+  long: >
+    Examples include serving a cached or static page instead of a personalized
+    one, pausing recommendations or search suggestions, and reserving capacity
+    for logins and payments. Degraded modes must be chosen, built, and tested
+    before an incident, and users should be told when one is active.
+  related: [load-shedding, availability, business-continuity]
+  topicId: MAL-06
+
+- id: autoscaling
+  term: Autoscaling
+  aliases: [auto scaling, auto-scaling, elastic scaling, scaling out]
+  short: 'Automatically adding or removing servers, containers, or other capacity as measured load changes, so a service can absorb demand spikes without paying for peak capacity all the time.'
+  long: >
+    Against a flood, autoscaling raises the service rate but serves the attack
+    traffic along with everyone else's, so the bill grows with the attack. New
+    capacity takes time to start and is capped by quotas and budgets, and it
+    does not help when the bottleneck is a shared database or a full network
+    link. Set a maximum, alert on spending, and pair scaling with filtering.
+  related: [utilization, dos-attack, cloud-service-provider]
+  topicId: MAL-06
+
+- id: content-delivery-network
+  term: Content delivery network (CDN)
+  aliases: [CDN, content distribution network]
+  short: "A provider's network of servers in many locations that answers requests from nearby cached copies of a site's content and forwards to the site's own (origin) server only what it cannot answer."
+  long: >
+    Because it spreads load over far more servers and bandwidth than one site
+    has, a CDN can absorb much of a [[ddos-attack]] before it reaches the
+    origin. Requests it cannot answer from cache, such as searches, logins, and
+    personalized pages, still reach the origin, and the origin should accept
+    traffic only from the CDN so that its own address is not a side door.
+  related: [traffic-scrubbing, ddos-attack, availability]
+  topicId: MAL-06
+
+- id: traffic-scrubbing
+  term: Traffic scrubbing
+  aliases: [scrubbing center, scrubbing service, DDoS scrubbing, DDoS mitigation service]
+  short: "Routing a network's incoming traffic through a provider with much larger capacity, which drops attack traffic and forwards the remaining clean traffic to the network."
+  long: >
+    Scrubbing helps against floods that would fill the victim's own links,
+    because the filtering happens where capacity is larger, upstream of those
+    links. The costs are a contract, a provider that sees your traffic,
+    possible extra delay, and, for an on-demand service, a switch-over
+    procedure that must be rehearsed before an attack.
+  related: [content-delivery-network, ddos-attack, ingress-filtering]
+  topicId: MAL-06
+
+- id: ingress-filtering
+  term: Ingress filtering
+  aliases: [BCP 38, RFC 2827, source address validation, SAV, anti-spoofing filtering]
+  short: 'Filtering at a network edge that drops packets whose source address does not belong to the network or customer they came from, so hosts behind that edge cannot send packets with forged source addresses.'
+  long: >
+    BCP 38 (RFC 2827) asks providers to apply it on the links from their
+    customers. It makes [[spoofing|forged-source]] floods and
+    [[amplification-attack|amplification]] harder and makes attacks traceable
+    to the network that sent them, but by the RFC's own account it "does
+    absolutely nothing to protect against flooding attacks which originate
+    from valid prefixes." Because it stops forged packets on their way out,
+    most of the benefit goes to other networks.
+  related: [spoofing, amplification-attack, ip-address, ddos-attack]
+  topicId: MAL-06
+
+- id: 3-2-1-backup-rule
+  term: 3-2-1 backup rule
+  aliases: [3-2-1 rule, 3-2-1 backup strategy]
+  short: 'A rule of thumb for backups: keep three copies of important data, on two different types of storage media, with one copy kept off-site.'
+  long: >
+    Each number guards against a different failure: a second copy against
+    deletion or corruption of the first, a second medium against a failing
+    disk or service, and an off-site copy against losing the building. The
+    rule assumes those failures are independent. Against [[ransomware]], they
+    are not, because an intruder with administrator rights can reach every
+    copy that stays online and writable, so at least one copy must also be
+    offline or an [[immutable-backup]].
+  related: [backup, immutable-backup, rpo, common-mode-failure]
+  topicId: MAL-07
+
+- id: immutable-backup
+  term: Immutable backup
+  aliases: [immutable storage, WORM storage, write once read many, object lock]
+  short: 'A backup copy kept in storage that refuses changes and deletion until a set retention period ends, so an intruder with stolen credentials cannot alter or erase it.'
+  long: >
+    Immutability lets a copy stay online, where restores are fast, while
+    resisting [[ransomware]]. It protects only for as long as the retention
+    period lasts, and only if the accounts that can change retention settings,
+    or override the lock where a product allows it, are themselves protected
+    and kept separate from production. A misconfigured lock can also keep
+    unwanted data, at a real cost.
+  related: [backup, 3-2-1-backup-rule, ransomware, separation-of-duties]
+  topicId: MAL-07
+
+- id: golden-image
+  term: Golden image
+  aliases: [gold image, golden template, system image template]
+  short: 'A maintained, known-good template of a system, with its operating system, software, and configuration, used to rebuild machines quickly and consistently.'
+  long: >
+    After [[ransomware]] or another compromise, rebuilding from a golden image
+    is faster and more trustworthy than cleaning each machine by hand. Images
+    must be kept up to date, stored where an intruder cannot alter them, and
+    tested on the hardware or platform they will be restored to.
+  related: [backup, incident-recovery, infrastructure-as-code]
+  topicId: MAL-07
+
+- id: double-extortion
+  term: Double extortion
+  aliases: [double-extortion ransomware, data-theft extortion]
+  short: 'A ransomware tactic that adds data theft to encryption, so the attacker can demand payment both to restore access and to keep the stolen data from being published.'
+  long: >
+    Backups restore [[availability]] but cannot undo a loss of
+    [[confidentiality]], so a double-extortion incident may also be a data
+    breach with notification duties, and paying cannot guarantee that stolen
+    data is deleted. Some attackers skip encryption and rely on the threat to
+    publish alone.
+  related: [ransomware, backup, confidentiality, security-incident]
+  topicId: MAL-07
+
+- id: lateral-movement
+  term: Lateral movement
+  aliases: [lateral spread, pivoting]
+  short: "An intruder's movement from the first compromised system to other systems and accounts on the same network, on the way to the systems they are really after."
+  long: >
+    MITRE ATT&CK groups these techniques under its Lateral Movement tactic
+    (TA0008), summarized as "The adversary is trying to move through your
+    environment." [[network-segmentation]] and [[least-privilege]] limit how
+    far it can go and force it through points where it can be blocked and
+    logged.
+  related: [network-segmentation, least-privilege, privilege-escalation, worm]
+  topicId: MAL-07
+
+- id: heuristic-detection
+  term: Heuristic detection
+  aliases: [heuristics, heuristic analysis, heuristic scanning]
+  short: 'Malware detection that scores a file or program on traits common in malware and rare in normal software, so it can flag new variants that match no signature, at the cost of more false alarms.'
+  long: >
+    Analysts write the rules of thumb, such as "an office document whose macro
+    can start other programs" or "an executable whose header fields
+    contradict each other," and a threshold turns the score into a verdict.
+    Every trait also appears in some legitimate software, so lowering the
+    threshold catches more malware and raises more
+    [[false-positive|false positives]].
+  related: [signature-based-detection, behavior-based-detection, antivirus, false-positive]
+  topicId: MAL-08
+
+- id: behavior-based-detection
+  term: Behavior-based detection
+  aliases: [behavioral detection, behavior monitoring, behavior-based anti-malware]
+  short: 'Detection that watches what programs do while they run, such as the processes they start and the files and connections they change, and flags sequences that match patterns of malicious activity.'
+  long: >
+    Unlike [[anomaly-based-detection]], which flags departures from a learned
+    profile of normal activity, behavior rules describe suspicious activity
+    directly, such as a document editor starting a script interpreter or one
+    process rewriting hundreds of files in a minute. They catch malware that
+    no file scan recognizes, but they act only after the code has started, and
+    legitimate administration tools can produce the same events.
+  related: [edr, anomaly-based-detection, heuristic-detection, process-tree, living-off-the-land]
+  topicId: MAL-08
+
+- id: application-allowlisting
+  term: Application allowlisting
+  aliases: [application whitelisting, application control, execution allowlisting]
+  short: 'A host control that lets only approved programs run, identified by attributes such as a publisher signature, a cryptographic hash, or a protected folder, and blocks or logs everything else.'
+  long: >
+    NIST SP 800-167 recommends identifying programs by publisher and hash
+    together, testing in audit mode (log, do not block) before enforcing, and
+    starting on centrally managed hosts with a stable set of software. It stops
+    most unknown executables, but it needs upkeep whenever software changes,
+    some tools can only allow or block a script interpreter as a whole, and it
+    does not stop an approved program from being exploited while it runs.
+  related: [allowlist, denylist, digital-signature, hash-function, least-privilege]
+  topicId: MAL-08
+
+- id: patch-management
+  term: Patch management
+  aliases: [patching, security updates, software updates]
+  short: 'The routine work of finding, testing, prioritizing, installing, and verifying software updates that fix vulnerabilities, so known flaws are closed before attackers use them.'
+  long: >
+    Patching shrinks the [[attack-surface]] that malware can exploit, but
+    patches lag behind the discovery of flaws, critical systems need testing
+    before a patch is installed, and no patch stops a user from running a
+    program they were tricked into opening. It is one layer of
+    [[defense-in-depth]].
+  related: [vulnerability, exploit, attack-surface, defense-in-depth]
+  topicId: MAL-08
+
+- id: tamper-protection
+  term: Tamper protection
+  aliases: [self-protection, security software self-protection]
+  short: 'Features that stop security software from being switched off, uninstalled, or reconfigured except by authorized administrators, and that report attempts to do so.'
+  long: >
+    Tamper protection raises the cost of disabling a defense, but software
+    cannot fully protect itself from code that has the same or higher privilege
+    on the same machine, such as a [[rootkit]]. Defenders therefore also watch
+    from outside the host: a sensor that stops reporting is itself a lead.
+  related: [edr, antivirus, rootkit, kernel, least-privilege]
+  topicId: MAL-08
+
+- id: concept-drift
+  term: Concept drift
+  aliases: [drift, model drift]
+  short: 'The change, after a model is trained, in the data it must judge or in what its labels mean, which makes the model less accurate over time unless it is retrained and re-evaluated.'
+  long: >
+    Malware classifiers face drift because legitimate software and malware
+    both keep changing after training. A detector's accuracy should therefore
+    be measured on samples collected after its training data, the way it will
+    be used in practice, and checked again as time passes.
+  related: [ground-truth, false-negative, adversarial-example]
+  topicId: MAL-08
