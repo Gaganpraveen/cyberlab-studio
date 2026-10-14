@@ -17,7 +17,13 @@ export const jwtLab: LabDefinition = {
   engine: 'HMAC-SHA256 in TypeScript and Web Crypto',
   topicIds: ['IAM-04', 'CRY-04'],
   icon: Fingerprint,
-  objectives: [],
+  objectives: [
+    'Read a JWT and explain why signing is not encryption',
+    'Forge an admin token with the alg: none trick',
+    'Recover a weak HMAC secret from a wordlist',
+    'Sign a token a strict verifier accepts, showing why secrets must be strong',
+    'Harden a verifier by pinning the algorithm and requiring a signature',
+  ],
   component: lazy(() => import('./JwtLab')),
   challenges,
 };

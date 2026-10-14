@@ -17,7 +17,13 @@ export const sqlInjectionLab: LabDefinition = {
   engine: 'SQLite 3 compiled to WebAssembly (sql.js)',
   topicIds: ['APP-01', 'APP-02'],
   icon: Database,
-  objectives: [],
+  objectives: [
+    'Bypass a string-built login without knowing a valid password',
+    'Explain how untrusted input changes the meaning of a SQL query',
+    'Use a UNION to read data from a table a feature never meant to expose',
+    'Rewrite the query to use parameterized statements',
+    'Verify the fix with an automated battery of attack inputs',
+  ],
   component: lazy(() => import('./SqlInjectionLab')),
   challenges,
 };
