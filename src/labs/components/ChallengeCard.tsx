@@ -165,10 +165,10 @@ export function ChallengeCard({
                   className="bg-warning-soft border-warning/25 animate-fade-in flex gap-2 rounded-lg border px-3 py-2 text-sm"
                 >
                   <Lightbulb className="text-warning mt-0.5 size-4 shrink-0" aria-hidden />
-                  <div className="min-w-0">
-                    <span className="text-fg font-medium">Hint {i + 1}. </span>
-                    <span className="text-fg-muted">{hint}</span>
-                  </div>
+                  {/* Hints are written in Markdown, like the prompt and the solution. */}
+                  <Markdown compact className="min-w-0 [&_p]:text-fg-muted">
+                    {`**Hint ${i + 1}.** ${hint}`}
+                  </Markdown>
                 </div>
               ))}
               {hintsShown < challenge.hints.length && (

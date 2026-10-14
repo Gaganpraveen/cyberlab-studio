@@ -66,8 +66,18 @@ function Arrowhead({ direction, style }: { direction: 'left' | 'right'; style: M
   );
 }
 
-function StepNumber({ n }: { n: number }) {
-  return <span className="text-fg-subtle mr-1.5 font-mono text-[0.6875rem] tabular-nums">{n}</span>;
+/** The step's number; `onTint` gives it more contrast on a tinted note. */
+function StepNumber({ n, onTint = false }: { n: number; onTint?: boolean }) {
+  return (
+    <span
+      className={cn(
+        'mr-1.5 font-mono text-[0.6875rem] tabular-nums',
+        onTint ? 'text-fg-muted' : 'text-fg-subtle',
+      )}
+    >
+      {n}
+    </span>
+  );
 }
 
 export function SequenceDiagram({ source }: { source: string }) {
@@ -257,7 +267,7 @@ export function SequenceDiagram({ source }: { source: string }) {
                         transform: 'translateX(-50%)',
                       }}
                     >
-                      <StepNumber n={i + 1} />
+                      <StepNumber n={i + 1} onTint />
                       {step.text}
                     </div>
                   </div>

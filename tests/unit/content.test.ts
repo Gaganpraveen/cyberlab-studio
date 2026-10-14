@@ -78,7 +78,7 @@ describe('glossary', () => {
 
   it('only links to terms that exist in long definitions', () => {
     const broken = glossary.flatMap((t) =>
-      [...(t.long ?? '').matchAll(/\[\[([a-z0-9-]+)(?:\|[^\]]+)?\]\]/g)]
+      [...(t.long ?? '').matchAll(/\[\[([a-z0-9-]+)(?:\\?\|[^\]]+)?\]\]/g)]
         .map((m) => m[1]!)
         .filter((id) => !glossaryIds.has(id))
         .map((id) => `${t.id} -> ${id}`),
@@ -129,7 +129,7 @@ describe.each(lessonFiles.map((f) => [nameOf(f), f] as const))('lesson %s', (_na
   });
 
   it.runIf(lesson)('links only to glossary terms that exist', () => {
-    const linked = [...lesson!.body.matchAll(/\[\[([a-z0-9-]+)(?:\|[^\]]+)?\]\]/g)].map(
+    const linked = [...lesson!.body.matchAll(/\[\[([a-z0-9-]+)(?:\\?\|[^\]]+)?\]\]/g)].map(
       (m) => m[1]!,
     );
     expect([...new Set(linked.filter((id) => !glossaryIds.has(id)))]).toEqual([]);

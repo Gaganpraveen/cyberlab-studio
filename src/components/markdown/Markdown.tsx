@@ -110,11 +110,12 @@ const languageLabels: Record<string, string> = {
 
 /**
  * Glossary shorthand: [[term-id]] or [[term-id|display text]] becomes a
- * `term:` link that renders as an inline definition popover.
+ * `term:` link that renders as an inline definition popover. Inside a table
+ * cell the pipe is written escaped, [[term-id\|display text]].
  */
 export function expandWikiLinks(markdown: string): string {
   return markdown.replace(
-    /\[\[([a-z0-9-]+)(?:\|([^\]]+))?\]\]/g,
+    /\[\[([a-z0-9-]+)(?:\\?\|([^\]]+))?\]\]/g,
     (_m, id: string, text?: string) => {
       const label = text ?? id.replace(/-/g, ' ');
       return `[${label}](term:${id})`;
