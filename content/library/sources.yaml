@@ -1,0 +1,1318 @@
+# CyberLab Studio library: textbooks, standards, and open references mapped to the curriculum.
+# Access tiers (open, free, paid) and what the app may do with each: docs/KNOWLEDGE_BASE.md.
+# Order: textbook, book, course-notes, standard, framework, guide, reference; within each
+# kind, the most useful for a US intro or undergraduate course comes first.
+# Last full verification: 2026-10-14. Omit any field you cannot verify; never guess.
+
+# ---------------------------------------------------------------- textbooks
+
+- id: stallings-brown-computer-security
+  title: 'Computer Security: Principles and Practice'
+  authors: [William Stallings, Lawrie Brown]
+  edition: '5th'
+  year: 2024
+  publisher: 'Pearson'
+  url: 'https://www.pearson.com/en-us/subject-catalog/p/computer-security-principles-and-practice/P200000010333'
+  isbn: '9780138091675'
+  kind: textbook
+  access: paid
+  license: 'All rights reserved'
+  level: [undergrad, grad]
+  domains: [FND, CRY, IAM, NET, APP, SYS, OPS, MAL, CLD, IOT, HUM, GRC]
+  topics:
+    - FND-01
+    - CRY-02
+    - CRY-03
+    - IAM-02
+    - IAM-06
+    - MAL-01
+    - MAL-06
+    - OPS-01
+    - OPS-04
+    - NET-05
+    - NET-07
+    - SYS-02
+    - SYS-04
+    - GRC-01
+    - GRC-02
+    - HUM-06
+    - IOT-01
+    - IOT-08
+  why: 'Comprehensive undergraduate survey covering cryptographic tools, authentication, access control, malware, DoS, intrusion detection, firewalls, software and OS security, risk management, and auditing.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.pearson.com/en-us/subject-catalog/p/computer-security-principles-and-practice/P200000010333'
+
+- id: cs161-textbook
+  title: 'Computer Security (UC Berkeley CS 161 online textbook)'
+  authors: [David Wagner, Nicholas Weaver, Peyrin Kao, Fuzail Shakir, Andrew Law, Nicholas Ngai]
+  publisher: 'University of California, Berkeley (CS 161)'
+  url: 'https://textbook.cs161.org/'
+  kind: textbook
+  access: open
+  license: 'CC BY-SA 4.0'
+  level: [undergrad]
+  domains: [FND, SYS, CRY, APP, WEB, IAM, NET, OPS, MAL, IOT]
+  topics:
+    - FND-05
+    - SYS-01
+    - SYS-02
+    - CRY-01
+    - CRY-02
+    - CRY-03
+    - CRY-04
+    - CRY-05
+    - CRY-06
+    - APP-01
+    - WEB-04
+    - WEB-05
+    - WEB-06
+    - WEB-08
+    - IAM-04
+    - NET-01
+    - NET-02
+    - NET-03
+    - NET-04
+    - NET-05
+    - NET-06
+    - NET-07
+    - OPS-04
+    - MAL-01
+    - MAL-06
+    - IOT-01
+  why: 'Openly licensed undergraduate textbook covering security principles, memory safety, applied cryptography, web security, and network security in short, readable chapters.'
+  use: 'Link, attributed quotes, adaptation under CC BY-SA 4.0 (adapted text stays CC BY-SA 4.0), and retrieval ingestion with attribution.'
+  verifiedFrom: 'https://textbook.cs161.org/'
+
+- id: pfleeger-security-in-computing
+  title: 'Security in Computing'
+  authors: [Charles Pfleeger, Shari Lawrence Pfleeger, Lizzie Coles-Kemp]
+  edition: '6th'
+  year: 2024
+  publisher: 'Addison-Wesley Professional (Pearson)'
+  url: 'https://www.pearson.com/en-us/subject-catalog/p/security-in-computing/P200000009559'
+  isbn: '9780137891214'
+  kind: textbook
+  access: paid
+  license: 'All rights reserved'
+  level: [undergrad, grad]
+  domains: [FND, CRY, IAM, APP, WEB, SYS, NET, GRC, OPS]
+  topics: [FND-01, FND-02, IAM-01, SYS-04, GRC-01, GRC-03, GRC-05]
+  why: 'Long-running survey text spanning authentication, programs, operating systems, networks, data, privacy, management, law and ethics, and emerging risks such as AI and quantum computing.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.pearson.com/en-us/subject-catalog/p/security-in-computing/P200000009559'
+
+- id: du-computer-internet-security
+  title: 'Computer & Internet Security: A Hands-on Approach'
+  authors: [Wenliang Du]
+  edition: '3rd'
+  year: 2022
+  publisher: 'Wenliang Du (self-published)'
+  url: 'https://www.handsonsecurity.net/'
+  isbn: '9781733003940'
+  kind: textbook
+  access: paid
+  license: 'All rights reserved'
+  level: [undergrad]
+  domains: [SYS, WEB, APP, NET, CRY]
+  topics:
+    - SYS-02
+    - SYS-04
+    - SYS-06
+    - SYS-08
+    - WEB-05
+    - WEB-06
+    - WEB-08
+    - APP-01
+    - NET-01
+    - NET-02
+    - NET-04
+    - NET-07
+    - CRY-02
+    - CRY-04
+  why: 'Hands-on text by the creator of SEED Labs that walks through real attacks, including Set-UID abuse, buffer overflows, race conditions, Meltdown and Spectre, CSRF, XSS, SQL injection, TCP and DNS attacks, and PKI.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.handsonsecurity.net/'
+
+- id: whitman-mattord-principles-information-security
+  title: 'Principles of Information Security'
+  authors: [Michael E. Whitman, Herbert J. Mattord]
+  edition: '7th'
+  year: 2022
+  publisher: 'Cengage'
+  url: 'https://www.cengage.com/c/new-edition/9780357506431'
+  isbn: '9780357506431'
+  kind: textbook
+  access: paid
+  license: 'All rights reserved'
+  level: [intro, undergrad]
+  domains: [FND, GRC, OPS, NET, CRY, HUM]
+  topics: [FND-02, GRC-01, GRC-02, GRC-05, OPS-04, OPS-05, NET-07, HUM-06]
+  why: 'Management-oriented introductory text that pairs risk management, security management, incident response and contingency planning, and personnel security with core security technologies.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.cengage.com/c/new-edition/9780357506431'
+
+- id: kim-solomon-fundamentals-iss
+  title: 'Fundamentals of Information Systems Security'
+  authors: [David Kim, Michael G. Solomon]
+  edition: '5th'
+  year: 2026
+  publisher: 'Jones & Bartlett Learning'
+  url: 'https://www.jblearning.com/catalog/productdetails/9781284314977'
+  isbn: '9781284314977'
+  kind: textbook
+  access: paid
+  license: 'All rights reserved'
+  level: [intro, undergrad]
+  domains: [FND, OPS, FOR, GRC, AI]
+  why: 'Introductory text for two- and four-year programs whose new edition maps to CompTIA Security+, CAE-CD Knowledge Units, and the NICE Framework and expands coverage of AI-related risks.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://info2.jblearning.com/jbl_cs_9781284314977'
+
+- id: goodrich-tamassia-intro-computer-security
+  title: 'Introduction to Computer Security'
+  authors: [Michael Goodrich, Roberto Tamassia]
+  edition: '1st'
+  year: 2011
+  publisher: 'Pearson'
+  url: 'https://www.pearson.com/en-us/subject-catalog/p/introduction-to-computer-security/P200000003191'
+  isbn: '9780321512949'
+  kind: textbook
+  access: paid
+  license: 'All rights reserved'
+  level: [intro, undergrad]
+  domains: [FND, IOT, SYS, MAL, NET, WEB, CRY, IAM]
+  topics: [FND-01, IOT-08, SYS-04, MAL-01]
+  why: 'Accessible introduction to physical, operating-system, network, and web security, malware, cryptography, and security models; sound on fundamentals but it predates current web and cloud practice.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.pearson.com/en-us/subject-catalog/p/introduction-to-computer-security/P200000003191'
+
+- id: kurose-ross-computer-networking
+  title: 'Computer Networking: A Top-Down Approach'
+  authors: [James F. Kurose, Keith Ross]
+  edition: '9th'
+  year: 2026
+  publisher: 'Pearson'
+  url: 'https://www.pearson.com/en-us/subject-catalog/p/computer-networking-a-top-down-approach/P200000013385'
+  isbn: '9780135429334'
+  kind: textbook
+  access: paid
+  license: 'All rights reserved'
+  level: [undergrad, grad]
+  domains: [NET, CRY, IOT]
+  topics: [NET-01, NET-02, NET-03, NET-04, NET-05, NET-06, NET-07, IOT-01]
+  why: 'Networking textbook whose security chapter covers cryptography, message integrity, TLS 1.3, IPsec and VPNs, 802.11 and 5G security, and firewalls and intrusion detection.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.pearson.com/en-us/subject-catalog/p/computer-networking-a-top-down-approach/P200000013385'
+
+- id: paar-pelzl-guneysu-understanding-cryptography
+  title: 'Understanding Cryptography: From Established Symmetric and Asymmetric Ciphers to Post-Quantum Algorithms'
+  authors: [Christof Paar, Jan Pelzl, Tim Güneysu]
+  edition: '2nd'
+  year: 2024
+  publisher: 'Springer'
+  url: 'https://link.springer.com/978-3-662-69006-2'
+  isbn: '9783662690062'
+  kind: textbook
+  access: paid
+  license: 'All rights reserved'
+  level: [undergrad, grad]
+  domains: [CRY]
+  topics: [CRY-01, CRY-02, CRY-03, CRY-08]
+  why: 'Accessible introduction to applied cryptography whose 2nd edition adds chapters on SHA-3 and post-quantum cryptography.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://link.springer.com/978-3-662-69006-2'
+
+- id: stallings-cryptography-network-security
+  title: 'Cryptography and Network Security: Principles and Practice'
+  authors: [William Stallings]
+  edition: '8th'
+  year: 2021
+  publisher: 'Pearson'
+  url: 'https://www.pearson.com/en-us/subject-catalog/p/cryptography-and-network-security-principles-and-practice/P200000003477'
+  isbn: '9780136707226'
+  kind: textbook
+  access: paid
+  license: 'All rights reserved'
+  level: [undergrad, grad]
+  domains: [CRY, NET, IAM, CLD, IOT]
+  topics: [CRY-01, CRY-02, CRY-03, CRY-04, CRY-06, CRY-08, NET-05, IAM-08, IOT-01]
+  why: 'Broad cryptography and network-security text spanning block ciphers, public-key systems, hashes, signatures, lightweight and post-quantum cryptography, key management, TLS, wireless, cloud, and IoT security.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.pearson.com/en-us/subject-catalog/p/cryptography-and-network-security-principles-and-practice/P200000003477'
+
+- id: anderson-security-engineering
+  title: 'Security Engineering: A Guide to Building Dependable Distributed Systems'
+  authors: [Ross Anderson]
+  edition: '3rd'
+  year: 2020
+  publisher: 'Wiley'
+  url: 'https://www.cl.cam.ac.uk/archive/rja14/book.html'
+  isbn: '9781119642787'
+  kind: textbook
+  access: free
+  license: 'All rights reserved'
+  level: [undergrad, grad, practitioner]
+  domains: [FND, HUM, CRY, IAM, NET, SYS, IOT, GRC, RES]
+  topics: [FND-03, HUM-01, HUM-03, HUM-04, CRY-07, IAM-06, SYS-08, IOT-08, RES-06]
+  why: "Classic engineering view of security across psychology and usability, protocols, access control, economics, side channels, tamper resistance, and secure systems development, free to read on the author's site."
+  use: 'Link to the free chapter PDFs and quote briefly with attribution; no license is stated, so do not copy, adapt, or ingest.'
+  verifiedFrom: 'https://www.cl.cam.ac.uk/archive/rja14/book.html'
+
+- id: katz-lindell-modern-cryptography
+  title: 'Introduction to Modern Cryptography'
+  authors: [Jonathan Katz, Yehuda Lindell]
+  edition: 'Revised 3rd'
+  year: 2025
+  publisher: 'Chapman & Hall/CRC Press'
+  url: 'https://www.routledge.com/Introduction-to-Modern-Cryptography-Revised-Third-Edition/Katz-Lindell/p/book/9781032496795'
+  isbn: '9781032496795'
+  kind: textbook
+  access: paid
+  license: 'All rights reserved'
+  level: [undergrad, grad]
+  domains: [CRY]
+  topics: [CRY-01, CRY-02, CRY-03, CRY-04, CRY-08]
+  why: 'Rigorous definitions-and-proofs introduction to private-key and public-key encryption, MACs, hash functions, signatures, and quantum-secure cryptography.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.routledge.com/Introduction-to-Modern-Cryptography-Revised-Third-Edition/Katz-Lindell/p/book/9781032496795'
+
+- id: rosulek-joy-of-cryptography
+  title: 'The Joy of Cryptography: An Undergraduate Course in Provable Security'
+  authors: [Mike Rosulek]
+  year: 2026
+  publisher: 'MIT Press'
+  url: 'https://joyofcryptography.com/'
+  isbn: '9780262049979'
+  kind: textbook
+  access: free
+  license: 'CC BY-NC-ND 4.0'
+  level: [undergrad]
+  domains: [CRY]
+  topics: [CRY-02, CRY-03, CRY-04, CRY-06, CRY-07, CRY-08]
+  why: 'Free online undergraduate course in provable security, from one-time pads and pseudorandomness to authenticated key exchange and post-quantum cryptography, also in print from MIT Press.'
+  use: 'Link and short attributed quotes only; CC BY-NC-ND 4.0 does not allow sharing adapted text, so do not adapt or ingest.'
+  verifiedFrom: 'https://joyofcryptography.com/'
+
+- id: payer-software-security
+  title: 'Software Security: Principles, Policies, and Protection'
+  authors: [Mathias Payer]
+  edition: 'Version 0.37'
+  year: 2021
+  publisher: 'HexHive Books'
+  url: 'https://nebelwelt.net/SS3P/'
+  kind: textbook
+  access: free
+  license: 'All rights reserved'
+  level: [undergrad, grad]
+  domains: [SYS, APP, FND]
+  topics: [SYS-01, SYS-02, SYS-03]
+  why: 'Free book on software security that explains memory and type safety, attack vectors, and defense strategies such as testing and mitigations.'
+  use: 'Link to the free PDF and quote briefly with attribution; no license is stated, so do not copy, adapt, or ingest.'
+  verifiedFrom: 'https://nebelwelt.net/SS3P/'
+
+- id: bishop-computer-security-art-science
+  title: 'Computer Security: Art and Science'
+  authors: [Matt Bishop]
+  edition: '2nd'
+  year: 2019
+  publisher: 'Addison-Wesley Professional (Pearson)'
+  url: 'https://www.informit.com/store/computer-security-art-and-science-9780134097183'
+  kind: textbook
+  access: paid
+  license: 'All rights reserved'
+  level: [grad]
+  domains: [FND, IAM, CRY, SYS, OPS, MAL, RES]
+  topics: [FND-01, FND-05, IAM-06, SYS-05, OPS-01, OPS-04, MAL-01, RES-05]
+  why: 'Graduate-level treatment of the theory behind security: access-control models, security policies, information flow, confinement, assurance and formal methods, auditing, and intrusion detection.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.informit.com/store/computer-security-art-and-science-9780134097183'
+
+- id: boneh-shoup-applied-cryptography
+  title: 'A Graduate Course in Applied Cryptography'
+  authors: [Dan Boneh, Victor Shoup]
+  edition: 'Version 0.6'
+  year: 2023
+  publisher: 'Dan Boneh and Victor Shoup (self-published online)'
+  url: 'https://toc.cryptobook.us/'
+  kind: textbook
+  access: free
+  license: 'All rights reserved'
+  level: [grad]
+  domains: [CRY]
+  topics: [CRY-02, CRY-03, CRY-04, CRY-05, CRY-07, CRY-08]
+  why: 'Free graduate text that develops definitions and proofs for symmetric encryption, message integrity, public-key encryption, signatures, lattice-based post-quantum cryptography, and protocols.'
+  use: 'Link to the free PDF and quote briefly with attribution; no license is stated, so do not copy, adapt, or ingest.'
+  verifiedFrom: 'https://toc.cryptobook.us/'
+
+# ---------------------------------------------------------------- books
+
+- id: hoffman-web-application-security
+  title: 'Web Application Security'
+  authors: [Andrew Hoffman]
+  edition: '2nd'
+  year: 2024
+  publisher: "O'Reilly Media"
+  url: 'https://www.oreilly.com/library/view/-/9781098143923'
+  isbn: '9781098143923'
+  kind: book
+  access: paid
+  license: 'All rights reserved'
+  level: [undergrad, practitioner]
+  domains: [WEB, APP, IAM, CLD, FND]
+  topics: [WEB-05, WEB-06, WEB-07, APP-01, APP-07, APP-08, CLD-06, FND-03]
+  why: 'Readable tour of web application reconnaissance, offense, and defense, from XSS, CSRF, XXE, and injection to secure architecture, CSP and CORS configuration, and threat modeling.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.oreilly.com/library/view/-/9781098143923'
+
+- id: aumasson-serious-cryptography
+  title: 'Serious Cryptography: A Practical Introduction to Modern Encryption'
+  authors: [Jean-Philippe Aumasson]
+  edition: '2nd'
+  year: 2024
+  publisher: 'No Starch Press'
+  url: 'https://nostarch.com/SeriousCrypto'
+  isbn: '9781718503847'
+  kind: book
+  access: paid
+  license: 'All rights reserved'
+  level: [undergrad, practitioner]
+  domains: [CRY, NET]
+  topics: [CRY-01, CRY-02, CRY-03, CRY-06, CRY-08, NET-05]
+  why: 'Practical introduction to modern cryptography, from randomness, block ciphers, and authenticated encryption to RSA, elliptic curves, TLS, and post-quantum cryptography.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://nostarch.com/SeriousCrypto'
+
+- id: sikorski-honig-practical-malware-analysis
+  title: 'Practical Malware Analysis: The Hands-On Guide to Dissecting Malicious Software'
+  authors: [Michael Sikorski, Andrew Honig]
+  year: 2012
+  publisher: 'No Starch Press'
+  url: 'https://www.nostarch.com/malware.htm'
+  isbn: '9781593272906'
+  kind: book
+  access: paid
+  license: 'All rights reserved'
+  level: [undergrad, practitioner]
+  domains: [MAL]
+  topics: [MAL-01, MAL-02, MAL-03, MAL-04]
+  why: 'Lab-driven guide to static and dynamic malware analysis, disassembly, debugging, malware behavior, and malware-focused network signatures; its tools date from 2012.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.nostarch.com/malware.htm'
+
+- id: erickson-hacking-art-of-exploitation
+  title: 'Hacking: The Art of Exploitation'
+  authors: [Jon Erickson]
+  edition: '2nd'
+  year: 2008
+  publisher: 'No Starch Press'
+  url: 'https://www.nostarch.com/hacking2.htm'
+  isbn: '9781593271442'
+  kind: book
+  access: paid
+  license: 'All rights reserved'
+  level: [undergrad, practitioner]
+  domains: [SYS, NET]
+  topics: [SYS-01, SYS-02]
+  why: 'Hands-on explanation of C memory layout, buffer overflows, format strings, shellcode, and network attacks; old (2008) but still clear on fundamentals.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.nostarch.com/hacking2.htm'
+
+- id: wilson-llm-security-playbook
+  title: "The Developer's Playbook for Large Language Model Security"
+  authors: [Steve Wilson]
+  year: 2024
+  publisher: "O'Reilly Media"
+  url: 'https://www.oreilly.com/library/view/-/9781098162191/'
+  isbn: '9781098162191'
+  kind: book
+  access: paid
+  license: 'All rights reserved'
+  level: [undergrad, practitioner]
+  domains: [AI]
+  topics: [AI-01, AI-02, AI-03, AI-05]
+  why: 'Developer-focused guide to LLM application risks such as prompt injection, sensitive-data leakage, hallucination, and supply-chain weaknesses, with a chapter on the OWASP Top 10 for LLM Applications.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.oreilly.com/library/view/-/9781098162191/'
+
+- id: ferguson-schneier-kohno-cryptography-engineering
+  title: 'Cryptography Engineering: Design Principles and Practical Applications'
+  authors: [Niels Ferguson, Bruce Schneier, Tadayoshi Kohno]
+  year: 2010
+  publisher: 'Wiley'
+  url: 'https://www.schneier.com/books/cryptography-engineering'
+  isbn: '9780470474242'
+  kind: book
+  access: paid
+  license: 'All rights reserved'
+  level: [grad, practitioner]
+  domains: [CRY]
+  topics: [CRY-04, CRY-06, CRY-07]
+  why: 'Engineering guide to building cryptographic systems correctly, covering secure channels, randomness generation, key negotiation, PKI, and implementation pitfalls.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.schneier.com/books/cryptography-engineering'
+
+- id: garfinkel-lipford-usable-security
+  title: 'Usable Security: History, Themes, and Challenges'
+  authors: [Simson Garfinkel, Heather Richter Lipford]
+  edition: '1st'
+  year: 2014
+  publisher: 'Springer (Synthesis Lectures on Information Security, Privacy, and Trust)'
+  url: 'https://link.springer.com/10.1007/978-3-031-02343-9'
+  isbn: '9783031012150'
+  kind: book
+  access: paid
+  license: 'All rights reserved'
+  level: [grad]
+  domains: [HUM, IAM]
+  topics: [HUM-02, HUM-04, HUM-05]
+  why: 'Short survey of usable security and privacy research, tracing its history and major themes such as authentication, anti-phishing, device pairing, web privacy, and mobile security.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://link.springer.com/10.1007/978-3-031-02343-9'
+
+- id: carrier-file-system-forensic-analysis
+  title: 'File System Forensic Analysis'
+  authors: [Brian Carrier]
+  year: 2005
+  publisher: 'Addison-Wesley Professional (Pearson)'
+  url: 'https://www.informit.com/store/file-system-forensic-analysis-9780321268174'
+  isbn: '9780321268174'
+  kind: book
+  access: paid
+  license: 'All rights reserved'
+  level: [grad, practitioner]
+  domains: [FOR]
+  topics: [FOR-01, FOR-02]
+  why: 'Detailed reference on file-system internals for forensics, from disk acquisition and volume analysis to FAT, NTFS, Ext2/3, and UFS structures.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://www.informit.com/store/file-system-forensic-analysis-9780321268174'
+
+- id: ligh-art-of-memory-forensics
+  title: 'The Art of Memory Forensics: Detecting Malware and Threats in Windows, Linux, and Mac Memory'
+  authors: [Michael Hale Ligh, Andrew Case, Jamie Levy, Aaron Walters]
+  year: 2014
+  publisher: 'Wiley'
+  url: 'https://www.wiley.com/en-us/The+Art+of+Memory+Forensics:+Detecting+Malware+and+Threats+in+Windows,+Linux,+and+Mac+Memory-p-9781118825099'
+  isbn: '9781118825099'
+  kind: book
+  access: paid
+  license: 'All rights reserved'
+  level: [grad, practitioner]
+  domains: [FOR, MAL]
+  topics: [FOR-04, FOR-05]
+  why: 'In-depth guide to memory forensics on Windows, Linux, and macOS by the Volatility developers, from acquisition to malware detection and timelines.'
+  use: 'Recommended reading only: link to the publisher page; no quotes, uploads, or ingestion (an instructor-owned copy stays on their own machine).'
+  verifiedFrom: 'https://randolph.ocln.org/Record/468535'
+
+# ---------------------------------------------------------------- course notes
+
+- id: seed-labs
+  title: 'SEED Labs (hands-on cybersecurity labs)'
+  authors: [Wenliang Du]
+  publisher: 'SEED Labs (Wenliang Du)'
+  url: 'https://seedsecuritylabs.org/'
+  kind: course-notes
+  access: open
+  license: 'CC BY-NC-SA 4.0'
+  level: [undergrad]
+  domains: [SYS, WEB, APP, NET, CRY]
+  topics:
+    - SYS-02
+    - SYS-04
+    - SYS-06
+    - WEB-05
+    - WEB-06
+    - WEB-08
+    - APP-01
+    - NET-02
+    - NET-03
+    - NET-04
+    - NET-06
+    - NET-07
+    - NET-08
+  why: 'Free hands-on lab exercises, developed since 2002 with NSF support, covering software, network, web, operating-system, crypto, hardware, and mobile security.'
+  use: 'Link and attributed quotes; never adapt into content/ (its CC BY-SA 4.0 cannot absorb NC terms); ingest only into a separately tagged, non-commercial tutor index.'
+  verifiedFrom: 'https://github.com/seed-labs/seed-labs'
+
+- id: cs50-cybersecurity
+  title: "CS50's Introduction to Cybersecurity"
+  authors: [David J. Malan]
+  publisher: 'Harvard University (CS50)'
+  url: 'https://cs50.harvard.edu/cybersecurity/'
+  kind: course-notes
+  access: free
+  license: 'Unverified (course license page unreachable; CS50x uses CC BY-NC-SA 4.0)'
+  level: [intro]
+  domains: [IAM, CRY, SYS, WEB, APP, GRC, HUM]
+  topics: [IAM-02, CRY-01, WEB-03, WEB-05, WEB-06, APP-01, APP-02, APP-03, GRC-08, HUM-05]
+  why: "Free introductory course from Harvard's CS50 on securing accounts, data, systems, and software and on preserving privacy, with lecture notes and assignments."
+  use: "Link only until the license page is re-verified; the course FAQ says its materials may be adopted or adapted 'per the license'."
+  verifiedFrom: 'https://cs50.harvard.edu/cybersecurity/faqs/'
+
+- id: stanford-cs155
+  title: 'Stanford CS 155: Computer and Network Security (lecture slides)'
+  edition: 'Spring 2026'
+  year: 2026
+  publisher: 'Stanford University'
+  url: 'https://cs155.stanford.edu/'
+  kind: course-notes
+  access: free
+  license: 'All rights reserved'
+  level: [undergrad, grad]
+  domains: [FND, SYS, WEB, NET, CRY, CLD, MAL, AI]
+  topics: [FND-05, SYS-02, SYS-04, SYS-05, SYS-08, WEB-04, WEB-05, NET-05, CLD-06, MAL-06]
+  why: 'Current syllabus with public slides on control hijacking, isolation and sandboxing, microarchitectural attacks, web security, HTTPS, supply chain risk, network security, DoS, and AI system security.'
+  use: 'Link to slides and readings only; no license is stated, so do not copy, adapt, or ingest.'
+  verifiedFrom: 'https://cs155.stanford.edu/syllabus.html'
+
+- id: mit-6566-computer-systems-security
+  title: 'MIT 6.5660 (6.566) Computer Systems Security: lecture notes and readings'
+  authors: [Nickolai Zeldovich]
+  edition: 'Spring 2026'
+  year: 2026
+  publisher: 'Massachusetts Institute of Technology'
+  url: 'https://css.csail.mit.edu/6.858/2026/schedule.html'
+  kind: course-notes
+  access: open
+  license: 'CC BY 3.0 US (course website license badge)'
+  level: [undergrad, grad]
+  domains: [FND, SYS, WEB, NET, CRY, IAM, IOT, CLD, AI, RES]
+  topics:
+    - FND-03
+    - SYS-02
+    - SYS-05
+    - SYS-07
+    - WEB-04
+    - NET-05
+    - CRY-04
+    - CRY-07
+    - IAM-03
+    - IOT-04
+    - CLD-06
+    - AI-01
+    - AI-04
+    - RES-01
+  why: 'Paper-driven systems security course with public lecture notes on threat models, isolation, trusted hardware, web and mobile security, TLS and certificates, authentication, supply chain, and AI agent security.'
+  use: 'Link, quote, adapt, and ingest the MIT lecture notes with attribution (CC BY 3.0 US); the assigned papers are third-party works and stay link-only.'
+  verifiedFrom: 'https://css.csail.mit.edu/6.858/2026/general.html'
+
+# ---------------------------------------------------------------- standards
+
+- id: nist-sp-800-63b
+  title: 'NIST SP 800-63B-4: Digital Identity Guidelines: Authentication and Authenticator Management'
+  authors:
+    - David Temoshok
+    - James Fenton
+    - Yee-Yin Choong
+    - Naomi Lefkovitz
+    - Andrew Regenscheid
+    - Ryan Galluzzo
+    - Justin Richer
+  edition: 'Revision 4'
+  year: 2025
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/63/b/4/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, grad, practitioner]
+  domains: [IAM, CRY, HUM]
+  topics: [IAM-02, IAM-03, IAM-04, CRY-05, HUM-04]
+  why: 'Current US federal guideline (final July 2025) for passwords, multi-factor authenticators, authenticator lifecycle, and session management.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/63/b/4/final'
+
+- id: owasp-asvs
+  title: 'OWASP Application Security Verification Standard (ASVS)'
+  edition: '5.0.0'
+  year: 2025
+  publisher: 'OWASP Foundation'
+  url: 'https://owasp.org/www-project-application-security-verification-standard/'
+  kind: standard
+  access: open
+  license: 'CC BY-SA 4.0'
+  level: [undergrad, practitioner]
+  domains: [APP, WEB, IAM, CRY, NET, OPS]
+  topics: [WEB-05, WEB-07, APP-02, APP-06, APP-08, IAM-03, IAM-04, IAM-05, OPS-01]
+  why: 'Testable requirements for web application and API security in 17 chapters, from encoding and validation to authentication, sessions, authorization, OAuth and OIDC, cryptography, and logging.'
+  use: 'Link, attributed quotes, adaptation under CC BY-SA 4.0 (adapted text stays CC BY-SA 4.0), and retrieval ingestion with attribution.'
+  verifiedFrom: 'https://raw.githubusercontent.com/OWASP/ASVS/master/README.md'
+
+- id: nist-sp-800-61
+  title: 'NIST SP 800-61 Rev. 3: Incident Response Recommendations and Considerations for Cybersecurity Risk Management: A CSF 2.0 Community Profile'
+  authors: [Alexander Nelson, Sanjay Rekhi, Murugiah Souppaya, Karen Scarfone]
+  edition: 'Revision 3'
+  year: 2025
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/61/r3/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [OPS, GRC]
+  topics: [OPS-05, OPS-06, OPS-08]
+  why: 'Current NIST incident response guidance (April 2025), recast as a CSF 2.0 Community Profile and superseding the 2012 Rev. 2 lifecycle model.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/61/r3/final'
+
+- id: rfc-9846-tls-1-3
+  title: 'RFC 9846: The Transport Layer Security (TLS) Protocol Version 1.3'
+  authors: [E. Rescorla]
+  year: 2026
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/info/rfc9846'
+  kind: standard
+  access: open
+  license: 'IETF Trust Legal Provisions (BCP 78)'
+  level: [grad, practitioner]
+  domains: [NET, CRY]
+  topics: [NET-05, CRY-07]
+  why: 'The current TLS 1.3 specification, which obsoletes RFC 8446 and RFC 5246 (TLS 1.2).'
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion; do not alter RFC text (code components: Revised BSD).'
+  verifiedFrom: 'https://www.rfc-editor.org/info/rfc9846'
+
+- id: unicode-uts-39
+  title: 'Unicode Technical Standard #39: Unicode Security Mechanisms'
+  edition: '18.0.0 (Revision 34)'
+  year: 2026
+  publisher: 'Unicode Consortium'
+  url: 'https://www.unicode.org/reports/tr39/'
+  kind: standard
+  access: free
+  license: 'Unicode Terms of Use (specification text); Unicode License v3 (data files)'
+  level: [undergrad, practitioner]
+  domains: [WEB]
+  topics: [WEB-01]
+  why: 'Defines the confusables data, skeleton test, mixed-script detection, and restriction levels used to detect homograph and spoofing attacks.'
+  use: 'Specification text: link and short attributed quotes only; the confusables data files may be bundled under the Unicode License v3 with its notice.'
+  verifiedFrom: 'https://www.unicode.org/reports/tr39/'
+
+- id: nist-sp-800-30
+  title: 'NIST SP 800-30 Rev. 1: Guide for Conducting Risk Assessments'
+  edition: 'Revision 1'
+  year: 2012
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/30/r1/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [GRC, FND]
+  topics: [GRC-01, FND-02]
+  why: 'Standard US guide to preparing, conducting, and communicating risk assessments in terms of threat sources, vulnerabilities, likelihood, and impact.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/30/r1/final'
+
+- id: nist-sp-800-53
+  title: 'NIST SP 800-53 Rev. 5: Security and Privacy Controls for Information Systems and Organizations'
+  edition: 'Revision 5 (Release 5.2.0)'
+  year: 2025
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [grad, practitioner]
+  domains: [GRC, IAM, OPS]
+  topics: [GRC-02, GRC-03, GRC-05, GRC-06, IAM-06, OPS-01]
+  why: 'The NIST catalog of security and privacy controls, from access control and audit logging to contingency planning and supply chain risk management; Release 5.2.0 was issued in August 2025.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final'
+
+- id: nist-sp-800-207
+  title: 'NIST SP 800-207: Zero Trust Architecture'
+  authors: [Scott Rose, Oliver Borchert, Stu Mitchell, Sean Connelly]
+  year: 2020
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/207/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [FND, NET, IAM, CLD]
+  topics: [FND-06, NET-07]
+  why: 'Defines zero trust principles, logical components, and deployment models that move defenses from network perimeters to users, assets, and resources.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/207/final'
+
+- id: rfc-9110-http-semantics
+  title: 'RFC 9110: HTTP Semantics'
+  authors: [R. Fielding, M. Nottingham, J. Reschke]
+  year: 2022
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/info/rfc9110'
+  kind: standard
+  access: open
+  license: 'IETF Trust Legal Provisions (BCP 78)'
+  level: [undergrad, practitioner]
+  domains: [WEB, APP, IAM]
+  topics: [IAM-01]
+  why: 'Internet Standard (STD 97) defining HTTP methods, status codes, header fields, and the HTTP authentication framework that web security topics build on.'
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion; do not alter RFC text (code components: Revised BSD).'
+  verifiedFrom: 'https://www.rfc-editor.org/info/rfc9110'
+
+- id: rfc-7519-jwt
+  title: 'RFC 7519: JSON Web Token (JWT)'
+  authors: [M. Jones, J. Bradley, N. Sakimura]
+  year: 2015
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/info/rfc7519'
+  kind: standard
+  access: open
+  license: 'IETF Trust Legal Provisions (BCP 78)'
+  level: [undergrad, practitioner]
+  domains: [IAM]
+  topics: [IAM-04]
+  why: 'Defines the JSON Web Token format and registered claims used in token-based sessions and OAuth and OpenID Connect deployments.'
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion; do not alter RFC text (code components: Revised BSD).'
+  verifiedFrom: 'https://www.rfc-editor.org/info/rfc7519'
+
+- id: rfc-8725-jwt-bcp
+  title: 'RFC 8725: JSON Web Token Best Current Practices'
+  year: 2020
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/info/rfc8725'
+  kind: standard
+  access: open
+  license: 'IETF Trust Legal Provisions (BCP 78)'
+  level: [undergrad, practitioner]
+  domains: [IAM, CRY]
+  topics: [IAM-04]
+  why: 'Best current practice (BCP 225) that updates RFC 7519 with guidance for implementing and deploying JWTs securely.'
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion; do not alter RFC text (code components: Revised BSD).'
+  verifiedFrom: 'https://www.rfc-editor.org/info/rfc8725'
+
+- id: nist-sp-800-86
+  title: 'NIST SP 800-86: Guide to Integrating Forensic Techniques into Incident Response'
+  authors: [Karen Kent, Suzanne Chevalier, Tim Grance, Hung Dang]
+  year: 2006
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/86/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [FOR, OPS]
+  topics: [FOR-01, FOR-02, FOR-03, FOR-08]
+  why: 'Practical guide to collecting, examining, analyzing, and reporting digital evidence from files, operating systems, network traffic, and applications.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/86/final'
+
+- id: nist-sp-800-218
+  title: 'NIST SP 800-218: Secure Software Development Framework (SSDF) Version 1.1'
+  authors: [Murugiah Souppaya, Karen Scarfone, Donna Dodson]
+  edition: 'Version 1.1'
+  year: 2022
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/sp/800/218/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [CLD, APP]
+  topics: [CLD-06, CLD-07]
+  why: 'High-level secure development practices for preparing the organization, protecting and producing software, and responding to vulnerabilities; a Rev. 1 draft (SSDF 1.2) appeared in December 2025.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/sp/800/218/final'
+
+- id: nist-fips-203
+  title: 'FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard'
+  year: 2024
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/fips/203/final'
+  kind: standard
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [grad, practitioner]
+  domains: [CRY]
+  topics: [CRY-03, CRY-08]
+  why: 'Standardizes ML-KEM, the lattice-based key-encapsulation mechanism at the center of post-quantum migration (companion signature standards: FIPS 204 and FIPS 205).'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/fips/203/final'
+
+- id: unicode-uts-46
+  title: 'Unicode Technical Standard #46: Unicode IDNA Compatibility Processing'
+  edition: '18.0.0 (Revision 36)'
+  year: 2026
+  publisher: 'Unicode Consortium'
+  url: 'https://www.unicode.org/reports/tr46/'
+  kind: standard
+  access: free
+  license: 'Unicode Terms of Use (specification text); Unicode License v3 (data files)'
+  level: [undergrad, practitioner]
+  domains: [WEB]
+  topics: [WEB-01, WEB-02]
+  why: 'Specifies the mapping and validation applied when converting internationalized domain names to and from their ASCII (Punycode) form.'
+  use: 'Specification text: link and short attributed quotes only; the IDNA mapping data files may be bundled under the Unicode License v3 with its notice.'
+  verifiedFrom: 'https://www.unicode.org/reports/tr46/'
+
+- id: rfc-5890-idna2008
+  title: 'RFC 5890: Internationalized Domain Names for Applications (IDNA): Definitions and Document Framework'
+  authors: [J. Klensin]
+  year: 2010
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/info/rfc5890'
+  kind: standard
+  access: open
+  license: 'IETF Trust Legal Provisions (BCP 78)'
+  level: [grad, practitioner]
+  domains: [WEB]
+  topics: [WEB-01, WEB-02]
+  why: 'Framework document for IDNA2008 that defines U-labels and A-labels and introduces the protocol, tables, bidi, and rationale RFCs (5891 to 5894).'
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion; do not alter RFC text (code components: Revised BSD).'
+  verifiedFrom: 'https://www.rfc-editor.org/info/rfc5890'
+
+- id: rfc-3492-punycode
+  title: 'RFC 3492: Punycode: A Bootstring encoding of Unicode for Internationalized Domain Names in Applications (IDNA)'
+  authors: [A. Costello]
+  year: 2003
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/rfc/rfc3492'
+  kind: standard
+  access: open
+  license: 'Internet Society full copyright statement (verbatim copies permitted)'
+  level: [undergrad, practitioner]
+  domains: [WEB]
+  topics: [WEB-01]
+  why: 'Defines Punycode, the encoding behind the xn-- ASCII form of internationalized domain names.'
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion with the Internet Society copyright notice; do not modify the RFC text.'
+  verifiedFrom: 'https://www.rfc-editor.org/rfc/rfc3492'
+
+- id: rfc-6761-special-use-domains
+  title: 'RFC 6761: Special-Use Domain Names'
+  authors: [S. Cheshire, M. Krochmal]
+  year: 2013
+  publisher: 'IETF (RFC Editor)'
+  url: 'https://www.rfc-editor.org/info/rfc6761'
+  kind: standard
+  access: open
+  license: 'IETF Trust Legal Provisions (BCP 78)'
+  level: [undergrad, practitioner]
+  domains: [WEB, NET, FND]
+  topics: [WEB-02, FND-07]
+  why: 'Defines special-use domain names and how software must treat them, including test., localhost., invalid., and example., which CyberLab labs use for safe examples.'
+  use: 'Link, attributed verbatim excerpts, and verbatim ingestion; do not alter RFC text (code components: Revised BSD).'
+  verifiedFrom: 'https://www.rfc-editor.org/info/rfc6761'
+
+# ---------------------------------------------------------------- frameworks
+
+- id: nist-csf-2
+  title: 'The NIST Cybersecurity Framework (CSF) 2.0'
+  edition: '2.0'
+  year: 2024
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/cswp/29/the-nist-cybersecurity-framework-csf-20/final'
+  kind: framework
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [intro, undergrad, grad, practitioner]
+  domains: [GRC, OPS, FND]
+  topics: [GRC-01, GRC-02, GRC-06]
+  why: 'Taxonomy of cybersecurity outcomes in six functions (Govern, Identify, Protect, Detect, Respond, Recover) for understanding, assessing, and communicating cybersecurity risk.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/cswp/29/the-nist-cybersecurity-framework-csf-20/final'
+
+- id: mitre-attack
+  title: 'MITRE ATT&CK'
+  edition: 'v20'
+  year: 2026
+  publisher: 'The MITRE Corporation'
+  url: 'https://attack.mitre.org/'
+  kind: framework
+  access: open
+  license: 'MITRE ATT&CK Terms of Use (royalty-free license)'
+  level: [undergrad, grad, practitioner]
+  domains: [OPS, MAL, CLD, IOT]
+  topics: [OPS-02, OPS-07, MAL-04, IOT-07]
+  why: 'Knowledge base of real-world adversary tactics and techniques for enterprise, mobile, and ICS environments, used for detection engineering, threat hunting, and adversary emulation.'
+  use: "Link, quote, and ingest; every copy must reproduce MITRE's copyright designation and the ATT&CK license text."
+  verifiedFrom: 'https://attack.mitre.org/'
+
+- id: comptia-security-plus
+  title: 'CompTIA Security+ Exam Objectives (SY0-701)'
+  edition: 'SY0-701 (V7)'
+  year: 2023
+  publisher: 'CompTIA'
+  url: 'https://www.comptia.org/en-us/certifications/security/v7/'
+  kind: framework
+  access: free
+  license: 'All rights reserved'
+  level: [intro, practitioner]
+  domains: [FND, NET, CRY, IAM, APP, OPS, MAL, CLD, GRC, HUM]
+  why: "Objectives for CompTIA's entry-level Security+ certification, useful as a coverage checklist; V8 (SY0-801) launches November 17, 2026, and English SY0-701 retires June 11, 2027."
+  use: 'Use as a coverage checklist; link and short attributed quotes only; do not copy or ingest.'
+  verifiedFrom: 'https://www.comptia.org/en-us/certifications/security/v7/'
+
+- id: nice-framework
+  title: 'Workforce Framework for Cybersecurity (NICE Framework)'
+  edition: 'SP 800-181 Rev. 1; Components v2.2.0'
+  year: 2026
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://www.nist.gov/itl/applied-cybersecurity/nice/nice-framework-resource-center/nice-framework-current-versions'
+  kind: framework
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [FND, GRC, OPS, FOR]
+  why: 'US workforce framework of work roles, competency areas, and task, knowledge, and skill statements for mapping course outcomes to cybersecurity jobs.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://www.nist.gov/itl/applied-cybersecurity/nice/nice-framework-resource-center/nice-framework-latest-updates'
+
+- id: csec2017
+  title: 'Cybersecurity Curricula 2017: Curriculum Guidelines for Post-Secondary Degree Programs in Cybersecurity'
+  edition: 'Version 1.0'
+  year: 2017
+  publisher: 'ACM, IEEE, AIS, and IFIP (Joint Task Force on Cybersecurity Education)'
+  url: 'https://cybered.acm.org/'
+  kind: framework
+  access: free
+  license: 'All rights reserved (use permitted for developing educational materials and programs)'
+  level: [undergrad]
+  domains: [FND, CRY, APP, SYS, NET, HUM, GRC, OPS, IOT]
+  why: 'Curricular guidelines for cybersecurity degree programs, organized into eight knowledge areas from data and software security to organizational and societal security.'
+  use: 'Use to map course coverage; link and short attributed quotes only; do not copy or ingest.'
+  verifiedFrom: 'https://cybered.hosting.acm.org/wp-content/uploads/2018/02/newcover_csec2017.pdf'
+
+- id: acm-cs2023
+  title: 'Computer Science Curricula 2023 (CS2023)'
+  year: 2024
+  publisher: 'ACM, IEEE Computer Society, and AAAI'
+  url: 'https://csed.acm.org/'
+  isbn: '9798400710339'
+  kind: framework
+  access: free
+  license: 'All rights reserved (use permitted for developing educational materials and programs)'
+  level: [undergrad]
+  domains: [FND, APP, CRY, SYS, GRC]
+  why: 'The current ACM/IEEE-CS/AAAI computer science curricula, including the Security knowledge area and the security content expected across CS programs.'
+  use: 'Use to map course coverage; link and short attributed quotes only; do not copy or ingest.'
+  verifiedFrom: 'https://csed.acm.org/wp-content/uploads/2025/11/CS2023-Report.htm'
+
+- id: nist-privacy-framework
+  title: 'NIST Privacy Framework: A Tool for Improving Privacy through Enterprise Risk Management'
+  edition: 'Version 1.0'
+  year: 2020
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://www.nist.gov/privacy-framework/privacy-framework'
+  kind: framework
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, practitioner]
+  domains: [GRC, HUM]
+  topics: [GRC-03, HUM-05]
+  why: 'Voluntary framework for managing privacy risk alongside cybersecurity risk; version 1.1 is still a draft (public comment closed June 13, 2025).'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://www.nist.gov/privacy-framework/new-projects/privacy-framework-version-11'
+
+- id: nist-ai-rmf
+  title: 'Artificial Intelligence Risk Management Framework (AI RMF 1.0)'
+  authors: [Elham Tabassi]
+  edition: '1.0'
+  year: 2023
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://www.nist.gov/itl/ai-risk-management-framework'
+  kind: framework
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [undergrad, grad, practitioner]
+  domains: [AI, GRC]
+  why: 'Voluntary framework (Govern, Map, Measure, Manage) for managing AI risks; NIST says a revision is underway as part of the White House AI Action Plan.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://www.nist.gov/itl/ai-risk-management-framework'
+
+- id: nist-ai-600-1
+  title: 'Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile (NIST AI 600-1)'
+  authors:
+    - Chloe Autio
+    - Reva Schwartz
+    - Jesse Dunietz
+    - Shomik Jain
+    - Martin Stanley
+    - Elham Tabassi
+    - Patrick Hall
+    - Kamie Roberts
+  year: 2024
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence'
+  kind: framework
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [grad, practitioner]
+  domains: [AI, GRC]
+  topics: [AI-01, AI-03, AI-05, AI-07]
+  why: 'Companion profile to the AI RMF that names risks specific to generative AI, such as confabulation, data privacy, information security, and value-chain integrity, with suggested actions.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence'
+
+- id: mitre-atlas
+  title: 'MITRE ATLAS (Adversarial Threat Landscape for AI Systems)'
+  publisher: 'The MITRE Corporation'
+  url: 'https://atlas.mitre.org/'
+  kind: framework
+  access: open
+  license: 'Apache 2.0 (atlas-data repository)'
+  level: [undergrad, grad, practitioner]
+  domains: [AI]
+  topics: [AI-01, AI-05, AI-06]
+  why: 'Public knowledge base of adversary tactics, techniques, and case studies targeting AI systems, modeled on ATT&CK.'
+  use: 'Adapt and ingest the ATLAS data from the atlas-data repository under Apache 2.0, keeping its copyright and license notice; treat website prose as link-only.'
+  verifiedFrom: 'https://github.com/mitre-atlas/atlas-data/blob/main/LICENSE'
+
+- id: mitre-d3fend
+  title: 'MITRE D3FEND'
+  edition: '1.6.0'
+  publisher: 'The MITRE Corporation'
+  url: 'https://d3fend.mitre.org/'
+  kind: framework
+  access: open
+  license: 'D3FEND Terms of Use (royalty-free license)'
+  level: [grad, practitioner]
+  domains: [FND, OPS, MAL, NET]
+  topics: [FND-06, MAL-08, OPS-02]
+  why: 'Knowledge graph of defensive countermeasures organized by tactic (Model, Harden, Detect, Isolate, Deceive, Evict, Restore) that relates defenses to the attack techniques they address.'
+  use: "Link, quote, and ingest; every copy must reproduce MITRE's copyright designation and the D3FEND license text."
+  verifiedFrom: 'https://d3fend.mitre.org/'
+
+# ---------------------------------------------------------------- guides
+
+- id: owasp-cheat-sheet-series
+  title: 'OWASP Cheat Sheet Series'
+  publisher: 'OWASP Foundation'
+  url: 'https://cheatsheetseries.owasp.org/'
+  kind: guide
+  access: open
+  license: 'CC BY-SA 4.0'
+  level: [undergrad, practitioner]
+  domains: [FND, WEB, APP, IAM, CRY, CLD, OPS, AI]
+  topics:
+    - FND-03
+    - IAM-02
+    - IAM-03
+    - IAM-04
+    - IAM-05
+    - IAM-07
+    - WEB-05
+    - WEB-06
+    - WEB-07
+    - WEB-08
+    - APP-01
+    - APP-02
+    - APP-03
+    - APP-05
+    - APP-06
+    - APP-07
+    - CRY-05
+    - CLD-04
+    - CLD-05
+    - CLD-06
+    - CLD-08
+    - OPS-01
+    - AI-01
+  why: 'Concise defensive guidance on dozens of topics, from XSS, CSRF, and SQL injection prevention to password storage, OAuth, secrets management, containers, and LLM prompt injection.'
+  use: 'Link, attributed quotes, adaptation under CC BY-SA 4.0 (adapted text stays CC BY-SA 4.0), and retrieval ingestion with attribution.'
+  verifiedFrom: 'https://cheatsheetseries.owasp.org/'
+
+- id: portswigger-web-security-academy
+  title: 'Web Security Academy'
+  publisher: 'PortSwigger Ltd'
+  url: 'https://portswigger.net/web-security'
+  kind: guide
+  access: free
+  license: 'All rights reserved'
+  level: [intro, undergrad, practitioner]
+  domains: [WEB, APP, IAM, AI]
+  topics:
+    - APP-01
+    - APP-03
+    - APP-04
+    - APP-05
+    - APP-06
+    - APP-07
+    - APP-08
+    - WEB-05
+    - WEB-06
+    - WEB-08
+    - IAM-04
+    - IAM-05
+    - AI-01
+  why: 'Free web security training with explanations and interactive labs on injection, XSS, CSRF, SSRF, access control, OAuth, JWT attacks, business logic flaws, and web LLM attacks.'
+  use: 'Link to topics and labs for practice; short attributed quotes only; do not copy or ingest.'
+  verifiedFrom: 'https://portswigger.net/web-security'
+
+- id: owasp-wstg
+  title: 'OWASP Web Security Testing Guide (WSTG)'
+  edition: '4.2'
+  year: 2020
+  publisher: 'OWASP Foundation'
+  url: 'https://owasp.org/www-project-web-security-testing-guide/'
+  kind: guide
+  access: open
+  license: 'CC BY-SA 4.0'
+  level: [undergrad, practitioner]
+  domains: [APP, WEB, IAM]
+  topics: [APP-01, APP-04, APP-06, APP-08, IAM-04, WEB-05]
+  why: 'OWASP methodology for testing web applications, with test cases grouped into authentication, authorization, session management, input validation, business logic, client-side, and API testing.'
+  use: 'Link, attributed quotes, adaptation under CC BY-SA 4.0 (adapted text stays CC BY-SA 4.0), and retrieval ingestion with attribution.'
+  verifiedFrom: 'https://owasp.org/www-project-web-security-testing-guide/'
+
+- id: cisa-stopransomware-guide
+  title: '#StopRansomware Guide'
+  edition: 'October 2023 update'
+  year: 2023
+  publisher: 'CISA, with NSA, FBI, and MS-ISAC'
+  url: 'https://www.cisa.gov/resources-tools/resources/stopransomware-guide'
+  kind: guide
+  access: free
+  license: 'No explicit license found (marked TLP:CLEAR)'
+  level: [undergrad, practitioner]
+  domains: [MAL, OPS, GRC]
+  topics: [MAL-07, OPS-06]
+  why: 'Joint government guide with ransomware prevention practices and a ransomware response checklist, updated in October 2023 with SMB hardening, revised response steps, and threat hunting insights.'
+  use: 'Link and short attributed quotes; no reuse license was found and a non-federal partner co-authored it, so do not copy or ingest until one is confirmed.'
+  verifiedFrom: 'https://www.cisa.gov/news-events/alerts/2023/10/19/cisa-nsa-fbi-and-ms-isac-release-update-stopransomware-guide'
+
+- id: csa-security-guidance-v5
+  title: 'Security Guidance for Critical Areas of Focus in Cloud Computing'
+  edition: 'v5'
+  year: 2024
+  publisher: 'Cloud Security Alliance'
+  url: 'https://cloudsecurityalliance.org/artifacts/security-guidance-v5'
+  kind: guide
+  access: free
+  license: 'All rights reserved'
+  level: [undergrad, practitioner]
+  domains: [CLD, IAM, GRC, OPS]
+  topics: [CLD-01, CLD-02, CLD-03, CLD-04, CLD-05]
+  why: 'Vendor-neutral cloud security guidance in 12 domains, from cloud concepts and governance to IAM, monitoring, workload, data, and application security.'
+  use: 'Link and short attributed quotes only (download may require a free CSA account); do not copy or ingest.'
+  verifiedFrom: 'https://cloudsecurityalliance.org/artifacts/security-guidance-v5'
+
+# ---------------------------------------------------------------- references
+
+- id: owasp-top-10
+  title: 'OWASP Top 10:2025'
+  edition: '2025'
+  year: 2025
+  publisher: 'OWASP Foundation'
+  url: 'https://top10.owasp.org/2025/'
+  kind: reference
+  access: open
+  license: 'CC BY-SA 4.0'
+  level: [intro, undergrad, practitioner]
+  domains: [APP, WEB, IAM, CRY, CLD, OPS, FND]
+  topics: [APP-01, APP-06, WEB-05, IAM-02, CLD-06, OPS-01, FND-05]
+  why: 'Consensus ranking of the most critical web application security risks, led by broken access control and now including software supply chain failures and mishandling of exceptional conditions.'
+  use: 'Link, attributed quotes, adaptation under CC BY-SA 4.0 (adapted text stays CC BY-SA 4.0), and retrieval ingestion with attribution.'
+  verifiedFrom: 'https://top10.owasp.org/2025/0x01_2025-About_OWASP/'
+
+- id: cwe-top-25
+  title: '2025 CWE Top 25 Most Dangerous Software Weaknesses'
+  edition: '2025'
+  year: 2025
+  publisher: 'The MITRE Corporation'
+  url: 'https://cwe.mitre.org/top25/archive/2025/2025_cwe_top25.html'
+  kind: reference
+  access: open
+  license: 'CWE Terms of Use (royalty-free license)'
+  level: [undergrad, practitioner]
+  domains: [WEB, APP, SYS]
+  topics:
+    - WEB-05
+    - WEB-06
+    - APP-01
+    - APP-02
+    - APP-03
+    - APP-04
+    - APP-05
+    - APP-06
+    - APP-07
+    - APP-08
+    - SYS-02
+    - SYS-03
+  why: 'Ranking of the most dangerous software weaknesses from recent vulnerability data, led by XSS, SQL injection, CSRF, and missing authorization.'
+  use: "Link, quote, and ingest; every copy must reproduce MITRE's copyright designation and the CWE license text."
+  verifiedFrom: 'https://cwe.mitre.org/top25/archive/2025/2025_cwe_top25.html'
+
+- id: mdn-web-security
+  title: 'MDN Web Docs: Security'
+  publisher: 'Mozilla (MDN Web Docs contributors)'
+  url: 'https://developer.mozilla.org/en-US/docs/Web/Security'
+  kind: reference
+  access: open
+  license: 'CC BY-SA 2.5 or later (prose); code samples CC0 or MIT'
+  level: [intro, undergrad, practitioner]
+  domains: [FND, WEB, APP, IAM, NET]
+  topics: [FND-03, WEB-03, WEB-04, WEB-05, WEB-06, WEB-07, WEB-08, APP-06, IAM-03, IAM-04]
+  why: 'Plain-language reference on web attacks and defenses, including the same-origin policy, CSP, CORS, secure cookies, XSS, CSRF, clickjacking, passkeys, and session management.'
+  use: "Link, attributed quotes, adaptation under CC BY-SA (credit 'Mozilla Contributors'; adapted text stays CC BY-SA), and retrieval ingestion with attribution."
+  verifiedFrom: 'https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Attrib_copyright_license'
+
+- id: owasp-api-security-top-10
+  title: 'OWASP API Security Top 10'
+  edition: '2023'
+  year: 2023
+  publisher: 'OWASP Foundation'
+  url: 'https://api-security.owasp.org/'
+  kind: reference
+  access: open
+  license: 'CC BY-SA 4.0'
+  level: [undergrad, practitioner]
+  domains: [APP, IAM]
+  topics: [APP-05, APP-06, APP-08]
+  why: 'Ranking of the most critical API security risks, led by broken object level authorization, with resource consumption, business-flow abuse, and SSRF.'
+  use: 'Link, attributed quotes, adaptation under CC BY-SA 4.0 (adapted text stays CC BY-SA 4.0), and retrieval ingestion with attribution.'
+  verifiedFrom: 'https://api-security.owasp.org/'
+
+- id: owasp-llm-top-10
+  title: 'OWASP GenAI LLM Top 10'
+  edition: '2026'
+  year: 2026
+  publisher: 'OWASP Foundation (GenAI Security Project)'
+  url: 'https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/'
+  kind: reference
+  access: open
+  license: 'CC BY-SA 4.0'
+  level: [undergrad, grad, practitioner]
+  domains: [AI]
+  topics: [AI-01, AI-02, AI-03, AI-04, AI-05]
+  why: 'The 2026 community ranking of the most critical security risks in LLM applications, released August 2026 by the OWASP GenAI Security Project.'
+  use: 'Link, attributed quotes, adaptation under CC BY-SA 4.0 (adapted text stays CC BY-SA 4.0), and retrieval ingestion with attribution.'
+  verifiedFrom: 'https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/'
+
+- id: nist-ai-100-2
+  title: 'NIST AI 100-2 E2025: Adversarial Machine Learning: A Taxonomy and Terminology of Attacks and Mitigations'
+  authors:
+    - Apostol Vassilev
+    - Alina Oprea
+    - Alie Fordyce
+    - Hyrum Anderson
+    - Xander Davies
+    - Maia Hamin
+  edition: 'E2025'
+  year: 2025
+  publisher: 'National Institute of Standards and Technology (NIST)'
+  url: 'https://csrc.nist.gov/pubs/ai/100/2/e2025/final'
+  kind: reference
+  access: open
+  license: 'US Government work (NIST; not subject to US copyright)'
+  level: [grad, practitioner]
+  domains: [AI]
+  topics: [AI-01, AI-05, AI-06, AI-07]
+  why: 'Shared taxonomy and terminology for adversarial machine learning attacks, such as evasion, poisoning, privacy attacks, and prompt injection, and their mitigations.'
+  use: 'Link, quote, adapt, and ingest; cite NIST with the courtesy line, mark changes, and skip any third-party material.'
+  verifiedFrom: 'https://csrc.nist.gov/pubs/ai/100/2/e2025/final'
+
+- id: mitre-capec
+  title: 'CAPEC: Common Attack Pattern Enumeration and Classification'
+  edition: '3.9'
+  year: 2023
+  publisher: 'The MITRE Corporation'
+  url: 'https://capec.mitre.org/'
+  kind: reference
+  access: open
+  license: 'CAPEC Terms of Use (royalty-free license)'
+  level: [grad, practitioner]
+  domains: [APP, WEB, HUM, NET, SYS]
+  topics: [HUM-01]
+  why: 'Catalog of known attack patterns, including social-engineering patterns, that links each pattern to the CWE weaknesses it exploits.'
+  use: "Link, quote, and ingest; every copy must reproduce MITRE's copyright designation and the CAPEC license text."
+  verifiedFrom: 'https://capec.mitre.org/'
