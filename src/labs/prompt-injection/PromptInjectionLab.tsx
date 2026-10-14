@@ -150,7 +150,14 @@ export default function PromptInjectionLab() {
       </div>
 
       {/* System prompt + transcript */}
-      <div ref={scrollRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
+      <div
+        ref={scrollRef}
+        role="log"
+        aria-label="Conversation with AcmeBot"
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a region that scrolls must be reachable by keyboard (WCAG 2.1.1)
+        tabIndex={0}
+        className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4"
+      >
         <div className="border-line bg-surface-2 text-fg-muted rounded-lg border border-dashed p-3 text-xs">
           <div className="text-fg-subtle mb-1 flex items-center gap-1.5 font-medium">
             <Lock className="size-3.5" aria-hidden /> System prompt (hidden from users)

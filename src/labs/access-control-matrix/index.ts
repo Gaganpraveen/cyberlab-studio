@@ -15,7 +15,7 @@ export const accessControlLab: LabDefinition = {
   estimatedMinutes: 25,
   mode: 'simulation',
   engine: 'Deterministic authorization model (access-control matrix)',
-  topicIds: ['IAM-06', 'IAM-01'],
+  topicIds: ['IAM-06', 'IAM-01', 'APP-06'],
   icon: Table,
   objectives: [
     'Read an access-control matrix of subjects, objects, and permissions',

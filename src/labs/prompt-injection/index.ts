@@ -15,7 +15,7 @@ export const promptInjectionLab: LabDefinition = {
   estimatedMinutes: 25,
   mode: 'simulation',
   engine: 'Deterministic LLM-assistant rule model',
-  topicIds: ['FND-01', 'APP-02'],
+  topicIds: ['AI-01', 'AI-04', 'APP-02'],
   icon: MessageSquareWarning,
   objectives: [
     'Leak a secret from an assistant by injecting instructions into user input',
