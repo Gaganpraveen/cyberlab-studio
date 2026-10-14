@@ -3,6 +3,7 @@ import { classicalCipherLab } from './classical-cipher-breaker';
 import { commandPathInjectionLab } from './command-path-injection';
 import { csrfClickjackingLab } from './csrf-clickjacking';
 import { ddosLab } from './ddos';
+import { detectionRuleBuilderLab } from './detection-rule-builder';
 import { homographLab } from './homograph';
 import { jwtLab } from './jwt';
 import { loginSecurityLab } from './login-security';
@@ -35,6 +36,7 @@ export const LABS: LabDefinition[] = [
   commandPathInjectionLab,
   ssrfUrlFilterLab,
   osPermissionsLab,
+  detectionRuleBuilderLab,
 ];
 
 const labById = new Map(LABS.map((lab) => [lab.id, lab]));
