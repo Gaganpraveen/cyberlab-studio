@@ -59,6 +59,18 @@ describe('the keyword blocklist is weak', () => {
     expect(t.leaked).toBe(true);
     expect(t.flag).toBe(INJECTION_FLAG);
   });
+
+  it('false-positives on a benign request that contains a banned word', () => {
+    const t = ask(payload('benign-blocked'), on(['keywordBlocklist']));
+    expect(t.leaked).toBe(false);
+    expect(t.blockedBy).toBe('keyword blocklist');
+    expect(t.falsePositive).toBe(true);
+  });
+
+  it('does not mark a real injection it catches as a false positive', () => {
+    const t = ask(payload('direct'), on(['keywordBlocklist']));
+    expect(t.falsePositive).toBeFalsy();
+  });
 });
 
 describe('strong controls stop both payloads', () => {

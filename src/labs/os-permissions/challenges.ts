@@ -95,7 +95,7 @@ export const challenges: ChallengeDefinition[] = [
     difficulty: 'intermediate',
     points: 15,
     kind: 'answer',
-    topicIds: ['SYS-04'],
+    topicIds: ['SYS-04', 'SYS-05'],
     prompt:
       'Look at /usr/bin/checkpw — its mode is 4755 and its owner column shows an **s** (-rwsr-xr-x). That special bit makes the program run with the owner&rsquo;s (root&rsquo;s) privileges no matter who starts it. **What is this bit called?**',
     hints: [

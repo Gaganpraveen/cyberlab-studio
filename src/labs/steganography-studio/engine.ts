@@ -118,13 +118,13 @@ export const IMAGE_METADATA: MetaField[] = [
   { key: 'Software', value: 'PhotoKit 4.1' },
   {
     key: 'GPSLatitude',
-    value: '37.42199 N',
+    value: '12.34567 N',
     suspicious: true,
     note: 'Exact capture location — a privacy and operational-security leak.',
   },
   {
     key: 'GPSLongitude',
-    value: '122.08400 W',
+    value: '123.45678 W',
     suspicious: true,
     note: 'Pairs with the latitude to pin the spot on a map.',
   },

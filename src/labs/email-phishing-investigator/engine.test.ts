@@ -26,10 +26,12 @@ describe('email fixtures', () => {
   });
 
   it('flags a link whose visible URL host differs from its href host', () => {
-    expect(linkIsDeceptive({ text: 'https://acme.com/payroll', href: 'http://evil.test/x' })).toBe(
-      true,
-    );
-    expect(linkIsDeceptive({ text: 'https://acme.com/a', href: 'https://acme.com/a' })).toBe(false);
+    expect(
+      linkIsDeceptive({ text: 'https://acme.example/payroll', href: 'http://evil.test/x' }),
+    ).toBe(true);
+    expect(
+      linkIsDeceptive({ text: 'https://acme.example/a', href: 'https://acme.example/a' }),
+    ).toBe(false);
     // Non-URL display text is not itself deceptive.
     expect(linkIsDeceptive({ text: 'Verify account', href: 'https://evil.test' })).toBe(false);
   });

@@ -181,7 +181,7 @@ export default function ReconLab() {
                           return (
                             <li key={id} className="flex items-center gap-2 font-mono text-xs">
                               <span className="text-accent-text">{host.host}</span>
-                              <span className="text-fg-subtle">{host.ip}</span>
+                              {card.revealsIp && <span className="text-fg-subtle">{host.ip}</span>}
                               {host.sensitive && (
                                 <Badge tone="danger" className="ml-1">
                                   sensitive
@@ -256,6 +256,7 @@ export default function ReconLab() {
                         <Lock className="text-fg-subtle size-4" aria-hidden />
                       )}
                       <span className="font-mono text-xs">{host.host}</span>
+                      <span className="text-fg-subtle font-mono text-xs">{host.ip}</span>
                       <Badge tone={host.intent === 'public' ? 'info' : 'neutral'}>
                         {host.intent}
                       </Badge>
@@ -280,6 +281,19 @@ export default function ReconLab() {
                       </Button>
                     )}
                   </div>
+                  {exposed && host.intent === 'internal' && (
+                    <p className="text-fg-muted mt-1.5 text-xs">
+                      An internal service reachable from the internet through a misconfigured
+                      firewall rule — its private address should not be routable from outside at
+                      all.
+                    </p>
+                  )}
+                  {host.ctLeaked && (
+                    <div className="border-danger/40 bg-danger-soft text-fg mt-2 flex items-center gap-2 rounded-lg border p-2 font-mono text-xs">
+                      <Flag className="text-danger size-4 shrink-0" aria-hidden />
+                      leaked in a certificate-transparency log — {LEAKED_SUBDOMAIN_FLAG}
+                    </div>
+                  )}
                   {exposed && (
                     <div className="mt-2 flex flex-wrap gap-1.5">
                       {host.ports.map((p) => {
@@ -299,7 +313,7 @@ export default function ReconLab() {
                             title={`Close ${p.service}`}
                           >
                             <Badge tone={riskTone[p.risk]}>
-                              {p.port} {p.service}
+                              {p.port} {p.service} · {p.risk} risk
                               <span className="text-fg-subtle group-hover:text-fg ml-1">×</span>
                             </Badge>
                           </button>

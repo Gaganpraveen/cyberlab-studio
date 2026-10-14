@@ -46,7 +46,7 @@ export const challenges: ChallengeDefinition[] = [
       'Validate the **Expired certificate**. Its signature is from the trusted CA and the hostname matches, yet the client still rejects it. **Which single check fails?** Name it in a word or two.',
     hints: [
       'Every certificate carries a &ldquo;not before&rdquo; and &ldquo;not after&rdquo; date.',
-      'Compare those dates to the client&rsquo;s current time in the report.',
+      'Compare the certificate&rsquo;s validity window (shown on its card) to the client clock at the top of the tab.',
     ],
     acceptedHashes: [
       hashAnswer('validity period'),
@@ -109,7 +109,7 @@ export const challenges: ChallengeDefinition[] = [
     kind: 'task',
     topicIds: ['NET-05'],
     prompt:
-      'On the **HSTS** tab, an on-path attacker downgrades the first request from https to plain http (SSL stripping) and reads everything. **Enable HSTS**, then attempt the downgraded connection again. The lab marks this solved once the browser refuses to speak http to this host.',
+      'On the **HSTS** tab, an on-path attacker keeps the first request on plain http, stripping the redirect to https (SSL stripping), and reads everything. **Enable HSTS**, then attempt the strip again. The lab marks this solved once the browser refuses to speak http to this host.',
     hints: [
       'SSL stripping works because the very first request is plain http, before any redirect.',
       'HSTS tells the browser: for this host, always use https and never http.',

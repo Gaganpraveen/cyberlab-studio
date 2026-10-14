@@ -43,7 +43,8 @@ export const DEFAULT_DEFENSES: Defenses = {
 
 export const DEVELOPER = 'role/developers';
 export const SECRET_OBJECT = 'arn:aws:s3:::acme-reports/secret-salaries.csv';
-const ADMIN_TARGET = 'arn:aws:iam::111122223333:user/intern';
+/** The developer role's own ARN — the target of a genuine self-escalation. */
+export const OWN_ROLE_ARN = 'arn:aws:iam::111122223333:role/developers';
 
 /** Build the account policy for the given defense settings. */
 export function buildPolicy(d: Defenses): Statement[] {
@@ -69,7 +70,16 @@ export function buildPolicy(d: Defenses): Statement[] {
       sid: 'DenySelfEscalation',
       effect: 'Deny',
       principals: [DEVELOPER],
-      actions: ['iam:AttachUserPolicy', 'iam:PutUserPolicy', 'iam:CreatePolicyVersion'],
+      actions: [
+        // Block self-escalation whether the role attaches to itself (role
+        // variants) or to a user it controls (user variants), plus the
+        // version-pinning trick on a managed policy.
+        'iam:AttachRolePolicy',
+        'iam:PutRolePolicy',
+        'iam:AttachUserPolicy',
+        'iam:PutUserPolicy',
+        'iam:CreatePolicyVersion',
+      ],
       resources: ['*'],
     });
   }
@@ -131,15 +141,15 @@ export interface AttackResult {
 export function tryEscalate(d: Defenses): AttackResult {
   const decision = evaluate(buildPolicy(d), {
     principal: DEVELOPER,
-    action: 'iam:AttachUserPolicy',
-    resource: ADMIN_TARGET,
+    action: 'iam:AttachRolePolicy',
+    resource: OWN_ROLE_ARN,
   });
   if (decision.effect === 'Allow') {
     return {
       success: true,
       decision,
       reason:
-        'The developers role may call iam:AttachUserPolicy, so you attached AdministratorAccess to yourself. You are now admin.',
+        'The developers role may call iam:AttachRolePolicy on its own role, so you attached AdministratorAccess to yourself. You are now admin.',
       flag: ESCALATION_FLAG,
     };
   }

@@ -64,6 +64,12 @@ describe('provenance verification', () => {
     expect(r.checks[1]?.pass).toBe(false);
     expect(r.checks[2]?.pass).toBe(false);
   });
+
+  it('fails the SLSA source-repository match on the forged (wrong-repo) release', () => {
+    expect(verifyProvenance(pick('forged')).checks[3]?.pass).toBe(false);
+    expect(verifyProvenance(pick('genuine')).checks[3]?.pass).toBe(true);
+    expect(verifyProvenance(pick('tampered')).checks[3]?.pass).toBe(true);
+  });
 });
 
 describe('challenges', () => {

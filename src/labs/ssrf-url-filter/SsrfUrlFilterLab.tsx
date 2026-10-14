@@ -139,16 +139,16 @@ export default function SsrfUrlFilterLab() {
           <Button
             size="sm"
             variant={defenses.blockInternal ? 'ghost' : 'secondary'}
-            disabled={defenses.blockInternal}
-            onClick={() => setDefenses((d) => ({ ...d, blockInternal: true }))}
+            aria-pressed={defenses.blockInternal}
+            onClick={() => setDefenses((d) => ({ ...d, blockInternal: !d.blockInternal }))}
           >
             {defenses.blockInternal ? '✓ Block internal IPs' : 'Block internal IPs'}
           </Button>
           <Button
             size="sm"
             variant={defenses.allowlist ? 'ghost' : 'secondary'}
-            disabled={defenses.allowlist}
-            onClick={() => setDefenses((d) => ({ ...d, allowlist: true }))}
+            aria-pressed={defenses.allowlist}
+            onClick={() => setDefenses((d) => ({ ...d, allowlist: !d.allowlist }))}
           >
             {defenses.allowlist ? '✓ Destination allowlist' : 'Destination allowlist'}
           </Button>

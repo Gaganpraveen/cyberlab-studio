@@ -18,7 +18,7 @@ import {
   USERS,
   type User,
   authorize,
-  isLeastPrivilege,
+  isAccessControlEnforced,
 } from './engine';
 import { accessControlLab } from './index';
 
@@ -46,7 +46,7 @@ export default function AccessControlLab() {
 
   const caller = USERS.find((u) => u.id === callerId)!;
   const resource = RESOURCES.find((r) => r.id === resourceId)!;
-  const secured = isLeastPrivilege(policy);
+  const secured = isAccessControlEnforced(policy);
 
   const setOwnership = (on: boolean) => {
     setPolicy((p) => ({ ...p, ownershipCheck: on }));
@@ -114,7 +114,7 @@ export default function AccessControlLab() {
           { title: 'Exploit IDOR', body: "Read Alice's document as Mallory — no ownership check." },
           { title: 'Escalate', body: 'Reach the admin directory as a normal user.' },
           { title: 'Enforce ownership', body: 'Close broken object-level authorization.' },
-          { title: 'Enforce roles', body: 'Gate admin resources and reach least privilege.' },
+          { title: 'Enforce roles', body: 'Gate admin resources and close the escalation path.' },
         ]}
       />
       <Callout tone="info" title="A model, not a server">
@@ -132,7 +132,7 @@ export default function AccessControlLab() {
           <h3 className="text-fg text-sm font-semibold">Authorization policy</h3>
           {secured ? (
             <Badge tone="success" className="gap-1">
-              <ShieldCheck className="size-3.5" aria-hidden /> least privilege
+              <ShieldCheck className="size-3.5" aria-hidden /> access control enforced
             </Badge>
           ) : (
             <Badge tone="danger">authenticated-only (insecure)</Badge>
@@ -270,7 +270,11 @@ export default function AccessControlLab() {
                     : 'success'
                 }
               >
-                {response.decision.allowed ? '200 OK' : '403 Forbidden'}
+                {response.decision.allowed
+                  ? '200 OK'
+                  : response.decision.control === 'ownership'
+                    ? '404 Not Found'
+                    : '403 Forbidden'}
               </Badge>
               <span className="text-fg-muted text-xs">{response.decision.reason}</span>
             </div>
@@ -293,7 +297,7 @@ export default function AccessControlLab() {
 
       <div className="prose-lesson max-w-none text-sm">
         <Markdown compact>
-          {`**Access control must be enforced on the server, for every request.** Hiding a link or trusting an object id is not a control — the caller chooses what to ask for. Two checks cover most of it: *object-level* authorization (does this caller own, or have a grant to, this specific object?) and *function-level* authorization (does this caller&rsquo;s role permit this action at all?). Together they enforce **least privilege**, which limits the blast radius of any one compromised account.`}
+          {`**Access control must be enforced on the server, for every request.** Hiding a link or trusting an object id is not a control — the caller chooses what to ask for. Two checks cover most of it: *object-level* authorization (does this caller own, or have a grant to, this specific object?) and *function-level* authorization (does this caller&rsquo;s role permit this action at all?). Two refinements matter: return **404 Not Found** (not 403) for an object the caller should not know exists, so valid ids cannot be enumerated; and scope and log any admin override, since an admin who can read every private object still holds more than least privilege would grant.`}
         </Markdown>
       </div>
     </div>

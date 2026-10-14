@@ -32,6 +32,8 @@ export interface Host {
   exposedToInternet: boolean;
   /** Holds sensitive data (an admin panel, a database). */
   sensitive?: boolean;
+  /** Leaked into a public certificate-transparency log (the flag host). */
+  ctLeaked?: boolean;
   /** How a recon analyst would discover it. */
   osintHint: string;
 }
@@ -93,6 +95,7 @@ export const HOSTS: Host[] = [
     ip: '10.0.5.20',
     exposedToInternet: true,
     sensitive: true,
+    ctLeaked: true,
     ports: [
       { port: 443, service: 'HTTPS (admin)', risk: 'low' },
       { port: 22, service: 'SSH', risk: 'high' },
@@ -131,6 +134,9 @@ export interface OsintCard {
   summary: string;
   /** Host ids this piece of intelligence reveals. */
   reveals: string[];
+  /** Whether this source leaks the host's IP (DNS A records do; a certificate
+   * transparency log or a job posting leaks only the hostname). */
+  revealsIp?: boolean;
   /** Whether this card also exposes verbose server/document metadata. */
   metadataLeak?: boolean;
 }
@@ -142,6 +148,7 @@ export const OSINT_CARDS: OsintCard[] = [
     source: 'Public DNS records',
     summary: 'Standard records for the public site, mail, and VPN gateway.',
     reveals: ['www', 'mail', 'vpn'],
+    revealsIp: true,
   },
   {
     id: 'ct-log',

@@ -61,7 +61,7 @@ export const challenges: ChallengeDefinition[] = [
       'With no cookie, the server sees an unauthenticated request and rejects it.',
     ],
     solution:
-      'A **SameSite=Lax or Strict** cookie is withheld on cross-site requests, so the forged POST arrives with no session and is rejected. SameSite=Lax is a sensible default; Strict is tighter but can log users out when they follow inbound links. It is a strong first line, best paired with anti-CSRF tokens for older browsers and edge cases.',
+      'A **SameSite=Lax or Strict** cookie is withheld on cross-site requests, so the forged POST arrives with no session and is rejected. SameSite=Lax is a sensible default; Strict is tighter but can log users out when they follow inbound links. Treat it as defense in depth, though, not the primary control: OWASP recommends anti-CSRF tokens as the main defense, with SameSite layered on top — browser differences and edge cases (some top-level navigations, older clients) mean SameSite alone should not be relied on.',
   },
   {
     id: 'csrf-token',

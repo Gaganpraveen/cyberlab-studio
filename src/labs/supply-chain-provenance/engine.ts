@@ -140,6 +140,8 @@ export function runInstall(def: DepDefenses): InstallReport {
 }
 
 export const TRUSTED_BUILDER = 'github-actions://acme/release';
+/** The source repository a genuine release must be built from (SLSA source match). */
+export const EXPECTED_SOURCE_REPO = 'acme/app';
 
 export interface ReleaseArtifact {
   id: string;
@@ -214,6 +216,10 @@ export function verifyProvenance(a: ReleaseArtifact): ProvenanceResult {
     { label: 'Artifact hash matches the attested hash', pass: a.artifactHash === a.attestedHash },
     { label: 'Attestation signature is valid', pass: a.signatureValid },
     { label: 'Builder is on the trusted allowlist', pass: a.builder === TRUSTED_BUILDER },
+    {
+      label: `Build source is the expected repository (${EXPECTED_SOURCE_REPO})`,
+      pass: a.sourceRepo === EXPECTED_SOURCE_REPO,
+    },
   ];
   const trusted = checks.every((c) => c.pass);
   const summary = trusted

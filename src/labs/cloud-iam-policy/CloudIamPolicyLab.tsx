@@ -14,6 +14,7 @@ import {
   type Defenses,
   DEFAULT_DEFENSES,
   DEVELOPER,
+  OWN_ROLE_ARN,
   SECRET_OBJECT,
   type Statement,
   buildPolicy,
@@ -32,7 +33,8 @@ const DEFENSE_LABELS: { key: keyof Defenses; label: string; detail: string }[] =
   {
     key: 'denyEscalation',
     label: 'Add an explicit Deny on IAM self-escalation',
-    detail: 'Deny iam:AttachUserPolicy / PutUserPolicy / CreatePolicyVersion.',
+    detail:
+      'Deny the self-escalation calls: iam:AttachRolePolicy / PutRolePolicy (and the user equivalents).',
   },
   {
     key: 'removePublicPrincipal',
@@ -74,7 +76,13 @@ function PolicyView({ statements }: { statements: Statement[] }) {
   );
 }
 
-const ACTIONS = ['iam:AttachUserPolicy', 's3:GetObject', 's3:PutObject', 'logs:CreateLogStream'];
+const ACTIONS = [
+  'iam:AttachRolePolicy',
+  'iam:AttachUserPolicy',
+  's3:GetObject',
+  's3:PutObject',
+  'logs:CreateLogStream',
+];
 const PRINCIPALS = [DEVELOPER, '*', 'role/auditor'];
 
 export default function CloudIamPolicyLab() {
@@ -86,7 +94,7 @@ export default function CloudIamPolicyLab() {
 
   // Request simulator state.
   const [principal, setPrincipal] = useState(DEVELOPER);
-  const [action, setAction] = useState('iam:AttachUserPolicy');
+  const [action, setAction] = useState('iam:AttachRolePolicy');
   const [resource, setResource] = useState('*');
 
   const policy = useMemo(() => buildPolicy(defenses), [defenses]);
@@ -131,7 +139,7 @@ export default function CloudIamPolicyLab() {
     setResults({});
     setLog([]);
     setPrincipal(DEVELOPER);
-    setAction('iam:AttachUserPolicy');
+    setAction('iam:AttachRolePolicy');
     setResource('*');
   };
 
@@ -215,7 +223,7 @@ export default function CloudIamPolicyLab() {
           <div className="text-fg-subtle text-xs font-medium tracking-wide uppercase">Attacks</div>
           <div className="flex flex-col gap-2">
             <Button onClick={runEscalate} className="justify-start gap-1.5">
-              <Play className="size-4" aria-hidden /> Escalate to admin (iam:AttachUserPolicy)
+              <Play className="size-4" aria-hidden /> Escalate to admin (iam:AttachRolePolicy)
             </Button>
             <Button onClick={runRead} variant="secondary" className="justify-start gap-1.5">
               <KeyRound className="size-4" aria-hidden /> Read secret object (anonymous)
@@ -295,6 +303,7 @@ export default function CloudIamPolicyLab() {
             >
               <option value="*">*</option>
               <option value={SECRET_OBJECT}>{SECRET_OBJECT}</option>
+              <option value={OWN_ROLE_ARN}>arn:aws:iam::…:role/developers</option>
               <option value="arn:aws:iam::111122223333:user/intern">
                 arn:aws:iam::…:user/intern
               </option>

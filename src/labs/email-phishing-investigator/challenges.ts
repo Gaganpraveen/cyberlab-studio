@@ -31,13 +31,13 @@ export const challenges: ChallengeDefinition[] = [
     kind: 'task',
     topicIds: ['FOR-06'],
     prompt:
-      'Report the payroll message (the one from acme-hr-portal.com) as phishing. The lab marks this solved when you classify it correctly.',
+      'Report the payroll message (the one from acme-hr-portal.example) as phishing. The lab marks this solved when you classify it correctly.',
     hints: [
       'Compare the sender domain to the real one, and read the SPF/DMARC results.',
-      'acme-hr-portal.com is not acme.com, and its auth fails.',
+      'acme-hr-portal.example is not acme.example, and its auth fails.',
     ],
     solution:
-      'The payroll message is a domain-lookalike spoof: acme-hr-portal.com is a different domain from acme.com, SPF and DMARC both fail, the Return-Path points to an unrelated .ru host, and the visible link text (acme.com) does not match its href. Any one of these is a red flag; together they are conclusive.',
+      'The payroll message is a domain-lookalike spoof: acme-hr-portal.example is a different domain from acme.example, SPF and DMARC both fail, the Return-Path points to an unrelated external host (sketchy-host.test), and the visible link text (acme.example) does not match its href. Any one of these is a red flag; together they are conclusive.',
   },
   {
     id: 'phish-spf',
@@ -48,7 +48,7 @@ export const challenges: ChallengeDefinition[] = [
     kind: 'answer',
     topicIds: ['FOR-06'],
     prompt:
-      'Which email-authentication check verifies that the sending server&rsquo;s IP is authorized to send for the From domain? (Three-letter acronym.)',
+      'Which email-authentication check verifies that the connecting server&rsquo;s IP is authorized to send for the envelope-sender domain (the Return-Path / MAIL FROM)? (Three-letter acronym.)',
     hints: ['It is a DNS TXT record listing allowed senders.', 'Sender Policy Framework.'],
     acceptedHashes: [hashAnswer('SPF'), hashAnswer('sender policy framework')],
     solution:
@@ -81,7 +81,7 @@ export const challenges: ChallengeDefinition[] = [
     kind: 'answer',
     topicIds: ['HUM-02'],
     prompt:
-      'A domain registered to imitate a real one — like paypa1.com for paypal.com, or acme-hr-portal.com for acme.com — is generally called a ____ domain. (One word; related terms accepted.)',
+      'A domain registered to imitate a real one — like payrnents.example for payments.example, or acme-hr-portal.example for acme.example — is generally called a ____ domain. (One word; related terms accepted.)',
     hints: [
       'It looks almost right at a glance.',
       'Typosquat / lookalike / homograph all describe it.',

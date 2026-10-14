@@ -14,7 +14,7 @@ export const challenges: ChallengeDefinition[] = [
     kind: 'flag',
     topicIds: ['IAM-02'],
     prompt:
-      'With every defense off, launch the credential-stuffing attack on the **Attack** tab. The weak password falls and you get a session — submit the flag it returns.',
+      'With every defense off, launch the dictionary attack on the **Attack** tab. The weak password falls and you get a session — submit the flag it returns.',
     hints: [
       'The target reused a password that sits in the common-password wordlist.',
       'Nothing limits the number of guesses, so the attack just runs to the end.',
@@ -31,18 +31,22 @@ export const challenges: ChallengeDefinition[] = [
     kind: 'answer',
     topicIds: ['IAM-02'],
     prompt:
-      'Replaying username/password pairs leaked from one site against the login form of another — betting that people reuse passwords — has a two-word name. **What is it?**',
+      'Trying a list of common passwords against one account&rsquo;s login form — betting the password is weak and guessable — has a two-word name. **What is it?** (Related terms accepted.)',
     hints: [
-      'It is not quite &ldquo;brute force&rdquo;: the guesses come from real leaked credentials.',
-      'The first word is &ldquo;credential&rdquo;.',
+      'The guesses come from a wordlist of the most common passwords.',
+      'It is online password guessing with a wordlist — a ___ attack.',
     ],
     acceptedHashes: [
-      hashAnswer('credential stuffing'),
-      hashAnswer('credential-stuffing'),
-      hashAnswer('stuffing'),
+      hashAnswer('dictionary attack'),
+      hashAnswer('dictionary'),
+      hashAnswer('password guessing'),
+      hashAnswer('brute force'),
+      hashAnswer('brute-force'),
+      hashAnswer('online guessing'),
+      hashAnswer('wordlist attack'),
     ],
     solution:
-      '**Credential stuffing** replays breached username/password pairs against other services, exploiting password reuse. It differs from pure brute force because the guesses are known-real credentials, so hit rates are high and the traffic looks like ordinary logins. Rate limiting, lockout, bot detection, and — above all — MFA are the countermeasures.',
+      'This is a **dictionary attack**: online password guessing that runs a curated wordlist of likely passwords against the login form. It differs from a pure brute force (which tries every possible combination) by using a shortlist of common passwords, and from **credential stuffing** (which replays username/password pairs leaked from other breaches, exploiting reuse). Rate limiting, lockout, bot detection, and — above all — MFA counter all three.',
   },
   {
     id: 'login-ratelimit',
@@ -93,7 +97,7 @@ export const challenges: ChallengeDefinition[] = [
       'The attacker can find the password but still cannot complete the login.',
     ],
     solution:
-      'Multi-factor authentication requires a second, separate factor (an authenticator code, a hardware passkey), so a stolen or guessed password is no longer enough. It is the single most effective defense against credential stuffing and phishing of passwords. Phishing-resistant factors like passkeys (WebAuthn) raise the bar further by binding the login to the real site.',
+      'Multi-factor authentication requires a second, separate factor (an authenticator code, a hardware passkey), so a stolen or guessed password is no longer enough. It is the single most effective defense against password guessing, credential stuffing, and phishing of passwords. Phishing-resistant factors like passkeys (WebAuthn) raise the bar further by binding the login to the real site.',
   },
   {
     id: 'login-enumeration',

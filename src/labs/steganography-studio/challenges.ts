@@ -29,7 +29,7 @@ export const challenges: ChallengeDefinition[] = [
     difficulty: 'beginner',
     points: 20,
     kind: 'flag',
-    topicIds: ['FOR-06', 'FOR-02'],
+    topicIds: ['FOR-02'],
     prompt:
       'The image file carries EXIF-style metadata. One field holds a secret that should never have shipped. Find it and submit the flag.',
     hints: [
@@ -50,7 +50,7 @@ export const challenges: ChallengeDefinition[] = [
     prompt:
       'Type a message, embed it into the carrier image, then extract it again and confirm it comes back unchanged. The lab marks this solved after a successful round trip.',
     hints: [
-      'Encode writes your message into the LSBs; Extract reads it back.',
+      'Embed writes your message into the LSBs; Extract reads it back.',
       'The recovered text should match exactly what you typed.',
     ],
     solution:

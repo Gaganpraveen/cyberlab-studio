@@ -282,7 +282,7 @@ export default function SupplyChainLab() {
 
       <div className="prose-lesson max-w-none text-sm">
         <Markdown compact>
-          {`Provenance answers &ldquo;was this really built from the source I think, by the builder I trust?&rdquo; Three checks do it: the artifact&rsquo;s hash matches the signed attestation, the signature verifies against the builder&rsquo;s key, and the builder is one you allow. A tampered mirror fails the first; a self-signed fork fails the last two.`}
+          {`Provenance answers &ldquo;was this really built from the source I think, by the builder I trust?&rdquo; Four checks do it: the artifact&rsquo;s hash matches the signed attestation, the signature verifies against the builder&rsquo;s key, the builder is one you allow, and the build came from the source repository you expect. A tampered mirror fails the hash; a self-signed fork from the wrong repo fails the other three.`}
         </Markdown>
       </div>
     </div>

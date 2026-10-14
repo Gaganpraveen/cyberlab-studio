@@ -19,7 +19,7 @@ describe('internal IP detection', () => {
     expect(isInternalIp('10.0.0.5')).toBe(true);
     expect(isInternalIp('192.168.1.1')).toBe(true);
     expect(isInternalIp('172.16.0.1')).toBe(true);
-    expect(isInternalIp('93.184.216.34')).toBe(false);
+    expect(isInternalIp('192.0.2.10')).toBe(false);
   });
 });
 

@@ -84,10 +84,10 @@ export const EVENTS: LogEvent[] = [
     action: 'login',
     bytesMB: 0,
     hour: 9,
-    failedLogins: 2,
+    failedLogins: 5,
     foreign: false,
     malicious: false,
-  },
+  }, // many failed logins, but a daytime user who just forgot their password — the failed-logins decoy
   {
     id: 'b4',
     user: 'carol',
@@ -134,7 +134,8 @@ export const CLAUSES: Clause[] = [
   {
     id: 'off-hours',
     label: 'outside business hours (before 6am or after 8pm)',
-    test: (e) => e.hour < 6 || e.hour > 20,
+    // >= 20 so the whole 8pm hour (20:00–20:59) counts as after 8pm, not just 21:00+.
+    test: (e) => e.hour < 6 || e.hour >= 20,
   },
   { id: 'failed-logins', label: 'failed logins ≥ 5', test: (e) => e.failedLogins >= 5 },
   { id: 'foreign', label: 'source is a foreign country', test: (e) => e.foreign },
@@ -157,6 +158,9 @@ export interface RuleReport {
   precision: number | null;
   /** Percent 0–100. */
   recall: number;
+  /** F1 score (harmonic mean of precision and recall), percent 0–100, or null
+   * when no alerts fired (precision undefined). */
+  f1: number | null;
   alertCount: number;
   perfect: boolean;
 }
@@ -183,7 +187,10 @@ export function evaluateRule(enabled: ClauseId[]): RuleReport {
 
   const precision = tp + fp > 0 ? Math.round((tp / (tp + fp)) * 100) : null;
   const recall = Math.round((tp / maliciousTotal) * 100);
+  // F1 = 2·TP / (2·TP + FP + FN), computed from counts to avoid rounding drift.
+  // Undefined (shown as null) when no alerts fired, matching precision.
+  const f1 = precision === null ? null : Math.round((200 * tp) / (2 * tp + fp + fn));
   const perfect = precision === 100 && recall === 100;
 
-  return { verdicts, tp, fp, fn, tn, precision, recall, alertCount: tp + fp, perfect };
+  return { verdicts, tp, fp, fn, tn, precision, recall, f1, alertCount: tp + fp, perfect };
 }

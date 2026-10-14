@@ -1,5 +1,5 @@
 import { CircleCheck, CircleX, Flag, KeyRound, Lock, Play, ShieldCheck } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Markdown } from '@/components/markdown/Markdown';
 import { Button } from '@/components/ui/Button';
@@ -26,6 +26,36 @@ import { tlsHandshakeLab } from './index';
 
 const TRUSTED_CA_NAME = 'Example Trust Root CA';
 
+/** The TLS 1.3 handshake message flow, shown for context. `here` marks the step
+ * this lab exercises: the client validating the server's Certificate. */
+const HANDSHAKE_FLOW: { dir: string; msg: string; desc: string; here: boolean }[] = [
+  {
+    dir: '→',
+    msg: 'ClientHello',
+    desc: 'offers TLS versions, cipher suites, and a key share',
+    here: false,
+  },
+  {
+    dir: '←',
+    msg: 'ServerHello',
+    desc: 'picks the version and cipher, returns its key share',
+    here: false,
+  },
+  { dir: '←', msg: 'Certificate', desc: 'the server sends its certificate chain', here: true },
+  {
+    dir: '←',
+    msg: 'CertificateVerify',
+    desc: 'the server proves it holds the matching private key',
+    here: false,
+  },
+  {
+    dir: '↔',
+    msg: 'Finished',
+    desc: 'both sides confirm, then encrypted application data flows',
+    here: false,
+  },
+];
+
 interface Setup {
   trustedCaPublicKey: CryptoKey;
   certs: Record<ScenarioKind, Cert>;
@@ -40,6 +70,11 @@ interface ScenarioResult {
 
 function shortFp(fp: string) {
   return `${fp.slice(0, 20)}…`;
+}
+
+/** Format an epoch-ms timestamp as a UTC calendar date (YYYY-MM-DD). */
+function fmtDate(ms: number) {
+  return new Date(ms).toISOString().slice(0, 10);
 }
 
 function CheckRow({ label, pass }: { label: string; pass: boolean }) {
@@ -63,6 +98,7 @@ export default function TlsHandshakeLab() {
   const [hsts, setHsts] = useState(false);
   const [results, setResults] = useState<Partial<Record<ScenarioKind, ScenarioResult>>>({});
   const [pinFlagShown, setPinFlagShown] = useState(false);
+  const trustPolicyDone = useRef(false);
   const [log, setLog] = useState<EvidenceEntry[]>([]);
   const add = (e: EvidenceEntry) => setLog((prev) => [...prev, e]);
 
@@ -95,7 +131,13 @@ export default function TlsHandshakeLab() {
     };
   }, []);
 
-  const checkTrustPolicy = (next: Partial<Record<ScenarioKind, ScenarioResult>>) => {
+  // Record the trust-policy win once all four certificates have been sorted
+  // correctly. Called from the validate handlers rather than an effect, so it
+  // runs exactly once per user action (event handlers are never re-invoked by
+  // StrictMode the way effects and updaters are) and never triggers a cascading
+  // render. The ref guard stops a repeat log if the user keeps validating.
+  const recordTrustPolicy = (next: Partial<Record<ScenarioKind, ScenarioResult>>) => {
+    if (trustPolicyDone.current) return;
     const all = SCENARIOS.every((s) => next[s.kind]?.report);
     if (!all) return;
     const correct =
@@ -103,23 +145,23 @@ export default function TlsHandshakeLab() {
       next.expired?.report?.ok === false &&
       next['hostname-mismatch']?.report?.ok === false &&
       next['self-signed']?.report?.ok === false;
-    if (correct) {
-      markChallengeSolved('tls-trust-policy');
-      add(
-        evidence(
-          'success',
-          'Trust policy sorts all four certificates correctly',
-          'Only the valid certificate was accepted; expired, hostname-mismatched, and self-signed were all rejected.',
-        ),
-      );
-    }
+    if (!correct) return;
+    trustPolicyDone.current = true;
+    markChallengeSolved('tls-trust-policy');
+    add(
+      evidence(
+        'success',
+        'Trust policy sorts all four certificates correctly',
+        'Only the valid certificate was accepted; expired, hostname-mismatched, and self-signed were all rejected.',
+      ),
+    );
   };
 
-  const validate = async (kind: ScenarioKind) => {
-    if (!setup) return;
-    const cert = setup.certs[kind];
+  const runValidate = async (s: Setup, kind: ScenarioKind): Promise<ScenarioResult> => {
+    const cert = s.certs[kind];
     if (!enforce) {
-      setResults((prev) => ({ ...prev, [kind]: { ok: true } }));
+      const entry: ScenarioResult = { ok: true };
+      setResults((prev) => ({ ...prev, [kind]: entry }));
       add(
         evidence(
           'warning',
@@ -127,18 +169,15 @@ export default function TlsHandshakeLab() {
           'The client trusted the certificate without any checks. This is the disabled-verification bug: turn verification on to actually validate.',
         ),
       );
-      return;
+      return entry;
     }
     const report = await verifyCert(cert, {
-      trustedCaPublicKey: setup.trustedCaPublicKey,
+      trustedCaPublicKey: s.trustedCaPublicKey,
       hostname: EXPECTED_HOST,
       now: REFERENCE_NOW,
     });
-    setResults((prev) => {
-      const nextResults = { ...prev, [kind]: { ok: report.ok, report } };
-      checkTrustPolicy(nextResults);
-      return nextResults;
-    });
+    const entry: ScenarioResult = { ok: report.ok, report };
+    setResults((prev) => ({ ...prev, [kind]: entry }));
     if (report.ok) {
       add(
         evidence(
@@ -150,31 +189,45 @@ export default function TlsHandshakeLab() {
     } else {
       add(evidence('danger', `Rejected ${cert.subject}`, report.reasons.join('\n')));
     }
+    return entry;
+  };
+
+  const validate = async (kind: ScenarioKind) => {
+    if (!setup) return;
+    const entry = await runValidate(setup, kind);
+    recordTrustPolicy({ ...results, [kind]: entry });
   };
 
   const validateAll = async () => {
-    for (const s of SCENARIOS) await validate(s.kind);
+    if (!setup) return;
+    const next: Partial<Record<ScenarioKind, ScenarioResult>> = { ...results };
+    for (const s of SCENARIOS) {
+      next[s.kind] = await runValidate(setup, s.kind);
+    }
+    recordTrustPolicy(next);
   };
 
   const toggleEnforce = () => {
-    setEnforce((on) => {
-      const nextOn = !on;
-      setResults({});
-      add(
-        nextOn
-          ? evidence(
-              'info',
-              'Certificate verification: ON',
-              `Policy: trust ${TRUSTED_CA_NAME}, require host ${EXPECTED_HOST}, check validity against the current time.`,
-            )
-          : evidence(
-              'warning',
-              'Certificate verification: OFF',
-              'The client will accept any certificate it is shown. Nothing is checked.',
-            ),
-      );
-      return nextOn;
-    });
+    // Keep the state update pure: compute the next value and run the side effects
+    // (clearing results, logging) outside the updater so StrictMode's double
+    // invocation of updaters cannot double-log.
+    const nextOn = !enforce;
+    setEnforce(nextOn);
+    setResults({});
+    trustPolicyDone.current = false;
+    add(
+      nextOn
+        ? evidence(
+            'info',
+            'Certificate verification: ON',
+            `Policy: trust ${TRUSTED_CA_NAME}, require host ${EXPECTED_HOST}, check validity against the current time.`,
+          )
+        : evidence(
+            'warning',
+            'Certificate verification: OFF',
+            'The client will accept any certificate it is shown. Nothing is checked.',
+          ),
+    );
   };
 
   const validateRogue = async () => {
@@ -212,7 +265,7 @@ export default function TlsHandshakeLab() {
       add(
         evidence(
           'success',
-          'HSTS refused the http downgrade',
+          'HSTS blocked the SSL strip',
           `The browser upgraded the request for ${EXPECTED_HOST} to https and declined to send anything over http. There was no plaintext request to strip.`,
         ),
       );
@@ -233,6 +286,7 @@ export default function TlsHandshakeLab() {
     setHsts(false);
     setResults({});
     setPinFlagShown(false);
+    trustPolicyDone.current = false;
     setLog([]);
   };
 
@@ -306,7 +360,8 @@ export default function TlsHandshakeLab() {
                 <Badge tone="danger">verification off</Badge>
               )}
               <span className="text-fg-subtle text-xs">
-                reaching <code className="text-fg-muted">{EXPECTED_HOST}</code>
+                reaching <code className="text-fg-muted">{EXPECTED_HOST}</code> · client clock{' '}
+                <code className="text-fg-muted">{fmtDate(REFERENCE_NOW)}</code>
               </span>
             </div>
             <div className="flex gap-2">
@@ -325,6 +380,33 @@ export default function TlsHandshakeLab() {
             </div>
           </div>
 
+          <div className="border-line bg-surface/40 rounded-xl border p-4">
+            <div className="text-fg-subtle mb-2.5 text-xs font-semibold tracking-[0.1em] uppercase">
+              TLS 1.3 handshake
+            </div>
+            <ol className="space-y-1.5">
+              {HANDSHAKE_FLOW.map((m) => (
+                <li key={m.msg} className="flex items-baseline gap-2 text-xs">
+                  <span className="text-fg-subtle w-3 shrink-0 text-center font-mono">{m.dir}</span>
+                  <span
+                    className={cn(
+                      'shrink-0 font-mono font-medium',
+                      m.here ? 'text-accent-text' : 'text-fg',
+                    )}
+                  >
+                    {m.msg}
+                  </span>
+                  <span className="text-fg-muted">— {m.desc}</span>
+                </li>
+              ))}
+            </ol>
+            <p className="text-fg-subtle mt-2.5 text-xs">
+              The client validates the{' '}
+              <span className="text-accent-text font-mono">Certificate</span> the server presents
+              before trusting it. Run that validation on the certificates below.
+            </p>
+          </div>
+
           <div className="grid gap-3 sm:grid-cols-2">
             {SCENARIOS.map((s) => {
               const result = results[s.kind];
@@ -338,6 +420,9 @@ export default function TlsHandshakeLab() {
                     <div className="min-w-0">
                       <div className="text-fg text-sm font-semibold">{s.title}</div>
                       <div className="text-fg-subtle font-mono text-xs">subject: {s.subject}</div>
+                      <div className="text-fg-subtle font-mono text-xs">
+                        valid: {fmtDate(s.notBefore)} → {fmtDate(s.notAfter)}
+                      </div>
                     </div>
                     {result &&
                       (result.ok ? (
@@ -405,7 +490,7 @@ export default function TlsHandshakeLab() {
                 {hsts ? 'HSTS enabled' : 'Enable HSTS'}
               </Button>
               <Button size="sm" onClick={attemptStrip} className="gap-1.5">
-                <Play className="size-3.5" aria-hidden /> Attempt http downgrade
+                <Play className="size-3.5" aria-hidden /> Attempt SSL strip
               </Button>
             </div>
           </div>

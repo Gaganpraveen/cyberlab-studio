@@ -19,6 +19,16 @@ import {
 } from './engine';
 import { emailPhishingInvestigatorLab } from './index';
 
+// Observable display-name tell: the From display name embeds an address or domain
+// that differs from the real From domain (a display-name spoof). This is evidence a
+// student can read directly, not the hidden ground-truth verdict.
+function fromAddrLooksSpoofed(email: Email): boolean {
+  const claimed = email.fromDisplay.match(/@([a-z0-9.-]+)/i)?.[1]?.toLowerCase();
+  if (!claimed) return false;
+  const actual = email.fromAddr.split('@')[1]?.toLowerCase();
+  return !!actual && claimed !== actual;
+}
+
 function AuthBadge({ name, state }: { name: string; state: AuthState }) {
   const tone = state === 'pass' ? 'success' : state === 'fail' ? 'danger' : 'warning';
   return (
@@ -154,7 +164,7 @@ export default function EmailPhishingLab() {
           <Row
             label="From addr"
             value={selected.fromAddr}
-            danger={!selected.fromAddr.endsWith('@acme.com') && selected.isPhish}
+            danger={fromAddrLooksSpoofed(selected)}
           />
           <Row
             label="Return-Path"
@@ -263,7 +273,7 @@ export default function EmailPhishingLab() {
 
       <div className="prose-lesson max-w-none text-sm">
         <Markdown compact>
-          {`Headers don&rsquo;t lie, but they need reading. SPF/DKIM/DMARC tell you whether a server was authorized for a domain — not whether the brand is real, which is why a display-name spoof from gmail can pass all three. Compare the From address to the domain you expect, check that links go where their text claims, and treat urgency as a prompt to slow down, not speed up.`}
+          {`Headers don&rsquo;t lie, but they need reading. SPF/DKIM/DMARC tell you whether a server was authorized for a domain — not whether the brand is real, which is why a display-name spoof from a consumer webmail account can pass all three. Compare the From address to the domain you expect, check that links go where their text claims, and treat urgency as a prompt to slow down, not speed up.`}
         </Markdown>
       </div>
     </div>

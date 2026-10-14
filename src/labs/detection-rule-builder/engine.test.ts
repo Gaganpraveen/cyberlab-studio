@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { hashAnswer } from '../answers';
 import { challenges } from './challenges';
-import { type ClauseId, EVENTS, evaluateRule } from './engine';
+import { CLAUSES, type ClauseId, EVENTS, type LogEvent, evaluateRule } from './engine';
 
 describe('rule evaluation', () => {
   it('no clauses means no alerts', () => {
@@ -34,6 +34,39 @@ describe('rule evaluation', () => {
   it('counts cover every event exactly once', () => {
     const r = evaluateRule(['off-hours']);
     expect(r.tp + r.fp + r.fn + r.tn).toBe(EVENTS.length);
+  });
+
+  it('reports F1 as the harmonic mean of precision and recall', () => {
+    const perfect = evaluateRule(['off-hours', 'foreign']);
+    expect(perfect.precision).toBe(100);
+    expect(perfect.recall).toBe(100);
+    expect(perfect.f1).toBe(100);
+    const broad = evaluateRule(['is-download', 'bytes-over-500']); // precision 60, recall 100
+    expect(broad.f1).toBe(75);
+    expect(evaluateRule([]).f1).toBeNull();
+  });
+
+  it('treats the whole 8pm hour (20:00–20:59) as off-hours', () => {
+    const offHours = CLAUSES.find((c) => c.id === 'off-hours');
+    const at = (hour: number): LogEvent => ({
+      id: 't',
+      user: 'u',
+      action: 'download',
+      bytesMB: 0,
+      hour,
+      failedLogins: 0,
+      foreign: false,
+      malicious: false,
+    });
+    expect(offHours?.test(at(20))).toBe(true);
+    expect(offHours?.test(at(19))).toBe(false);
+    expect(offHours?.test(at(5))).toBe(true);
+  });
+
+  it('gives the failed-logins clause a benign decoy that fires a false positive', () => {
+    // bob is a daytime user who mistyped his password — benign but flagged by this clause alone.
+    const r = evaluateRule(['failed-logins']);
+    expect(r.fp).toBeGreaterThan(0);
   });
 });
 

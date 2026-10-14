@@ -18,8 +18,10 @@ export const ADMIN_FLAG = 'CTF{localhost_is_internal_too}';
 
 /** Fake DNS. A host that is already an IP literal resolves to itself. */
 const DNS: Record<string, string> = {
-  'example.com': '93.184.216.34',
-  'api.example.com': '93.184.216.35',
+  // 192.0.2.0/24 is TEST-NET-1 (RFC 5737), reserved for documentation. It stands in
+  // for a real public host and is treated as external (not internal) by isInternalIp.
+  'example.com': '192.0.2.10',
+  'api.example.com': '192.0.2.11',
   'app.internal': '10.0.0.5',
   localhost: '127.0.0.1',
   // Looks external, resolves internal — defeats hostname-string blocklists.
@@ -33,8 +35,8 @@ interface Service {
 
 /** Fake services keyed by IP. */
 const SERVICES: Record<string, Service> = {
-  '93.184.216.34': { body: '<!doctype html><title>Example Domain</title>' },
-  '93.184.216.35': { body: '{"status":"ok","version":"2"}' },
+  '192.0.2.10': { body: '<!doctype html><title>Example Domain</title>' },
+  '192.0.2.11': { body: '{"status":"ok","version":"2"}' },
   '169.254.169.254': {
     body:
       'iam/security-credentials/web-role\nAccessKeyId: AKIAEXAMPLE\nSecretAccessKey: ' +

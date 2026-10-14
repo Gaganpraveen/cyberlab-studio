@@ -172,13 +172,18 @@ export default function DetectionRuleLab() {
       </div>
 
       {/* Scoreboard */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Metric
           label="Precision"
           value={precisionText}
           good={report.precision === null ? null : report.precision === 100}
         />
         <Metric label="Recall" value={`${report.recall}%`} good={report.recall === 100} />
+        <Metric
+          label="F1 score"
+          value={report.f1 === null ? '—' : `${report.f1}%`}
+          good={report.f1 === null ? null : report.f1 === 100}
+        />
         <Metric label="Alerts" value={String(report.alertCount)} />
       </div>
 

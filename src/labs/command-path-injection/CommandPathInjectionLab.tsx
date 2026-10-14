@@ -23,7 +23,7 @@ import {
 } from './engine';
 import { commandPathInjectionLab } from './index';
 
-const META = /[;&|]/;
+const META = /[;&|$`]/;
 
 export default function CommandPathInjectionLab() {
   const [host, setHost] = useState('localhost; cat /flag');
@@ -160,16 +160,16 @@ export default function CommandPathInjectionLab() {
               <Button
                 size="sm"
                 variant={cmdDef.argArray ? 'ghost' : 'secondary'}
-                disabled={cmdDef.argArray}
-                onClick={() => setCmdDef((d) => ({ ...d, argArray: true }))}
+                aria-pressed={cmdDef.argArray}
+                onClick={() => setCmdDef((d) => ({ ...d, argArray: !d.argArray }))}
               >
                 {cmdDef.argArray ? '✓ Argument array (no shell)' : 'Run without a shell'}
               </Button>
               <Button
                 size="sm"
                 variant={cmdDef.allowlist ? 'ghost' : 'secondary'}
-                disabled={cmdDef.allowlist}
-                onClick={() => setCmdDef((d) => ({ ...d, allowlist: true }))}
+                aria-pressed={cmdDef.allowlist}
+                onClick={() => setCmdDef((d) => ({ ...d, allowlist: !d.allowlist }))}
               >
                 {cmdDef.allowlist ? '✓ Hostname allowlist' : 'Add input allowlist'}
               </Button>
@@ -246,8 +246,8 @@ export default function CommandPathInjectionLab() {
             <Button
               size="sm"
               variant={pathDef.confine ? 'ghost' : 'secondary'}
-              disabled={pathDef.confine}
-              onClick={() => setPathDef({ confine: true })}
+              aria-pressed={pathDef.confine}
+              onClick={() => setPathDef((d) => ({ confine: !d.confine }))}
             >
               {pathDef.confine ? '✓ Canonicalize & confine' : 'Canonicalize & confine to base'}
             </Button>

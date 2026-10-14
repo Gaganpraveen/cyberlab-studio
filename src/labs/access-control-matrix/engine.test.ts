@@ -9,7 +9,7 @@ import {
   PRIV_ESC_FLAG,
   type Policy,
   authorize,
-  isLeastPrivilege,
+  isAccessControlEnforced,
   resourceById,
   userById,
 } from './engine';
@@ -53,12 +53,16 @@ describe('role check', () => {
   });
 });
 
-describe('least privilege', () => {
+describe('access control enforcement', () => {
   it('is reached only when both checks are on', () => {
-    expect(isLeastPrivilege(INSECURE_POLICY)).toBe(false);
-    expect(isLeastPrivilege(SECURE)).toBe(true);
+    expect(isAccessControlEnforced(INSECURE_POLICY)).toBe(false);
+    expect(isAccessControlEnforced(SECURE)).toBe(true);
     expect(authorize(mallory, docAlice, 'read', SECURE).allowed).toBe(false);
     expect(authorize(mallory, adminUsers, 'read', SECURE).allowed).toBe(false);
+  });
+
+  it('still lets the admin override read every object (so it is not full least privilege)', () => {
+    expect(authorize(root, docAlice, 'read', SECURE).allowed).toBe(true);
   });
 });
 

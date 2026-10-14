@@ -210,7 +210,7 @@ export default function SteganographyLab() {
 
       <div className="prose-lesson max-w-none text-sm">
         <Markdown compact>
-          {`Toggle the LSB plane and watch the hidden message appear as structure in what should be random noise — that is exactly how steganalysis detects it. The carrier looks identical to the eye because each byte moved by at most one. Remember: this is **encoding**, not encryption. The right primitive to protect contents is a cipher; hiding only delays discovery.`}
+          {`Toggle the LSB plane. This carrier has a regular, striped LSB pattern, so an embedded message shows up as an irregular patch that breaks the stripes — the pixels whose low bit was overwritten. (A real photo is the opposite: its LSB plane looks like random noise, and embedding adds visible structure.) Either way, a disturbed LSB plane is what steganalysis looks for. The carrier still looks identical to the eye because each byte moved by at most one. Remember: this is **encoding**, not encryption. The right primitive to protect contents is a cipher; hiding only delays discovery.`}
         </Markdown>
       </div>
     </div>

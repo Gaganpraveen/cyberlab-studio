@@ -7,7 +7,7 @@ import { LOGIN_FLAG, NO_DEFENSES, type Defenses, probeUser, runAttack } from './
 
 const only = (patch: Partial<Defenses>): Defenses => ({ ...NO_DEFENSES, ...patch });
 
-describe('credential stuffing', () => {
+describe('the dictionary attack', () => {
   it('cracks the weak password and authenticates with no defenses', () => {
     const r = runAttack(NO_DEFENSES);
     expect(r.found).toBe(true);
@@ -23,10 +23,11 @@ describe('each defense stops the same attack on its own', () => {
     expect(r.blockedBy).toBe('rate limiting');
   });
 
-  it('account lockout blocks before the password is reached', () => {
+  it('account lockout blocks before the password is reached, and locks out the real user', () => {
     const r = runAttack(only({ lockout: true }));
     expect(r.authenticated).toBe(false);
     expect(r.blockedBy).toBe('account lockout');
+    expect(r.legitimateUserLockedOut).toBe(true);
   });
 
   it('MFA lets the guess land but refuses the session', () => {
@@ -63,7 +64,7 @@ describe('challenges', () => {
     const accepts = (id: string, answer: string) =>
       byId[id]?.acceptedHashes?.includes(hashAnswer(answer)) ?? false;
     expect(accepts('login-crack', LOGIN_FLAG)).toBe(true);
-    expect(accepts('login-stuffing', 'credential stuffing')).toBe(true);
+    expect(accepts('login-stuffing', 'dictionary attack')).toBe(true);
     expect(accepts('login-enumeration', 'username enumeration')).toBe(true);
   });
 });

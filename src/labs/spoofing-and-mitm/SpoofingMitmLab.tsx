@@ -78,7 +78,7 @@ export default function SpoofingMitmLab() {
       evidence(
         'info',
         'Enabled dynamic ARP inspection',
-        'The honest gateway binding is restored and locked.',
+        'Forged replies are now rejected. A binding already poisoned is dropped the next time it is validated — run the spoof again to watch inspection reject it and the honest binding stand.',
       ),
     );
   };
@@ -109,7 +109,11 @@ export default function SpoofingMitmLab() {
   const toggleDnssec = () => {
     setDns(enableDnssec(dns));
     add(
-      evidence('info', 'Enabled DNSSEC', 'Records are now validated against the zone signature.'),
+      evidence(
+        'info',
+        'Enabled DNSSEC',
+        'Records are now validated against the zone signature. A forgery already cached is dropped on its next lookup — poison the cache again to watch it get rejected.',
+      ),
     );
   };
 

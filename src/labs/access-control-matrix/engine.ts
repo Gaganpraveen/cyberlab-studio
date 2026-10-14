@@ -137,7 +137,12 @@ export function authorize(
   };
 }
 
-/** True when the policy blocks every cross-user and non-admin-to-admin access. */
-export function isLeastPrivilege(policy: Policy): boolean {
+/**
+ * True when both guards are on, so the policy blocks every cross-user and
+ * non-admin-to-admin access — broken access control is fixed. This is not full
+ * least privilege: the explicit admin override still reads every object, which a
+ * strict least-privilege design would additionally scope and log.
+ */
+export function isAccessControlEnforced(policy: Policy): boolean {
   return policy.ownershipCheck && policy.roleCheck;
 }

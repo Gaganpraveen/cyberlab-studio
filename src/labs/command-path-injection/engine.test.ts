@@ -38,6 +38,35 @@ describe('command injection', () => {
     expect(r.blocked).toBe(true);
     expect(r.outputs).toHaveLength(0);
   });
+
+  it('runs a command through $(...) substitution when undefended', () => {
+    const r = runPing('$(cat /flag)', CMD_NONE);
+    expect(r.injected).toBe(true);
+    expect(r.flag).toBe(COMMAND_FLAG);
+  });
+
+  it('runs a command through backtick substitution when undefended', () => {
+    const r = runPing('`cat /flag`', CMD_NONE);
+    expect(r.injected).toBe(true);
+    expect(r.flag).toBe(COMMAND_FLAG);
+  });
+
+  it('argument arrays neutralize command substitution too', () => {
+    const r = runPing('$(cat /flag)', { argArray: true, allowlist: false });
+    expect(r.injected).toBe(false);
+    expect(r.flag).toBeUndefined();
+  });
+
+  it('an allowlist rejects a substitution payload', () => {
+    const r = runPing('$(cat /flag)', { argArray: false, allowlist: true });
+    expect(r.blocked).toBe(true);
+  });
+
+  it('rejects a leading hyphen so option injection fails even with an arg array', () => {
+    // `--` before the host means `-v` is read as a (bogus) hostname, not an option.
+    const r = runPing('-v', { argArray: true, allowlist: false });
+    expect(r.outputs[0]).toContain('Name or service not known');
+  });
 });
 
 describe('path traversal', () => {

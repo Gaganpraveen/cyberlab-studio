@@ -21,7 +21,7 @@ export const challenges: ChallengeDefinition[] = [
     ],
     acceptedHashes: [hashAnswer('e'), hashAnswer('the letter e'), hashAnswer('letter e')],
     solution:
-      'The letter **E** is the most common in English, at about 12.7% of all letters — nearly twice the next (T). A cipher that maps each letter to one fixed substitute keeps this fingerprint intact: the most common ciphertext letter is almost always the encryption of E. That single fact is the crack that frequency analysis pries open.',
+      'The letter **E** is the most common in English, at about 12.7% of all letters — clearly ahead of the next most common, T (about 9%). A cipher that maps each letter to one fixed substitute keeps this fingerprint intact: the most common ciphertext letter is almost always the encryption of E. That single fact is the crack that frequency analysis pries open.',
   },
   {
     id: 'cipher-caesar-break',
@@ -74,7 +74,7 @@ export const challenges: ChallengeDefinition[] = [
       hashAnswer(String(VIGENERE_KEY.length)),
       hashAnswer(`${VIGENERE_KEY.length} letters`),
     ],
-    solution: `The analysis points to a key length of **${VIGENERE_KEY.length}**. A repeating key means every ${VIGENERE_KEY.length}th letter was shifted by the same amount, so splitting the text into ${VIGENERE_KEY.length} columns turns each column back into a single-shift (Caesar) cipher — and its index of coincidence climbs back toward the English value of 0.067. Wrong lengths leave the columns looking random (about 0.038).`,
+    solution: `The analysis points to a key length of **${VIGENERE_KEY.length}**. A repeating key means every ${VIGENERE_KEY.length}th letter was shifted by the same amount, so splitting the text into ${VIGENERE_KEY.length} columns turns each column back into a single-shift (Caesar) cipher — and its index of coincidence climbs back toward the English value of 0.067. Wrong lengths mix the shifts together, so their columns stay lower and do not spike; the true length (and its multiples) is the one that stands out.`,
   },
   {
     id: 'cipher-vigenere-key',

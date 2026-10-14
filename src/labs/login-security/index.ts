@@ -8,9 +8,9 @@ export const loginSecurityLab: LabDefinition = {
   id: 'login-security',
   title: 'Login Under Attack',
   tagline:
-    'Credential-stuff a weak login, then stop the same attack with rate limiting, lockout, and MFA — and close a username leak.',
+    'Run a dictionary attack on a weak login, then stop the same attack with rate limiting, lockout, and MFA — and close a username leak.',
   description:
-    'Attack a login endpoint online, not offline: run a credential-stuffing wordlist against a reused weak password with no throttling and walk straight in. Then watch rate limiting, account lockout, and multi-factor authentication each stop the same attack, and see how verbose error messages leak which usernames exist until generic errors close the gap.',
+    'Attack a login endpoint online, not offline: run a dictionary attack — a wordlist of common passwords — against a reused weak password with no throttling and walk straight in. Then watch rate limiting, account lockout, and multi-factor authentication each stop the same attack, and see how verbose error messages leak which usernames exist until generic errors close the gap.',
   difficulty: 'intermediate',
   estimatedMinutes: 25,
   mode: 'simulation',
@@ -18,7 +18,7 @@ export const loginSecurityLab: LabDefinition = {
   topicIds: ['IAM-02', 'IAM-03'],
   icon: LogIn,
   objectives: [
-    'Run a credential-stuffing attack against a weak, reused password',
+    'Run a dictionary attack against a weak, reused password',
     'Stop online guessing with per-account rate limiting',
     'Stop sustained guessing with account lockout, and weigh its DoS risk',
     'Defeat a correct-password attack with multi-factor authentication',

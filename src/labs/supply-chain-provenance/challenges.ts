@@ -37,7 +37,7 @@ export const challenges: ChallengeDefinition[] = [
       'Pick the tampered release and run Verify provenance.',
     ],
     acceptedHashes: [hashAnswer(PROVENANCE_FLAG)],
-    solution: `Provenance verification recomputes the artifact hash and compares it to the signed attestation. A swapped artifact no longer matches, so verification refuses it — even though the name and version look right. The flag is **${PROVENANCE_FLAG}**. The forged release fails too, on the signature and the builder allowlist.`,
+    solution: `Provenance verification recomputes the artifact hash and compares it to the signed attestation. A swapped artifact no longer matches, so verification refuses it — even though the name and version look right. The flag is **${PROVENANCE_FLAG}**. The forged release fails too, on the signature, the builder allowlist, and the source-repository match.`,
   },
   {
     id: 'sc-dep-fix',

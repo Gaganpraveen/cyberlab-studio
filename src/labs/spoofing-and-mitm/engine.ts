@@ -33,7 +33,9 @@ export const DEVICES: Device[] = [
     id: 'gateway',
     name: 'Router / gateway',
     ip: '192.0.2.1',
-    mac: 'bb:bb:bb:00:00:01',
+    // Locally administered, unicast MAC. (A valid unicast address must have the
+    // least-significant bit of the first octet clear; `bb` would be multicast.)
+    mac: '02:00:00:00:00:01',
     role: 'gateway',
   },
   { id: 'server', name: 'File server', ip: '192.0.2.20', mac: 'cc:cc:cc:00:00:20', role: 'server' },
@@ -67,10 +69,15 @@ export interface ArpState {
   dai: boolean;
 }
 
-/** The honest ARP table every device starts with. */
+/** The honest ARP table the victim starts with. */
 export function initialArp(): ArpState {
   const table: Record<string, string> = {};
-  for (const d of DEVICES) table[d.ip] = d.mac;
+  // A host's own ARP cache lists the *other* hosts it has resolved, not itself.
+  // This table is the victim's view, so omit the victim's own entry.
+  for (const d of DEVICES) {
+    if (d.role === 'victim') continue;
+    table[d.ip] = d.mac;
+  }
   return { table, dai: false };
 }
 
@@ -85,7 +92,12 @@ export interface SpoofResult {
  * attacker is now on the path. With DAI, the unsolicited reply is rejected.
  */
 export function spoofArp(state: ArpState): SpoofResult {
-  if (state.dai) return { state, succeeded: false };
+  if (state.dai) {
+    // Inspection drops the forged reply and the trusted binding re-asserts, so a
+    // binding poisoned earlier is also corrected the next time the attack is run.
+    const table = { ...state.table, [GATEWAY_IP]: deviceByRole('gateway').mac };
+    return { state: { ...state, table }, succeeded: false };
+  }
   const table = { ...state.table, [GATEWAY_IP]: ATTACKER_MAC };
   return { state: { ...state, table }, succeeded: true };
 }
@@ -95,9 +107,13 @@ export function isOnPath(state: ArpState): boolean {
   return state.table[GATEWAY_IP] === ATTACKER_MAC;
 }
 
-/** Enable dynamic ARP inspection and restore the honest binding. */
+/**
+ * Enable dynamic ARP inspection. This validates replies going forward; it does
+ * not retroactively scrub a cache that is already poisoned. An existing forged
+ * binding is dropped only when it is next validated (see `spoofArp` under DAI).
+ */
 export function enableDai(state: ArpState): ArpState {
-  return { table: { ...state.table, [GATEWAY_IP]: deviceByRole('gateway').mac }, dai: true };
+  return { ...state, dai: true };
 }
 
 /** A MAC that is claimed by more than one IP — the tell-tale of ARP spoofing. */
@@ -135,7 +151,14 @@ export interface PoisonResult {
  * with DNSSEC the record fails validation and the cache is unchanged.
  */
 export function poisonDns(state: DnsState, host: string, ip: string): PoisonResult {
-  if (state.dnssec) return { state, succeeded: false };
+  if (state.dnssec) {
+    // The forged record fails signature validation and is dropped; the signed
+    // honest record stands, which also corrects a record poisoned earlier.
+    return {
+      state: { ...state, cache: { ...state.cache, [PROTECTED_HOST]: HONEST_IP } },
+      succeeded: false,
+    };
+  }
   return { state: { ...state, cache: { ...state.cache, [host]: ip } }, succeeded: true };
 }
 
@@ -143,6 +166,11 @@ export function resolve(state: DnsState, host: string): string | undefined {
   return state.cache[host];
 }
 
+/**
+ * Enable DNSSEC validation. Like inspection, this validates answers going
+ * forward; it does not scrub a record that is already poisoned. The forgery is
+ * dropped only when the name is resolved (and re-validated) again.
+ */
 export function enableDnssec(state: DnsState): DnsState {
-  return { cache: { ...state.cache, [PROTECTED_HOST]: HONEST_IP }, dnssec: true };
+  return { ...state, dnssec: true };
 }

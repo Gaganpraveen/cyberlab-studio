@@ -54,6 +54,29 @@ describe('ARP spoofing', () => {
     const { state } = spoofArp(initialArp());
     expect(duplicateMacs(state)).toContain(ATTACKER_MAC);
   });
+
+  it('does not list the victim in its own ARP cache', () => {
+    const victimIp = deviceByRole('victim').ip;
+    expect(initialArp().table[victimIp]).toBeUndefined();
+  });
+
+  it('enabling inspection does not retroactively clean an already-poisoned entry', () => {
+    const poisoned = spoofArp(initialArp()).state;
+    expect(isOnPath(poisoned)).toBe(true);
+    const hardened = enableDai(poisoned);
+    expect(hardened.dai).toBe(true);
+    // The stale forged binding persists until it is validated again.
+    expect(isOnPath(hardened)).toBe(true);
+    // Re-attempting under inspection drops the forgery and the honest binding stands.
+    const after = spoofArp(hardened);
+    expect(after.succeeded).toBe(false);
+    expect(isOnPath(after.state)).toBe(false);
+  });
+
+  it('a valid unicast gateway MAC has the multicast bit clear', () => {
+    const firstOctet = parseInt(deviceByRole('gateway').mac.split(':')[0] ?? '0', 16);
+    expect(firstOctet & 1).toBe(0);
+  });
 });
 
 describe('DNS cache poisoning', () => {
@@ -72,6 +95,19 @@ describe('DNS cache poisoning', () => {
     const { state, succeeded } = poisonDns(hardened, PROTECTED_HOST, '192.0.2.66');
     expect(succeeded).toBe(false);
     expect(resolve(state, PROTECTED_HOST)).toBe(HONEST_IP);
+  });
+
+  it('enabling DNSSEC does not retroactively clean a poisoned record', () => {
+    const poisoned = poisonDns(initialDns(), PROTECTED_HOST, '192.0.2.66').state;
+    expect(resolve(poisoned, PROTECTED_HOST)).toBe('192.0.2.66');
+    const hardened = enableDnssec(poisoned);
+    expect(hardened.dnssec).toBe(true);
+    // The forged record is still cached until it is validated again.
+    expect(resolve(hardened, PROTECTED_HOST)).toBe('192.0.2.66');
+    // Re-validating on the next lookup drops the forgery and the honest answer stands.
+    const after = poisonDns(hardened, PROTECTED_HOST, '192.0.2.66');
+    expect(after.succeeded).toBe(false);
+    expect(resolve(after.state, PROTECTED_HOST)).toBe(HONEST_IP);
   });
 });
 

@@ -3,7 +3,7 @@
  * authentication defenses. Nothing is hashed or sent anywhere — the "attack" is
  * a bounded walk through a wordlist, and each defense simply bounds it sooner.
  *
- * The arc: a weak password with no throttling falls to credential stuffing;
+ * The arc: a weak password with no throttling falls to an online dictionary attack;
  * rate limiting, account lockout, and multi-factor authentication each stop the
  * same attack on their own; and verbose error messages leak which usernames
  * exist (username enumeration), which generic errors close.
@@ -15,8 +15,9 @@ export const LOGIN_FLAG = 'CTF{weak_password_no_rate_limit}';
 
 /** Attempts allowed in the window before throttling kicks in. */
 export const RATE_LIMIT = 5;
-/** Failed attempts before the account is locked. */
-export const LOCKOUT_THRESHOLD = 5;
+/** Failed attempts before the account is locked. Lower than the rate-limit window
+ * so the two defenses are visibly distinct in the attack report. */
+export const LOCKOUT_THRESHOLD = 3;
 
 /** A short list of the most common passwords, as an attacker would try them. */
 export const WORDLIST: readonly string[] = [
@@ -61,10 +62,12 @@ export interface AttackReport {
   /** The attacker actually obtained an authenticated session. */
   authenticated: boolean;
   blockedBy: BlockedBy;
+  /** Hard lockout also locks out the real account owner (a denial of service). */
+  legitimateUserLockedOut?: boolean;
   flag?: string;
 }
 
-/** Simulate a credential-stuffing / brute-force run against the target account. */
+/** Simulate an online dictionary attack (wordlist password guessing) against the target account. */
 export function runAttack(defenses: Defenses): AttackReport {
   const idx = WORDLIST.indexOf(TARGET_PASSWORD);
   const needed = idx + 1; // attempts required to reach the correct password
@@ -75,6 +78,8 @@ export function runAttack(defenses: Defenses): AttackReport {
       found: false,
       authenticated: false,
       blockedBy: 'account lockout',
+      // Hard lockout is collateral: the real account owner is locked out too.
+      legitimateUserLockedOut: true,
     };
   }
   if (defenses.rateLimit && RATE_LIMIT < needed) {

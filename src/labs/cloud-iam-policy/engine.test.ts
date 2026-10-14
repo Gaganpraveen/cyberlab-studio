@@ -44,6 +44,17 @@ describe('policy evaluation', () => {
     expect(d.effect).toBe('Deny');
     expect(d.matchedSid).toBe('DenySelfEscalation');
   });
+
+  it('denies the role self-escalation action, not only the user variant', () => {
+    const policy = buildPolicy({ ...DEFAULT_DEFENSES, denyEscalation: true });
+    const d = evaluate(policy, {
+      principal: DEVELOPER,
+      action: 'iam:AttachRolePolicy',
+      resource: 'arn:aws:iam::111122223333:role/developers',
+    });
+    expect(d.effect).toBe('Deny');
+    expect(d.matchedSid).toBe('DenySelfEscalation');
+  });
 });
 
 describe('attacks and fixes', () => {

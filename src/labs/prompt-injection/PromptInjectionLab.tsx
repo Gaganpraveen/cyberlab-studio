@@ -22,12 +22,14 @@ const DEFENSE_LABELS: { key: keyof Defenses; label: string; detail: string; weak
   {
     key: 'canonicalize',
     label: 'Input validation + canonicalization',
-    detail: 'Normalize homoglyphs and zero-width characters, then reject override intent.',
+    detail:
+      'Normalize homoglyphs and zero-width characters, then reject override intent. Narrows the gap, but a reworded attack can still slip a denylist.',
   },
   {
     key: 'separateInstructions',
     label: 'Instruction / data separation',
-    detail: 'Treat user text as data in its own channel; it can never act as a command.',
+    detail:
+      'Treat user text as data in a separate channel. Strong, but not foolproof — least privilege is the control that truly holds.',
   },
   {
     key: 'leastPrivilege',
@@ -65,15 +67,23 @@ export default function PromptInjectionLab() {
       { role: 'you', text },
       { role: 'assistant', text: turn.output, turn },
     ]);
-    if (turn.blockedBy) markChallengeSolved('pi-defend');
+    if (turn.blockedBy && !turn.falsePositive) markChallengeSolved('pi-defend');
     add(
       evidence(
-        turn.leaked ? 'danger' : turn.blockedBy ? 'success' : 'info',
+        turn.leaked
+          ? 'danger'
+          : turn.falsePositive
+            ? 'warning'
+            : turn.blockedBy
+              ? 'success'
+              : 'info',
         turn.leaked
           ? 'Secret leaked via prompt injection'
-          : turn.blockedBy
-            ? `Attack blocked by ${turn.blockedBy}`
-            : 'Assistant responded',
+          : turn.falsePositive
+            ? `Benign request wrongly blocked by ${turn.blockedBy} (false positive)`
+            : turn.blockedBy
+              ? `Attack blocked by ${turn.blockedBy}`
+              : 'Assistant responded',
         turn.reasoning.join('\n') + (turn.flag ? `\nFlag: ${turn.flag}` : ''),
       ),
     );
@@ -95,8 +105,9 @@ export default function PromptInjectionLab() {
       </p>
       <Callout tone="info" title="Why injection works">
         When trusted instructions and untrusted input share one channel, the model can&rsquo;t tell
-        them apart. The fixes are structural, not a longer list of banned words. Everything here is
-        a fixed rule engine, not a real model.
+        them apart. The structural fixes beat a longer list of banned words, but none is foolproof;
+        least privilege — keeping the secret out of reach — holds even when a filter is bypassed.
+        Everything here is a fixed rule engine, not a real model.
       </Callout>
     </div>
   );
@@ -180,15 +191,20 @@ export default function PromptInjectionLab() {
                   ? 'border-line bg-surface-2 text-fg'
                   : m.turn?.leaked
                     ? 'border-danger/40 bg-danger-soft text-fg'
-                    : m.turn?.blockedBy
+                    : m.turn?.blockedBy && !m.turn?.falsePositive
                       ? 'border-success/40 bg-success-soft text-fg'
                       : 'border-line bg-surface-1 text-fg',
               )}
             >
               <div className="break-words whitespace-pre-wrap">{m.text}</div>
-              {m.turn?.blockedBy && (
+              {m.turn?.blockedBy && !m.turn?.falsePositive && (
                 <div className="text-success mt-1 flex items-center gap-1 text-xs">
                   <ShieldCheck className="size-3.5" aria-hidden /> blocked by {m.turn.blockedBy}
+                </div>
+              )}
+              {m.turn?.falsePositive && (
+                <div className="text-fg-muted mt-1 text-xs">
+                  false positive — {m.turn.blockedBy} blocked a benign request
                 </div>
               )}
               {m.turn?.flag && (
@@ -230,7 +246,7 @@ export default function PromptInjectionLab() {
         </div>
         <div className="prose-lesson max-w-none text-xs">
           <Markdown compact>
-            {`The obfuscated payload hides the same words with a homoglyph and zero-width spaces. It slips past the keyword blocklist but not canonicalization — proof that denylists fail open and the real fixes are structural: separate data from instructions, validate the canonical form, and keep secrets out of context.`}
+            {`The obfuscated payload hides the same words with a homoglyph and zero-width spaces. It slips past the keyword blocklist, while the blocklist also rejects benign messages that merely contain a banned word — the false positives that make denylists fail in both directions. The structural controls (separating data from instructions, validating the canonical form) cut the risk sharply but are not foolproof; keeping secrets out of context is the one guarantee.`}
           </Markdown>
         </div>
       </div>

@@ -16,7 +16,7 @@ export const challenges: ChallengeDefinition[] = [
     prompt:
       'The developers role is granted `iam:*` on `*`. Run the self-escalation attack to attach admin to your own role, then submit the flag it reveals.',
     hints: [
-      '`iam:*` includes `iam:AttachUserPolicy` — the call that grants a policy to a principal.',
+      '`iam:*` includes `iam:AttachRolePolicy` — the call that attaches a managed policy to a role.',
       'Leave the defenses off and run &ldquo;Escalate to admin&rdquo;.',
     ],
     acceptedHashes: [hashAnswer(ESCALATION_FLAG)],
@@ -54,7 +54,7 @@ export const challenges: ChallengeDefinition[] = [
       'Either defense works; an explicit Deny is the belt-and-braces option because Deny always wins.',
     ],
     solution:
-      'Two tools close this. Scoping the role to only the actions it needs removes `iam:*` entirely. An explicit Deny on `iam:AttachUserPolicy` and friends is a backstop: because Deny overrides any Allow, it holds even if a future Allow gets too broad. Defense in depth uses both.',
+      'Two tools close this. Scoping the role to only the actions it needs removes `iam:*` entirely. An explicit Deny on `iam:AttachRolePolicy` and friends is a backstop: because Deny overrides any Allow, it holds even if a future Allow gets too broad. Defense in depth uses both.',
   },
   {
     id: 'iam-fix-bucket',

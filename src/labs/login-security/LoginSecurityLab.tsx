@@ -31,14 +31,14 @@ const TASK_FOR: Record<string, string> = {
 function DefenseToggle({
   label,
   on,
-  onEnable,
+  onToggle,
 }: {
   label: string;
   on: boolean;
-  onEnable: () => void;
+  onToggle: () => void;
 }) {
   return (
-    <Button size="sm" variant={on ? 'ghost' : 'secondary'} disabled={on} onClick={onEnable}>
+    <Button size="sm" variant={on ? 'ghost' : 'secondary'} aria-pressed={on} onClick={onToggle}>
       {on ? `✓ ${label}` : `Enable ${label}`}
     </Button>
   );
@@ -52,9 +52,16 @@ export default function LoginSecurityLab() {
   const [log, setLog] = useState<EvidenceEntry[]>([]);
   const add = (e: EvidenceEntry) => setLog((prev) => [...prev, e]);
 
-  const enable = (key: keyof Defenses, label: string) => {
-    setDefenses((d) => ({ ...d, [key]: true }));
-    add(evidence('info', `Enabled ${label}`, `The next attack run will face ${label}.`));
+  const toggle = (key: keyof Defenses, label: string) => {
+    const willBeOn = !defenses[key];
+    setDefenses((d) => ({ ...d, [key]: !d[key] }));
+    add(
+      evidence(
+        'info',
+        `${willBeOn ? 'Enabled' : 'Disabled'} ${label}`,
+        willBeOn ? `The next attack run will face ${label}.` : `${label} is off again.`,
+      ),
+    );
   };
 
   const launch = () => {
@@ -114,7 +121,7 @@ export default function LoginSecurityLab() {
       </p>
       <LabSteps
         steps={[
-          { title: 'Stuff credentials', body: 'Run the wordlist against a reused weak password.' },
+          { title: 'Guess the password', body: 'Run the wordlist against a reused weak password.' },
           { title: 'Rate limit', body: 'Cap the guesses per window and cut the attack off.' },
           { title: 'Lock out', body: 'Disable the account after repeated failures.' },
           { title: 'Require MFA', body: 'Make a correct password insufficient on its own.' },
@@ -123,7 +130,8 @@ export default function LoginSecurityLab() {
       />
       <Callout tone="info" title="A model, not a real service">
         No password is hashed and nothing is sent anywhere. The attack is a bounded walk through a
-        wordlist of {WORDLIST.length} common passwords; the account is fictional.
+        wordlist of {WORDLIST.length} common passwords; the account is fictional. Toggle each
+        defense on its own to see its individual effect.
       </Callout>
     </div>
   );
@@ -154,23 +162,23 @@ export default function LoginSecurityLab() {
               <DefenseToggle
                 label="rate limiting"
                 on={defenses.rateLimit}
-                onEnable={() => enable('rateLimit', 'rate limiting')}
+                onToggle={() => toggle('rateLimit', 'rate limiting')}
               />
               <DefenseToggle
                 label="account lockout"
                 on={defenses.lockout}
-                onEnable={() => enable('lockout', 'account lockout')}
+                onToggle={() => toggle('lockout', 'account lockout')}
               />
               <DefenseToggle
                 label="MFA"
                 on={defenses.mfa}
-                onEnable={() => enable('mfa', 'multi-factor authentication')}
+                onToggle={() => toggle('mfa', 'multi-factor authentication')}
               />
             </div>
           </div>
 
           <Button onClick={launch} className="gap-1.5">
-            <Play className="size-4" aria-hidden /> Launch credential-stuffing attack
+            <Play className="size-4" aria-hidden /> Launch dictionary attack
           </Button>
 
           {report && (
@@ -198,12 +206,20 @@ export default function LoginSecurityLab() {
                   {report.flag}
                 </div>
               ) : (
-                <p className="text-fg text-sm">
-                  Blocked by <strong>{report.blockedBy}</strong>
-                  {report.found
-                    ? ' — the password was guessed, but the second factor refused the session.'
-                    : ' before the password was reached.'}
-                </p>
+                <>
+                  <p className="text-fg text-sm">
+                    Blocked by <strong>{report.blockedBy}</strong>
+                    {report.found
+                      ? ' — the password was guessed, but the second factor refused the session.'
+                      : ' before the password was reached.'}
+                  </p>
+                  {report.legitimateUserLockedOut && (
+                    <div className="border-warning/40 bg-warning-soft text-fg rounded-md border p-2 text-xs">
+                      The real {TARGET_USER} is now locked out too — that collateral denial of
+                      service is the cost of hard lockout.
+                    </div>
+                  )}
+                </>
               )}
             </div>
           )}
@@ -221,7 +237,7 @@ export default function LoginSecurityLab() {
             <DefenseToggle
               label="generic errors"
               on={defenses.genericErrors}
-              onEnable={() => enable('genericErrors', 'generic errors')}
+              onToggle={() => toggle('genericErrors', 'generic errors')}
             />
           </div>
 

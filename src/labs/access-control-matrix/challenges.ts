@@ -79,7 +79,7 @@ export const challenges: ChallengeDefinition[] = [
       'Watch Mallory&rsquo;s row in the matrix turn to denied for other people&rsquo;s documents.',
     ],
     solution:
-      'The ownership check compares each object&rsquo;s owner to the authenticated caller and denies the mismatch, closing the IDOR. Owners keep access to their own objects, and the explicit admin override keeps administrators working — least privilege, not no privilege.',
+      'The ownership check compares each object&rsquo;s owner to the authenticated caller and denies the mismatch, closing the IDOR. Owners keep access to their own objects, and the explicit admin override keeps administrators working — though that blanket override is itself broad access, which a least-privilege design would scope and log.',
   },
   {
     id: 'acl-fix-rbac',

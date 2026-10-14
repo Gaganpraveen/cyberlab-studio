@@ -22,13 +22,37 @@ const FAKE_FS: Record<string, string> = {
   '/etc/passwd': 'root:x:0:0:root:/root:/bin/bash\nwww-data:x:33:33:/var/www:/usr/sbin/nologin',
 };
 
+/**
+ * A valid hostname: letters, digits, dots, hyphens — but never a *leading*
+ * hyphen, which a program reads as an option flag (e.g. `-v`), not a host.
+ * This serves as both the input allowlist and the check the fake `ping` runs
+ * on its host argument, so option injection is rejected in either defense.
+ */
+const HOSTNAME = /^[a-z0-9][a-z0-9.-]*$/i;
+
+/**
+ * Shell command substitution: `$(...)` and backticks run their inner command
+ * first and splice the output back into the command line. Modeled so the
+ * vulnerable path treats them as a real shell would, not as inert text.
+ */
+const SUBSTITUTION = /\$\(([^)]*)\)|`([^`]*)`/g;
+
+function extractSubstitutions(input: string): string[] {
+  const found: string[] = [];
+  for (const m of input.matchAll(SUBSTITUTION)) {
+    found.push((m[1] ?? m[2] ?? '').trim());
+  }
+  return found;
+}
+
 /** Run one parsed command (argv). Only four commands are understood. */
 function runCommand(argv: string[]): string {
   const [cmd, ...args] = argv;
   switch (cmd) {
     case 'ping': {
-      const host = args[0] ?? '';
-      return /^[a-z0-9.-]+$/i.test(host)
+      // `--` ends option parsing: whatever follows is a positional argument.
+      const host = (args[0] === '--' ? args[1] : args[0]) ?? '';
+      return HOSTNAME.test(host)
         ? `PING ${host}: 3 packets transmitted, 3 received`
         : `ping: ${host || '(empty)'}: Name or service not known`;
     }
@@ -78,8 +102,6 @@ export interface CmdResult {
   flag?: string;
 }
 
-const HOSTNAME = /^[a-z0-9.-]+$/i;
-
 /** Model the "ping this host" tool under the chosen defenses. */
 export function runPing(host: string, defenses: CmdDefenses): CmdResult {
   if (defenses.allowlist && !HOSTNAME.test(host)) {
@@ -93,17 +115,40 @@ export function runPing(host: string, defenses: CmdDefenses): CmdResult {
   }
 
   if (defenses.argArray) {
-    // No shell: the whole input is a single argument to ping.
+    // No shell: the whole input is a single argument to ping, and `--` stops a
+    // leading `-` from being read as an option. Metacharacters and $(...) are
+    // inert — there is no shell to interpret them, and no option to inject.
     return {
       blocked: false,
       injected: false,
-      executed: `execFile("ping", [${JSON.stringify(host)}])`,
-      outputs: [runCommand(['ping', host])],
+      executed: `execFile("ping", ["--", ${JSON.stringify(host)}])`,
+      outputs: [runCommand(['ping', '--', host])],
     };
   }
 
   // Vulnerable: input is concatenated into a shell command string.
   const shellString = `ping ${host}`;
+
+  // A real shell expands $(...) / `...` first — running those commands and
+  // splicing their output into the line before it is split and executed. Any
+  // substitution means an attacker command ran, so this is injection too.
+  const subs = extractSubstitutions(shellString);
+  if (subs.length > 0) {
+    let i = 0;
+    const subOutputs = subs.map((s) => runCommand(tokenize(s)));
+    const substituted = shellString.replace(SUBSTITUTION, () => subOutputs[i++] ?? '');
+    const segments = splitShell(substituted);
+    const outputs = segments.map((s) => runCommand(tokenize(s)));
+    const joined = [...subOutputs, ...outputs].join('\n');
+    return {
+      blocked: false,
+      injected: true,
+      executed: `sh -c ${JSON.stringify(shellString)}`,
+      outputs,
+      flag: joined.includes(COMMAND_FLAG) ? COMMAND_FLAG : undefined,
+    };
+  }
+
   const segments = splitShell(shellString);
   const outputs = segments.map((s) => runCommand(tokenize(s)));
   const injected = segments.length > 1;
