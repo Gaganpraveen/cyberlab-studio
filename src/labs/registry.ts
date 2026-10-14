@@ -11,6 +11,7 @@ import { jwtLab } from './jwt';
 import { loginSecurityLab } from './login-security';
 import { osPermissionsLab } from './os-permissions';
 import { passwordCrackingLab } from './password-cracking';
+import { promptInjectionLab } from './prompt-injection';
 import { reconAttackSurfaceLab } from './recon-and-attack-surface';
 import { spoofingMitmLab } from './spoofing-and-mitm';
 import { sqlInjectionLab } from './sql-injection';
@@ -45,6 +46,7 @@ export const LABS: LabDefinition[] = [
   supplyChainProvenanceLab,
   emailPhishingInvestigatorLab,
   steganographyStudioLab,
+  promptInjectionLab,
 ];
 
 const labById = new Map(LABS.map((lab) => [lab.id, lab]));
