@@ -18,6 +18,7 @@ export const ddosLab: LabDefinition = {
   topicIds: ['MAL-05', 'MAL-06', 'APP-08'],
   icon: Network,
   objectives: [],
+  status: 'in-development',
   component: lazy(() => import('./DdosLab')),
   challenges,
 };

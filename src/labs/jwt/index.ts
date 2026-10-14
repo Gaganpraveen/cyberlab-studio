@@ -18,6 +18,7 @@ export const jwtLab: LabDefinition = {
   topicIds: ['IAM-04', 'CRY-04'],
   icon: Fingerprint,
   objectives: [],
+  status: 'in-development',
   component: lazy(() => import('./JwtLab')),
   challenges,
 };

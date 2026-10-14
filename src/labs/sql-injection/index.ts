@@ -18,6 +18,7 @@ export const sqlInjectionLab: LabDefinition = {
   topicIds: ['APP-01', 'APP-02'],
   icon: Database,
   objectives: [],
+  status: 'in-development',
   component: lazy(() => import('./SqlInjectionLab')),
   challenges,
 };

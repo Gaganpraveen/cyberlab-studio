@@ -1,10 +1,14 @@
-import { PageContainer } from '@/components/layout/AppShell';
-import { PageHeader } from '@/components/ui/primitives';
+import { BookMarked } from 'lucide-react';
+
+import { PlannedPage } from '@/features/common/PlannedPage';
 
 export default function GlossaryPage() {
   return (
-    <PageContainer>
-      <PageHeader title="GlossaryPage" description="Coming together." />
-    </PageContainer>
+    <PlannedPage
+      eyebrow="Glossary"
+      title="Every term, linked and defined"
+      description="Hover any underlined term in a lesson to see its definition. The full A-to-Z glossary is coming here."
+      icon={BookMarked}
+    />
   );
 }

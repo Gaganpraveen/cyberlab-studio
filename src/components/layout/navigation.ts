@@ -7,6 +7,7 @@ import {
   type LucideIcon,
   Map,
   Settings,
+  ShieldAlert,
   Target,
   TrendingUp,
 } from 'lucide-react';
@@ -23,6 +24,12 @@ export interface NavItem {
 export const PRIMARY_NAV: NavItem[] = [
   { to: '/', label: 'Home', icon: Home, end: true, description: 'Continue where you left off' },
   { to: '/learn', label: 'Learn', icon: Map, description: 'The topic map: 16 domains, 128 topics' },
+  {
+    to: '/attacks',
+    label: 'Attacks A to Z',
+    icon: ShieldAlert,
+    description: 'Every major attack, mapped to lessons and standards',
+  },
   {
     to: '/labs',
     label: 'Labs',

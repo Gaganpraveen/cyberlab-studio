@@ -1,10 +1,16 @@
-import { PageContainer } from '@/components/layout/AppShell';
-import { PageHeader } from '@/components/ui/primitives';
+import { Settings } from 'lucide-react';
+
+import { PlannedPage } from '@/features/common/PlannedPage';
 
 export default function SettingsPage() {
   return (
-    <PageContainer>
-      <PageHeader title="SettingsPage" description="Coming together." />
-    </PageContainer>
+    <PlannedPage
+      eyebrow="Settings"
+      title="Settings"
+      description="Theme, motion, text size, a serif reading face and presenter mode for projectors."
+      icon={Settings}
+    >
+      Theme and presenter mode are in the top bar today.
+    </PlannedPage>
   );
 }

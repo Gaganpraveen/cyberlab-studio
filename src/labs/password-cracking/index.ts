@@ -18,6 +18,7 @@ export const passwordCrackingLab: LabDefinition = {
   topicIds: ['CRY-01', 'CRY-05', 'IAM-02'],
   icon: KeyRound,
   objectives: [],
+  status: 'in-development',
   component: lazy(() => import('./PasswordLab')),
   challenges,
 };

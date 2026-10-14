@@ -441,7 +441,7 @@ function LessonView({ topic, lesson }: { topic: TopicRecord; lesson: LessonMeta 
               <span className="text-fg-subtle text-xs">Updated {updated}</span>
             </div>
 
-            <h1 className="text-fg max-w-[24ch] text-[2rem] leading-tight font-semibold tracking-tight text-balance md:text-[2.375rem]">
+            <h1 className="text-fg max-w-3xl text-[2rem] leading-tight font-semibold tracking-tight text-balance md:text-[2.375rem]">
               {lesson.title}
             </h1>
             <p className="text-fg-muted mt-3 max-w-[68ch] text-lg leading-relaxed text-pretty">

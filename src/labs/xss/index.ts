@@ -18,6 +18,7 @@ export const xssLab: LabDefinition = {
   topicIds: ['WEB-05', 'WEB-07'],
   icon: CodeXml,
   objectives: [],
+  status: 'in-development',
   component: lazy(() => import('./XssLab')),
   challenges,
 };
